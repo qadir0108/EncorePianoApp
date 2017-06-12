@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "428520091569",
+    "firebase_url": "https://encorepiano-c7c73.firebaseio.com",
+    "project_id": "encorepiano-c7c73",
+    "storage_bucket": "encorepiano-c7c73.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428520091569:android:e4c50ee4aeacf6d2",
+        "android_client_info": {
+          "package_name": "com.encore.piano"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428520091569-8lobunsit8d64hgpo5jds9mphicq20ov.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.encore.piano",
+            "certificate_hash": "4d2ff5c8930f1f3f03ee95552c296bcc07c325e7"
+          }
+        },
+        {
+          "client_id": "428520091569-a2snt4sfbk8tm2tojsb67rorn0c3d6no.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRIuf5XeCLtvP5dpUVWVVn3dk-uv44t80"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428520091569-a2snt4sfbk8tm2tojsb67rorn0c3d6no.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
