@@ -57,8 +57,6 @@ import com.encore.piano.model.ProgressUpdateModel;
 import com.encore.piano.service.Messages;
 import com.encore.piano.util.CommonUtility;
 import com.encore.piano.util.PermissionsUtility;
-import com.google.android.gcm.GCMRegistrar;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.encore.piano.util.PermissionsUtility.REQUEST_ID_MULTIPLE_PERMISSIONS;
@@ -400,7 +398,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		//unbindService(this);
 
 		stopService(serviceIntentGPS);
-		GCMRegistrar.onDestroy(getApplicationContext());
 
 		super.onDestroy();
 	}
