@@ -6,7 +6,7 @@
     <EditTextPreference android:title="Company code" android:summary="Enter company code" android:key="company_code" android:defaultValue="EPM"/>
     
     <!-- Transfocus Pty Ltd , Mc Neill's Logistics , Rapid Haulage Pty Ltd -->
-    <EditTextPreference android:title="Company name" android:summary="Enter company name" android:key="company_name" android:defaultValue="Encore Piano Moving"/>
+    <EditTextPreference android:title="Company Name" android:summary="Enter company Name" android:key="company_name" android:defaultValue="Encore Piano Moving"/>
     
     <!-- server.transfocus.com.au , mail.mcneilllogistics.com.au , 10.0.2.2 -->
     <EditTextPreference android:title="WebService" android:summary="Enter webservice hostname" android:key="hostname" android:defaultValue="http://10.0.2.2"/>

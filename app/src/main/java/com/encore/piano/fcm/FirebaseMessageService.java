@@ -2,17 +2,12 @@ package com.encore.piano.fcm;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.encore.piano.R;
-import com.encore.piano.activities.Consignment;
-import com.encore.piano.activities.Conversation;
+import com.encore.piano.activities.Assignment;
 import com.encore.piano.asynctasks.AsyncParams;
-import com.encore.piano.asynctasks.FetchAndStoreConsignments;
 import com.encore.piano.enums.MessageTypeEnum;
-import com.encore.piano.util.AlertUtility;
 import com.encore.piano.util.CommonUtility;
 import com.encore.piano.util.StringUtility;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -21,7 +16,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Date;
 import java.util.Map;
 
-import static com.encore.piano.util.CommonUtility.ACTION_POD_MESSAGE_C;
 import static com.encore.piano.util.CommonUtility.EXTRA_MESSAGE;
 import static com.encore.piano.util.CommonUtility.FROM_NOTIFICATION;
 /**
@@ -80,23 +74,16 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         String message = "";
 
         Intent notificationIntent = null;
-        if(type.equals(MessageTypeEnum.Message.Value))
+        if (type.equals(MessageTypeEnum.Consignment.Value))
         {
-            notificationIntent = new Intent(context, Conversation.class);
-            icon = R.drawable.ic_menu_compose;
-            title = "New Message!";
-            message = "New message received from Server";
-        }
-        else if (type.equals(MessageTypeEnum.Consignment.Value))
-        {
-            notificationIntent = new Intent(context, Consignment.class);
+            notificationIntent = new Intent(context, Assignment.class);
             icon = R.drawable.ic_menu_copy;
             title = "New Pickup Order!";
             message = "New Pickup Order received from Server";
         }
         else if (type.equals(MessageTypeEnum.Consignment.Value))
         {
-            notificationIntent = new Intent(context, Consignment.class);
+            notificationIntent = new Intent(context, Assignment.class);
             icon = R.drawable.ic_menu_delete;
             title = "Consignments Deleted";
             message = "Consignments are deleted from Server";

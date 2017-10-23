@@ -18,8 +18,8 @@ public class GalleryAdapter extends GalleryAdapterBase {
 	TextView ConsignmentId;
 	TextView ImagePath;
 
-	public GalleryAdapter(Context context, String consignmentId, ArrayList<String> consignemntIds) {
-		super(context, R.layout.consignmentgalleryitem, consignmentId, consignemntIds);
+	public GalleryAdapter(Context context, String consignmentId) {
+		super(context, R.layout.gallery_row, consignmentId);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -9,7 +9,6 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,9 +24,10 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.encore.piano.R;
-import com.encore.piano.services.LoginService;
-import com.encore.piano.business.PreferenceUtility;
-import com.encore.piano.services.ServiceUtility;
+import com.encore.piano.data.NumberConstants;
+import com.encore.piano.server.LoginService;
+import com.encore.piano.logic.PreferenceUtility;
+import com.encore.piano.server.Service;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.LoginException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
@@ -37,7 +37,7 @@ import com.encore.piano.exceptions.ValueValidationException;
 import com.encore.piano.interfaces.OnLocationUpdateListener;
 import com.encore.piano.model.GPSTrackingModel;
 
-public class GPSTrackingService extends Service {
+public class GPSTrackingService extends android.app.Service {
 
 	PendingIntent PIntent;
 	Notification notification;
@@ -84,11 +84,11 @@ public class GPSTrackingService extends Service {
 		check = true;
 
 		try {
-			if (ServiceUtility.loginService == null)
-				ServiceUtility.loginService = new LoginService(getApplicationContext());
+			if (Service.loginService == null)
+				Service.loginService = new LoginService(getApplicationContext());
 
-			if (ServiceUtility.loginService.CheckLoginStatus())
-				AuthToken = ServiceUtility.loginService.LoginModel.getAuthToken();
+			if (Service.loginService.CheckLoginStatus())
+				AuthToken = Service.loginService.LoginModel.getAuthToken();
 			else
 				throw new LoginException();
 
@@ -133,7 +133,7 @@ public class GPSTrackingService extends Service {
 			// for ActivityCompat#requestPermissions for more details.
 			return;
 		}
-		if (ServiceUtility.loginService.CheckLoginStatus())
+		if (Service.loginService.CheckLoginStatus())
 
 			gpsLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, PreferenceUtility.GetPreferences(getApplicationContext()).GetGpsFrequency() * 1000 + 17, 50, new LocationListener() {
 
@@ -160,8 +160,8 @@ public class GPSTrackingService extends Service {
 
 					Log.d("GPS_SERVICE", "ON LOCATION CHANGED");
 
-					if (ServiceUtility.gpsTrackingService == null)
-						ServiceUtility.gpsTrackingService = new com.encore.piano.services.GPSTrackingService(getApplicationContext());
+					if (Service.gpsTrackingService == null)
+						Service.gpsTrackingService = new com.encore.piano.server.GPSTrackingService(getApplicationContext());
 
 					if (location == null) {
 						Log.d("GPS SERVICE", "location null");
@@ -174,7 +174,7 @@ public class GPSTrackingService extends Service {
 						model.setLongitude(String.valueOf(location.getLongitude()));
 
 						Log.d("GPS_SERVICE", "SAVING CHANGED LOCATION");
-						ServiceUtility.gpsTrackingService.SaveGpsCoordinates(model);
+						Service.gpsTrackingService.SaveGpsCoordinates(model);
 
 						//sync with server as onlocationchanged called after 15 min by default
 						new SyncGpsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
@@ -203,10 +203,10 @@ public class GPSTrackingService extends Service {
 				if (check)
 				{
 					Thread.sleep(1);
-					if (ServiceUtility.gpsTrackingService == null)
-						ServiceUtility.gpsTrackingService = new com.encore.piano.services.GPSTrackingService(getApplicationContext());
+					if (Service.gpsTrackingService == null)
+						Service.gpsTrackingService = new com.encore.piano.server.GPSTrackingService(getApplicationContext());
 
-					ServiceUtility.gpsTrackingService.SyncGpsData();
+					Service.gpsTrackingService.SyncGpsData();
 				}
 			} catch (InterruptedException e)
 			{
@@ -246,15 +246,15 @@ public class GPSTrackingService extends Service {
 						.setContentTitle("GPS status")
 						.setContentText("GPS is turned off!");
 
-		Intent resultIntent = new Intent(this, com.encore.piano.activities.Message.class);
+		Intent resultIntent = new Intent(this, com.encore.piano.activities.StartScreen.class);
 		resultIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-		PIntent = PendingIntent.getActivity(getApplicationContext(), ServiceUtility.NOTIFICATION_REQUESTCODE, resultIntent, PIntent.FLAG_UPDATE_CURRENT);
+		PIntent = PendingIntent.getActivity(getApplicationContext(), NumberConstants.REQUEST_CODE_NOTIFICATION, resultIntent, PIntent.FLAG_UPDATE_CURRENT);
 
 		mBuilder.setContentIntent(PIntent);
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(ServiceUtility.NOTIFICATION_ID, mBuilder.build());
+		mNotificationManager.notify(NumberConstants.NOTIFICATION_ID, mBuilder.build());
 	}
 
 	@Override

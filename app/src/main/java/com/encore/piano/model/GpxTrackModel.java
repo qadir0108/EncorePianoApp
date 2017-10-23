@@ -3,7 +3,7 @@ package com.encore.piano.model;
 public class GpxTrackModel extends BaseModel{
 
 	private String Name;
-	private String RunSheetID;	
+	private String ConsignmentId;
 	private double Longitude;
 	private double Latitude;
 	private int Order;
@@ -26,11 +26,11 @@ public class GpxTrackModel extends BaseModel{
 	public void setName(String name) {
 		Name = name;
 	}
-	public String getRunSheetID() {
-		return RunSheetID;
+	public String getConsignmentId() {
+		return ConsignmentId;
 	}
-	public void setRunSheetID(String runSheetID) {
-		RunSheetID = runSheetID;
+	public void setConsignmentId(String consignmentId) {
+		ConsignmentId = consignmentId;
 	}	
 	public int getOrder() {
 		return Order;
@@ -45,7 +45,7 @@ public class GpxTrackModel extends BaseModel{
 		Route("Route"),
 		Lat("Lat"),
 		Lon("Lon"),
-		Name("Name"),
+		Name("Size"),
 		Order("Order");
 		
 		public String Value;

@@ -8,7 +8,7 @@ import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
 import com.encore.piano.R;
-import com.encore.piano.business.PreferenceUtility;
+import com.encore.piano.logic.PreferenceUtility;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, OnPreferenceClickListener {
 

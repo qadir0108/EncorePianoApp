@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/reloadconsignments" android:title="Reload" android:icon="@drawable/ic_menu_refresh" android:showAsAction="always"></item>
-    <item android:id="@+id/sync" android:title="Sync" android:icon="@drawable/ic_menu_upload" android:showAsAction="always"></item>
-    <item android:id="@+id/logoff" android:title="Logoff" android:icon="@drawable/ic_menu_close_clear_cancel" android:showAsAction="ifRoom|withText"></item>
-    
-
-</menu>

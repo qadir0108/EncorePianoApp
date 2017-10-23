@@ -11,7 +11,7 @@ import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.encore.piano.services.ServiceUtility;
+import com.encore.piano.server.Service;
 import com.encore.piano.model.GalleryModel;
 
 public abstract class GalleryAdapterBase extends BaseAdapter {
@@ -21,16 +21,13 @@ public abstract class GalleryAdapterBase extends BaseAdapter {
 
 	ArrayList<GalleryModel> Images = new ArrayList<GalleryModel>();
 
-	public GalleryAdapterBase(Context context, int viewId, String consignmentId, ArrayList<String> consignmentIds) {
+	public GalleryAdapterBase(Context context, int viewId, String consignmentId) {
 		this.context = context;
 		this.viewId = viewId;
 
 		Images.clear();
 
-		if (consignmentIds != null)
-			Images = ServiceUtility.galleryService.GetImagesForConsignments(consignmentIds);
-		else
-			Images = ServiceUtility.galleryService.GetImagesForConsignment(consignmentId);
+		Images = Service.galleryService.GetImagesForConsignment(consignmentId);
 	}
 
 	@Override

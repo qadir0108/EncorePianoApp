@@ -1,7 +1,7 @@
 package com.encore.piano.enums;
 
 /**
- * Created by Administrator on 5/6/2017.
+ * Created by Kamran on 5/6/2017.
  */
 
 public enum PianoEnum
@@ -10,18 +10,27 @@ public enum PianoEnum
 
     Id("Id"),
     ConsignmentId("ConsignmentId"),
+    Category("Category"),
     Type("Type"),
-    Name("Name"),
-    Color("Color"),
+    Size("Size"),
     Make("Make"),
     Model("Model"),
+    Finish("Finish"),
     SerialNumber("SerialNumber"),
-    IsStairs("IsStairs"),
     IsBench("IsBench"),
+    IsPlayer("IsPlayer"),
     IsBoxed("IsBoxed"),
 
     createdAt("createdAt"),
-    pianoStaus("pianoStaus");
+    pianoStatus("pianoStatus"),
+    pickedAt("pickedAt"),
+    deliveredAt("deliveredAt"),
+    additionalBenchesStatus("additionalBenchesStatus"),
+    additionalCasterCupsStatus("additionalCasterCupsStatus"),
+    additionalCoverStatus("additionalCoverStatus"),
+    additionalLampStatus("additionalLampStatus"),
+    additionalOwnersManualStatus("additionalOwnersManualStatus")
+    ;
 
     public String Value;
 

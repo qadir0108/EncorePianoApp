@@ -29,9 +29,9 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.encore.piano.R;
-import com.encore.piano.services.LoginService;
-import com.encore.piano.services.ServiceUtility;
-import com.encore.piano.business.PreferenceUtility;
+import com.encore.piano.server.LoginService;
+import com.encore.piano.server.Service;
+import com.encore.piano.logic.PreferenceUtility;
 import com.encore.piano.exceptions.EmptyStringException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.LoginException;
@@ -92,8 +92,8 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
 
         try
         {
-            ServiceUtility.loginService = new LoginService(Login.this);
-            if (ServiceUtility.loginService.CheckLoginStatus())
+            Service.loginService = new LoginService(Login.this);
+            if (Service.loginService.CheckLoginStatus())
             {
                 Intent i = new Intent(this, StartScreen.class);
                 startActivity(i);
@@ -126,8 +126,8 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        //getMenuInflater().inflate(R.menu.mainmenu, menu);
-        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        //getMenuInflater().inflate(R.menu.loginService, menu);
+        getMenuInflater().inflate(R.menu.login, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -171,12 +171,12 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
             try
             {
 
-                if (ServiceUtility.loginService == null)
-                    ServiceUtility.loginService = new LoginService(Login.this);
+                if (Service.loginService == null)
+                    Service.loginService = new LoginService(Login.this);
 
                 LoginModel loginModel = params[0];
                 loginModel.setFCMToken(PreferenceUtility.getFirebaseInstanceId(Login.this));
-                message = ServiceUtility.loginService.Login(loginModel);
+                message = Service.loginService.Login(loginModel);
 
                 return message;
 
@@ -214,7 +214,6 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
         @Override
         protected void onPostExecute(Object result)
         {
-
             progressDialog.dismiss();
 
             if (result instanceof HttpHostConnectException)
@@ -237,9 +236,7 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
                 startActivity(i);
                 Login.this.finish();
             }
-
         }
-
     }
 
     private void ShowLoginMessage(String message)

@@ -9,7 +9,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.encore.piano.services.ErrorLogService;
+import com.encore.piano.server.ErrorLogService;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;

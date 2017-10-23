@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,23 +39,22 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.encore.piano.R;
-import com.encore.piano.services.ServiceUtility;
-import com.encore.piano.db.Database;
-import com.encore.piano.services.GPSTrackingService;
-import com.encore.piano.services.GpxService;
+import com.encore.piano.db.AssignmentDb;
+import com.encore.piano.model.AssignmentModel;
+import com.encore.piano.server.Service;
+import com.encore.piano.server.GPSTrackingService;
+import com.encore.piano.server.GpxService;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.interfaces.OnLocationUpdateListener;
-import com.encore.piano.model.ConsignmentModel;
 import com.encore.piano.model.GPSTrackingModel;
 import com.encore.piano.model.GpxTrackModel;
 import com.encore.piano.service.GPSTrackingService.GPSBinder;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -73,7 +70,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 	MarkerOptions userLocation = null;
 	private Object isBound;
 	public ArrayList<LatLng> polyz;
-	private ArrayList<ConsignmentModel> consignments;
+	private ArrayList<AssignmentModel> consignments;
 	public ArrayList<ArrayList<LatLng>> allPaths = new ArrayList<ArrayList<LatLng>>();
 	LatLng fromPosition = new LatLng(33.887383, -118.024426);
 	LatLng toPosition = new LatLng(33.919307, -118.009348);
@@ -98,7 +95,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 		}
 		Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-		consignments = Database.GetConsignments(this, false, true, "");
+		consignments = AssignmentDb.getAll(this, false, true, "");
 		//	getConsignmentLocations(consignments);
 
 		Log.d("LOGIN_ACTIVITY", "ON_CREATE METHOD");
@@ -108,7 +105,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		getMenuInflater().inflate(R.menu.topmenu, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -119,15 +116,6 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 		{
 		case R.id.main:
 			onMainClicked();
-			break;
-		case R.id.runsheet:
-			onRunSheetClicked();
-			break;
-		//		case R.id.showmap:				
-		//			onShowMapClicked();
-		//			break;
-		case R.id.messages:
-			onMessagesClicked();
 			break;
 		}
 
@@ -148,17 +136,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 	{
 		this.finish();
 
-		Intent i = new Intent(this, com.encore.piano.activities.Consignment.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
-
-	}
-
-	public void onMessagesClicked()
-	{
-		this.finish();
-
-		Intent i = new Intent(this, com.encore.piano.activities.Conversation.class);
+		Intent i = new Intent(this, Assignment.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		startActivity(i);
 
@@ -201,16 +179,16 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 
 		try
 		{
-			if (ServiceUtility.gpxService == null)
+			if (Service.gpxService == null)
 			{
-				ServiceUtility.gpxService = new GpxService(this);
-				ServiceUtility.gpxService.Initialize();
+				Service.gpxService = new GpxService(this);
+				Service.gpxService.Initialize();
 			}
 
-			for (int i = 0; i < ServiceUtility.gpxService.GpxTracks.size(); i++)
+			for (int i = 0; i < Service.gpxService.GpxTracks.size(); i++)
 			{
 
-				GpxTrackModel trackModel = ServiceUtility.gpxService.GpxTracks.get(i);
+				GpxTrackModel trackModel = Service.gpxService.GpxTracks.get(i);
 
 				if (i == 0)
 					initialCameraPosition = new LatLng(trackModel.getLatitude(), trackModel.getLongitude());
@@ -219,7 +197,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 
 				// ADDING DESTINATION MARKERS (LAST LOCATION IN TRACK SEGMENT)
 
-				if (i == (ServiceUtility.gpxService.GpxTracks.size() - 1))
+				if (i == (Service.gpxService.GpxTracks.size() - 1))
 				{
 					MarkerOptions mOptions = new MarkerOptions();
 					mOptions.draggable(false);
@@ -229,7 +207,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 
 					map.addMarker(mOptions).showInfoWindow();
 				}
-				else if (!ServiceUtility.gpxService.GpxTracks.get(i).getName().equals(ServiceUtility.gpxService.GpxTracks.get(i + 1).getName()))
+				else if (!Service.gpxService.GpxTracks.get(i).getName().equals(Service.gpxService.GpxTracks.get(i + 1).getName()))
 				{
 					MarkerOptions mOptions = new MarkerOptions();
 					mOptions.draggable(false);
@@ -285,10 +263,10 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 		Log.d("DrawUserLocationOnMap", "1");
 
 		// ADDING SAVED USER GPS COORDINATES FROM DATABASE AND DRAWING PATH
-		if (ServiceUtility.gpsTrackingService == null)
-			ServiceUtility.gpsTrackingService = new GPSTrackingService(this);
+		if (Service.gpsTrackingService == null)
+			Service.gpsTrackingService = new GPSTrackingService(this);
 
-		ArrayList<GPSTrackingModel> list = ServiceUtility.gpsTrackingService.GetGPSCoordinates(false);
+		ArrayList<GPSTrackingModel> list = Service.gpsTrackingService.GetGPSCoordinates(false);
 		for (GPSTrackingModel recordedGps : list)
 			recordedPOptions.add(new LatLng(Double.parseDouble(recordedGps.getLatitude()), Double.parseDouble(recordedGps.getLongitude())));
 
@@ -297,7 +275,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 		Log.d("DrawUserLocationOnMap", "2");
 
 		// ADDING CURRENT LOCATION MARKER
-		GPSTrackingModel lastPosition = ServiceUtility.gpsTrackingService.GetLastCoordinate();
+		GPSTrackingModel lastPosition = Service.gpsTrackingService.GetLastCoordinate();
 		if (lastPosition != null && lastPosition.getLatitude() != null
 				&& !lastPosition.getLatitude().equals("")
 				&& lastPosition.getLongitude() != null
@@ -350,7 +328,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 	{
 		Intent i = new Intent(this,
 				com.encore.piano.service.GPSTrackingService.class);
-		isBound = getApplicationContext().bindService(i, this, Service.BIND_AUTO_CREATE);
+		isBound = getApplicationContext().bindService(i, this, android.app.Service.BIND_AUTO_CREATE);
 		super.onStart();
 	}
 
@@ -368,9 +346,9 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 	{
 	}
 
-	private void getConsignmentLocations(ArrayList<ConsignmentModel> consignments)
+	private void getConsignmentLocations(ArrayList<AssignmentModel> consignments)
 	{
-		for (ConsignmentModel c : consignments)
+		for (AssignmentModel c : consignments)
 			c.setPickupLocation(getLocationFromAddress(c.getDeliveryAddress()));
 	}
 
@@ -437,7 +415,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 				getConsignmentLocations(consignments);
 
 				Intent i = getIntent();
-				for (ConsignmentModel c : consignments)
+				for (AssignmentModel c : consignments)
 				{
 					if (c.getPickupLocation() == null)
 						continue;
@@ -490,7 +468,7 @@ public class Map extends AppCompatActivity implements OnLocationUpdateListener, 
 
 		}
 
-		private void drawPath(ConsignmentModel con, ArrayList<LatLng> g)
+		private void drawPath(AssignmentModel con, ArrayList<LatLng> g)
 		{
 			int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
 

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.encore.piano.R;
-import com.encore.piano.services.ServiceUtility;
+import com.encore.piano.server.Service;
 
 public class Image extends Activity {
 
@@ -19,7 +19,7 @@ public class Image extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.image);
 
-		String path = getIntent().getExtras().getString(ServiceUtility.CONSIGNMENT_IMAGE);
+		String path = getIntent().getExtras().getString(Service.CONSIGNMENT_IMAGE);
 
 		image = (ImageView) findViewById(R.id.consignmentImageLargeImageView);
 		//image.setImageURI(Uri.parse(path));

@@ -31,7 +31,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher2"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -63,63 +63,49 @@
             android:name=".activities.Preferences"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.Confirmation"
+            android:name=".activities.DriverConfirmation"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.CaptureSignature"
+            android:name=".activities.DriverSignature"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.StartScreen"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.Consignment"
+            android:name=".activities.Assignment"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.ConsignmentDetails"
+            android:name=".activities.AssignmentDetails"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.Items"
+            android:name=".activities.AssignmentUnits"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.UnitDeliveryUnLoad"/>
         <activity
-            android:name=".activities.ConsignmentStatusManagement"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.CustomerCaptureSignature"/>
-        <activity
-            android:name=".activities.Gallery"
+            android:name=".activities.AssignmentGallery"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.Image"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.Conversation"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.Message"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.MessageRead"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.NewMessage"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
-        <activity
             android:name=".activities.Map"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.ConsignmentInfo"
+            android:name=".activities.AssignmentProgress"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.DeliveryKind"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activities.DepartureTime"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.DateTimePicker"/>
-        <activity android:name=".activities.ScanActivity"/>
 
-        <service android:name=".service.MessagingService"/>
+        <activity
+            android:name=".activities.TripStart"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AssignmentDetailsPickup"/>
+        <activity android:name=".activities.AssignmentDetailsDelivery"/>
+        <activity android:name=".activities.UnitDeliveryLoad"/>
+
+        <activity android:name=".activities.Warehouse"/>
+        <activity android:name=".activities.WarehouseUnitGallery"/>
+
         <service android:name=".service.GPSTrackingService"/>
 
         <service
@@ -137,13 +123,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
-        <receiver android:name=".receiver.MessagingBroadcastReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="POD_MESSAGE_M" />
-                <category android:name="com.encore.piano" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name=".receiver.ConsignmentBroadcastReceiver" android:exported="false">
             <intent-filter>

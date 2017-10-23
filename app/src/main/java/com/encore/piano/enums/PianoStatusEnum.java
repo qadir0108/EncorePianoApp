@@ -1,14 +1,19 @@
 package com.encore.piano.enums;
 
 /**
- * Created by Administrator on 5/6/2017.
+ * Created by Kamran on 5/6/2017.
  */
 
 public enum PianoStatusEnum
 {
-    Perfect("Perfect"),
-    Damaged("Damaged"),
-    MinorDamaged("MinorDamaged");
+    Booked("Booked"),
+    Picked("Picked"),
+    Dispatched("Dispatched"),
+    Delivered("Delivered"),
+    Rejected("Rejected"),
+    ExceptionsDefacts("ExceptionsDefacts"),
+    ExceptionsScratches("ExceptionsScratches"),
+    ExceptionsMissingAccessories("ExceptionsMissingAccessories");
 
     public String Value;
 

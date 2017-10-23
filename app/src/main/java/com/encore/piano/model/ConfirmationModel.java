@@ -29,7 +29,7 @@ public class ConfirmationModel extends BaseModel {
 	public enum ConfirmationModelEnum{
 		
 		Id("ID"),
-		Condition("Name"),
+		Condition("Size"),
 		Confirmed("Checked");
 		
 		public String Value;

@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.encore.piano.R;
-import com.encore.piano.activities.Consignment;
-import com.encore.piano.services.ServiceUtility;
-import com.encore.piano.services.ConsignmentService;
+import com.encore.piano.activities.Assignment;
+import com.encore.piano.server.Service;
+import com.encore.piano.server.AssignmentService;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
@@ -42,10 +42,10 @@ public class DeleteConsignments extends AsyncTask<AsyncParams, Void, String>
 			context = params[0].getContext();
 			RunSheetListID = params[0].getId();
 
-			ServiceUtility.consignmentService = new ConsignmentService(context);
-			ServiceUtility.consignmentService.DeleteConsignments(RunSheetListID);
-			if (!ServiceUtility.consignmentService.getErrorMessage().equals(""))
-				return ServiceUtility.consignmentService.getErrorMessage();
+			Service.assignmentService = new AssignmentService(context);
+			Service.assignmentService.deleteAssignments(RunSheetListID);
+			if (!Service.assignmentService.getErrorMessage().equals(""))
+				return Service.assignmentService.getErrorMessage();
 
 
 		} catch (UrlConnectionException e)
@@ -77,9 +77,9 @@ public class DeleteConsignments extends AsyncTask<AsyncParams, Void, String>
 
 		if (result != null && !result.equals(""))
 		{
-			if (result.equals(ServiceUtility.AUTH_TOKEN_INVALID))
+			if (result.equals(Service.AUTH_TOKEN_INVALID))
 			{
-				ServiceUtility.loginService.LogOff();
+				Service.loginService.LogOff();
 				Intent i = new Intent(context, com.encore.piano.activities.Login.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
@@ -105,7 +105,7 @@ public class DeleteConsignments extends AsyncTask<AsyncParams, Void, String>
 		int icon = R.drawable.ic_menu_copy;
 		String title = "Consignments Deleted";
 		String message = "Consignments has been successfully deleted.";
-		Intent notificationIntent = new Intent(context, Consignment.class);
+		Intent notificationIntent = new Intent(context, Assignment.class);
 
 		//CommonUtility.showNotification(context, notificationIntent, notificationId, icon, title, message);
 		

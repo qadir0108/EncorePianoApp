@@ -28,7 +28,7 @@ public class ConsignmentBroadcastReceiver extends BroadcastReceiver {
 		if(intent.getAction().equals(ACTION_POD_MESSAGE_C))
 			new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 //		else if(intent.getAction().equals(ACTION_POD_MESSAGE_CD))
-//			new DeleteConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+//			new deleteAssignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 	}
 	
 }

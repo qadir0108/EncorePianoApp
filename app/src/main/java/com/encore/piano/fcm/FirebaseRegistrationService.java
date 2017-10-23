@@ -2,7 +2,7 @@ package com.encore.piano.fcm;
 
 import android.util.Log;
 
-import com.encore.piano.business.PreferenceUtility;
+import com.encore.piano.logic.PreferenceUtility;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 

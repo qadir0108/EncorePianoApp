@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.encore.piano.services.ServiceUtility;
+
+import com.encore.piano.server.Service;
 import com.encore.piano.model.ConfirmationModel;
 
 public abstract class ConfirmationAdapterBase extends BaseAdapter {
@@ -21,19 +22,19 @@ public abstract class ConfirmationAdapterBase extends BaseAdapter {
 	
 	@Override
 	public int getCount() {
-		return ServiceUtility.confirmationService.Confirmations.size();
+		return Service.confirmationService.Confirmations.size();
 		
 	}
 
 	@Override
 	public ConfirmationModel getItem(int position) {
-		return ServiceUtility.confirmationService.Confirmations.get(position);
+		return Service.confirmationService.Confirmations.get(position);
 		
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return ServiceUtility.confirmationService.Confirmations.get(position).getId();
+		return Service.confirmationService.Confirmations.get(position).getId();
 	}
 
 	@Override

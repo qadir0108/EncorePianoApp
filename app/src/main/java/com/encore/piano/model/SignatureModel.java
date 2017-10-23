@@ -1,6 +1,6 @@
 package com.encore.piano.model;
 
-import com.encore.piano.services.ServiceUtility;
+import com.encore.piano.server.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +29,7 @@ public class SignatureModel extends BaseModel {
 	}
 
 	public void setUsername() {
-		Username = ServiceUtility.loginService.LoginModel.getUserName();
+		Username = Service.loginService.LoginModel.getUserName();
 	}
 
 	public String getLoginTime() {
@@ -54,7 +54,7 @@ public class SignatureModel extends BaseModel {
 	}
 
 	public void setAuthToken() {
-		AuthToken = ServiceUtility.loginService.LoginModel.getAuthToken();
+		AuthToken = Service.loginService.LoginModel.getAuthToken();
 	}
 
 	public enum SignatureEnum

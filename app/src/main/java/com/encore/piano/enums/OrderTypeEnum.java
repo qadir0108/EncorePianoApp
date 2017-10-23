@@ -9,12 +9,12 @@ public enum OrderTypeEnum
     Id("Id"),
     ConsignmentId("ConsignmentId"),
     Type("Type"),
-    Name("Name"),
+    Name("Size"),
     Color("Color"),
     Make("Make"),
     Model("Model"),
     SerialNumber("SerialNumber"),
-    IsStairs("IsStairs"),
+    IsStairs("IsPlayer"),
     IsBench("IsBench"),
     IsBoxed("IsBoxed");
 

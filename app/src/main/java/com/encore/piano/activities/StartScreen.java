@@ -34,17 +34,18 @@ import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.encore.piano.services.ServiceUtility;
+import com.encore.piano.data.StringConstants;
+import com.encore.piano.server.Service;
 import com.encore.piano.interfaces.CallBackHandler;
 import com.encore.piano.R;
-import com.encore.piano.services.ConsignmentService;
-import com.encore.piano.services.DataSynchronizationService;
-import com.encore.piano.services.GPSTrackingService;
-import com.encore.piano.services.GpxService;
-import com.encore.piano.services.LoginService;
-import com.encore.piano.services.SignatureService;
-import com.encore.piano.business.TaskQueue;
-import com.encore.piano.business.TaskQueue.EnumTask;
+import com.encore.piano.server.AssignmentService;
+import com.encore.piano.server.DataSynchronizationService;
+import com.encore.piano.server.GPSTrackingService;
+import com.encore.piano.server.GpxService;
+import com.encore.piano.server.LoginService;
+import com.encore.piano.server.SignatureService;
+import com.encore.piano.logic.TaskQueue;
+import com.encore.piano.logic.TaskQueue.EnumTask;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.EmptyAuthTokenException;
 import com.encore.piano.exceptions.EmptyStringException;
@@ -54,7 +55,6 @@ import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.interfaces.ProgressUpdateListener;
 import com.encore.piano.model.ProgressUpdateModel;
-import com.encore.piano.service.Messages;
 import com.encore.piano.util.CommonUtility;
 import com.encore.piano.util.PermissionsUtility;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -72,7 +72,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	Button btnSync;
 	Button btnLogOff;
 
-	Intent serviceIntentMessaging;
 	Intent serviceIntentGPS;
 
 	ActionBar actionBar;
@@ -107,19 +106,14 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		btnSync.setOnClickListener(this);
 		btnLogOff.setOnClickListener(this);
 
-		serviceIntentMessaging = new Intent(this, com.encore.piano.service.MessagingService.class);
 		serviceIntentGPS = new Intent(this, com.encore.piano.service.GPSTrackingService.class);
 
 		HashMap<String, String> hm = new HashMap<String, String>();
-		hm.put("name", "Pickups");
+		hm.put("name", "Assignments");
 		items.add(hm);
 
-        HashMap<String, String> hm1 = new HashMap<String, String>();
-        hm1.put("name", "Warehouse");
-        items.add(hm1);
-
 		HashMap<String, String> hm2 = new HashMap<String, String>();
-		hm2.put("name", "Messages");
+		hm2.put("name", "Warehouse");
 		items.add(hm2);
 
 		//	ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
@@ -133,29 +127,22 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			{
 				if (position == 0)
 				{
-					Intent i = new Intent(StartScreen.this, com.encore.piano.activities.Consignment.class);
+					Intent i = new Intent(StartScreen.this, Assignment.class);
 					startActivity(i);
 				}
                 else if (position == 1)
-                {
-
-                    Intent i3 = new Intent(StartScreen.this, com.encore.piano.activities.ScanActivity.class);
-                    startActivity(i3);
-                }
-				else if (position == 2)
 				{
-
-					Intent i2 = new Intent(StartScreen.this, com.encore.piano.activities.Conversation.class);
-					startActivity(i2);
+					Intent i3 = new Intent(StartScreen.this, Warehouse.class);
+					startActivity(i3);
 				}
 
 			}
 		});
 
-		if (ServiceUtility.loginService == null)
+		if (Service.loginService == null)
 			try
 			{
-				ServiceUtility.loginService = new LoginService(this);
+				Service.loginService = new LoginService(this);
 			} catch (UrlConnectionException e)
 			{
 				// TODO Auto-generated catch block
@@ -178,17 +165,16 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 				e.printStackTrace();
 			}
 
-		if (ServiceUtility.loginService.CheckLoginStatus())
+		if (Service.loginService.CheckLoginStatus())
 		{
-			serviceIntentMessaging.putExtra(Messages.AUTH_TOKEN, ServiceUtility.loginService.LoginModel.getAuthToken());
-			serviceIntentGPS.putExtra(Messages.AUTH_TOKEN, ServiceUtility.loginService.LoginModel.getAuthToken());
+			serviceIntentGPS.putExtra(StringConstants.AUTH_TOKEN, Service.loginService.LoginModel.getAuthToken());
 
-			myPath = getIntent().getStringExtra("myPath");
+			myPath = getIntent().getStringExtra("filePath");
 			fileName = getIntent().getStringExtra("fileName");
 
 			processQueue();
 
-			//			if(fileName != null && myPath != null)
+			//			if(fileName != null && filePath != null)
 			//				new SendSignature().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
 
 			//new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -218,8 +204,8 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
     public boolean onCreateOptionsMenu(Menu menu)
     {
 
-        //getMenuInflater().inflate(R.menu.mainmenu, menu);
-        getMenuInflater().inflate(R.menu.topmenu_main, menu);
+        //getMenuInflater().inflate(R.menu.loginService, menu);
+        getMenuInflater().inflate(R.menu.main_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -256,10 +242,10 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		{
 //			if (TaskQueue.getQueue().peek() == EnumTask.SendSignature)
 //			{
-//				if (fileName != null && myPath != null)
+//				if (fileName != null && filePath != null)
 //				{
 //					new SendSignature().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
-//					// Remove Signature Task and add Load Consignment
+//					// Remove Signature Task and add Load Assignment
 //					TaskQueue.getQueue().remove();
 //					TaskQueue.getQueue().add(EnumTask.LoadConsignments);
 //				}
@@ -309,25 +295,18 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		//		case R.id.main:				
 		//			onMainClicked();
 		//			break;
-		case R.id.runsheet:
-			onRunSheetClicked();
-			break;
-		case R.id.showmap:
+		case R.id.map:
 			onShowMapClicked();
 			break;
-		case R.id.messages:
-			onMessagesClicked();
-			break;
-
 		//			case R.id.reloadconsignments:
 		//				onConsignmentsReloadOptionClicked();
 		//				break;
-					case R.id.sync:
-						onSyncOptionClicked();
-						break;
-					case R.id.logoff:
-						onLogoffOptionClicked();
-						break;
+		case R.id.sync:
+			onSyncOptionClicked();
+			break;
+		case R.id.logoff:
+			onLogoffOptionClicked();
+			break;
 		default:
 			break;
 		}
@@ -339,7 +318,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	{
 		//this.finish();
 
-		Intent i = new Intent(this, com.encore.piano.activities.Consignment.class);
+		Intent i = new Intent(this, Assignment.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		startActivity(i);
 
@@ -353,29 +332,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		startActivity(i);
 
-	}
-
-	public void onMessagesClicked()
-	{
-		//this.finish();
-
-		Intent i = new Intent(this, com.encore.piano.activities.Conversation.class);
-		i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-		startActivity(i);
-
-	}
-
-	public boolean IsMyMessagingServiceRunning()
-	{
-		ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-
-		for (RunningServiceInfo service : activityManager.getRunningServices(40))
-		{
-			if ("com.encore.piano.service.MessagingService".equals(service.service.getClassName()))
-				return true;
-		}
-
-		return false;
 	}
 
 	public boolean IsMyGpsServiceRunning()
@@ -443,7 +399,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			//			TaskQueue.getQueue().add(EnumTask.SyncMessages);
 			//			processQueue();
 
-			boolean m1 = stopService(serviceIntentMessaging);
 			boolean m2 = stopService(serviceIntentGPS);
 
 			SyncData sync = new SyncData();
@@ -517,8 +472,8 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 						try
 						{
 
-							if (ServiceUtility.signatureService != null)
-								ServiceUtility.signatureService.UnRegisterProgressUpdateListener();
+							if (Service.signatureService != null)
+								Service.signatureService.UnRegisterProgressUpdateListener();
 
 							Thread.sleep(2000);
 
@@ -592,12 +547,12 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		{
 			try
 			{
-				ServiceUtility.signatureService = new SignatureService(StartScreen.this);
-				ServiceUtility.signatureService.SignatureAbsolutePath = myPath;
-				ServiceUtility.signatureService.ImageId = fileName;
-				ServiceUtility.signatureService.RegisterProgressUpdateListener(StartScreen.this);
-				ServiceUtility.signatureService.setTaskName("Sending Signature");
-				message = ServiceUtility.signatureService.SendSignature();
+				Service.signatureService = new SignatureService(StartScreen.this);
+				Service.signatureService.SignatureAbsolutePath = myPath;
+				Service.signatureService.ImageId = fileName;
+				Service.signatureService.RegisterProgressUpdateListener(StartScreen.this);
+				Service.signatureService.setTaskName("Sending Signature");
+				message = Service.signatureService.SendSignature();
 
 			} catch (ClientProtocolException e)
 			{
@@ -645,7 +600,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 						CommonUtility.fadeOutView(StartScreen.this, layoutProgress);
 					}
 
-					ServiceUtility.loginService.ActivateLoginData();
+					Service.loginService.ActivateLoginData();
 				} catch (EmptyAuthTokenException e)
 				{
 					ShowMessage("Error in Sending Signature", "Login session not saved. Error occured.");
@@ -683,28 +638,28 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			try
 			{
 
-				updateProgressBar(5, 1, "Loading", "Fetching consignments...");
-				ServiceUtility.consignmentService = new ConsignmentService(StartScreen.this);
-				ServiceUtility.consignmentService.LoadConsignments();
-				if (!ServiceUtility.consignmentService.getErrorMessage().equals(""))
-					return ServiceUtility.consignmentService.getErrorMessage();
+				updateProgressBar(5, 1, "Loading", "Fetching assignments...");
+				Service.assignmentService = new AssignmentService(StartScreen.this);
+				Service.assignmentService.LoadConsignments();
+				if (!Service.assignmentService.getErrorMessage().equals(""))
+					return Service.assignmentService.getErrorMessage();
 
 //				updateProgressBar(5, 2, "Loading", "Fetching items...");
-//				ServiceUtility.ItemService = new ItemService(StartScreen.this);
-//				ServiceUtility.ItemService.LoadItems();
-//				if (!ServiceUtility.ItemService.getErrorMessage().equals(""))
-//					return ServiceUtility.ItemService.getErrorMessage();
+//				Service.UnitService = new UnitService(StartScreen.this);
+//				Service.UnitService.LoadItems();
+//				if (!Service.UnitService.getErrorMessage().equals(""))
+//					return Service.UnitService.getErrorMessage();
 
 //				updateProgressBar(5, 3, "Loading", "Fetching Trip/Pod statuses...");
-//				ServiceUtility.tripService = new TripService(StartScreen.this);
-//				ServiceUtility.PodStatusProvider = new PodProvider(StartScreen.this);
+//				Service.tripService = new TripService(StartScreen.this);
+//				Service.PodStatusProvider = new PodProvider(StartScreen.this);
 
 				/*UpdateFetchingProgressDialog(5, 4, "Loading", "Fetching GPS data...");
-				ServiceUtility.GpxService = new GpxService(StartScreen.this);
-				ServiceUtility.GpxService.Initialize();*/
+				Service.GpxService = new GpxService(StartScreen.this);
+				Service.GpxService.Initialize();*/
 
-				if (ServiceUtility.gpsTrackingService == null)
-					ServiceUtility.gpsTrackingService = new GPSTrackingService(StartScreen.this);
+				if (Service.gpsTrackingService == null)
+					Service.gpsTrackingService = new GPSTrackingService(StartScreen.this);
 
 				updateProgressBar(5, 4, "Completed", "Data loading completed.");
 
@@ -738,19 +693,19 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 			if (message != null && !message.equals(""))
 			{
-				if (message.equals(ServiceUtility.AUTH_TOKEN_INVALID))
+				if (message.equals(Service.AUTH_TOKEN_INVALID))
 				{
-					ServiceUtility.loginService.LogOff();
+					Service.loginService.LogOff();
 					Intent i = new Intent(StartScreen.this, com.encore.piano.activities.Login.class);
 					startActivity(i);
 					StartScreen.this.finish();
 				}
-				ShowMessage("Error in Consignment Reload", message);
+				ShowMessage("Error in Assignment Reload", message);
 			}
 			else
 			{
-				updateProgressBar(5, 5, "Consignments Reloading Finished", "Imported " + ServiceUtility.consignmentService.numberOfImportedConsigments + " new consignments" +
-						" and " + ServiceUtility.consignmentService.numberOfImportedItems + " new items.");
+				updateProgressBar(5, 5, "Finished", "Imported " + Service.assignmentService.numberOfImportedConsigments + " new assignments" +
+						" and " + Service.assignmentService.numberOfImportedItems + " new units.");
 
 				if (signatureSend)
 				{
@@ -768,7 +723,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 	private void updateProgressBar(final int count, final int step, final String title, final String message)
 	{
-		final String task = "Reloading Runsheet";
+		final String task = "Reloading Assignments";
 		runOnUiThread(new Runnable() {
 
 			@Override
@@ -885,18 +840,18 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		{
 			try
 			{
-				if (ServiceUtility.consignmentService == null)
+				if (Service.assignmentService == null)
 
-					ServiceUtility.consignmentService = new ConsignmentService(StartScreen.this);
+					Service.assignmentService = new AssignmentService(StartScreen.this);
 
-				//ServiceUtility.FirebaseMessageService.DeleteFinishedConsignments();
+				//Service.FirebaseMessageService.DeleteFinishedConsignments();
 
-				if (ServiceUtility.gpxService == null)
-					ServiceUtility.gpxService = new GpxService(StartScreen.this);
+				if (Service.gpxService == null)
+					Service.gpxService = new GpxService(StartScreen.this);
 
-				ServiceUtility.gpxService.DeleteGpxTracks();
+				Service.gpxService.DeleteGpxTracks();
 
-				ServiceUtility.loginService.LogOff();
+				Service.loginService.LogOff();
 
 				new Handler().postDelayed(new Runnable() {
 					@Override
