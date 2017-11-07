@@ -15,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.encore.piano.R;
+import com.encore.piano.data.StringConstants;
 import com.encore.piano.server.LoginService;
 import com.encore.piano.server.Service;
 import com.encore.piano.logic.PreferenceUtility;
@@ -45,10 +45,10 @@ import io.fabric.sdk.android.Fabric;
 
 public class Login extends AppCompatActivity implements OnClickListener, OnEditorActionListener {
 
-    EditText Username;
-    EditText Password;
+    EditText txtUsername;
+    EditText txtPassword;
 
-    Button LoginButton;
+    Button btnLogin;
 
     TextView tvCompanyName;
 
@@ -61,7 +61,6 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
         setContentView(R.layout.login);
 
         Fabric.with(this, new Crashlytics());
-        Log.d("LOGIN_ACTIVITY", "ON_CREATE METHOD");
 
         ErrorLogUtility errorUtility = ErrorLogUtility.getInstance();
         errorUtility.Init(getApplicationContext());
@@ -73,27 +72,27 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
 //		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 //		actionBar.setDisplayShowTitleEnabled(false);
 
-        Username = (EditText) findViewById(R.id.usernameEditText);
-        Password = (EditText) findViewById(R.id.passwordEditText);
+        txtUsername = (EditText) findViewById(R.id.txtUsername);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
-        Username.setText(preferences.getString("UserName", "D101"));
-        Password.setText(preferences.getString("Password", "P@kistan1"));
+        txtUsername.setText(preferences.getString("UserName", "D101"));
+        txtPassword.setText(preferences.getString("Password", "P@kistan1"));
 
-        Username.setOnEditorActionListener(this);
-        Password.setOnEditorActionListener(this);
+        txtUsername.setOnEditorActionListener(this);
+        txtPassword.setOnEditorActionListener(this);
 
-        LoginButton = (Button) findViewById(R.id.loginButton);
-        LoginButton.setOnClickListener(this);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(this);
 
         PreferenceUtility.GetPreferences(this);
         tvCompanyName = (TextView) findViewById(R.id.tvCompanyName);
-        tvCompanyName.setText(PreferenceUtility.CompanyName);
+        tvCompanyName.setText(StringConstants.COMPANY_NAME);
 
         try
         {
             Service.loginService = new LoginService(Login.this);
-            if (Service.loginService.CheckLoginStatus())
+            if (Service.loginService.checkLoginStatus())
             {
                 Intent i = new Intent(this, StartScreen.class);
                 startActivity(i);
@@ -111,10 +110,10 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
     {
         switch (v.getId())
         {
-            case R.id.loginButton:
+            case R.id.btnLogin:
                 LoginModel loginModel = new LoginModel();
-                loginModel.setUserName(Username.getText().toString());
-                loginModel.setPassword(Password.getText().toString());
+                loginModel.setUserName(txtUsername.getText().toString());
+                loginModel.setPassword(txtPassword.getText().toString());
                 new LoginAsync().execute(loginModel);
                 break;
             default:
@@ -134,19 +133,15 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-
         switch (item.getItemId())
         {
             case R.id.settings:
-
                 Intent i = new Intent(getApplicationContext(), Preferences.class);
                 startActivity(i);
-
                 break;
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -154,17 +149,14 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
     {
         protected void onPreExecute()
         {
-
             progressDialog = new ProgressDialog(Login.this);
-            progressDialog.setTitle("Logging");
+            progressDialog.setTitle("Please wait...");
             progressDialog.setMessage("Logging into application.");
             progressDialog.show();
-
             super.onPreExecute();
         };
 
         String message = "";
-
         @Override
         protected Object doInBackground(LoginModel... params)
         {
@@ -173,11 +165,9 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
 
                 if (Service.loginService == null)
                     Service.loginService = new LoginService(Login.this);
-
                 LoginModel loginModel = params[0];
                 loginModel.setFCMToken(PreferenceUtility.getFirebaseInstanceId(Login.this));
-                message = Service.loginService.Login(loginModel);
-
+                message = Service.loginService.doLogin(loginModel);
                 return message;
 
             } catch (UrlConnectionException e)
@@ -228,8 +218,8 @@ public class Login extends AppCompatActivity implements OnClickListener, OnEdito
             {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Login.this);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("UserName", Username.getText().toString());
-                editor.putString("Password", Password.getText().toString());
+                editor.putString("UserName", txtUsername.getText().toString());
+                editor.putString("Password", txtPassword.getText().toString());
                 editor.commit();
 
                 Intent i = new Intent(Login.this, StartScreen.class);

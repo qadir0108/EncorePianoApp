@@ -18,15 +18,21 @@ public class FileUtility {
     private static final String DriversSignRootFolder = RootFolder + "/Drivers/";
 
     public static String getPODDirectory(String unitId) {
-        return FileUtility.PODRootFolder + unitId + "/";
+        String directory = FileUtility.PODRootFolder + unitId + "/";
+        prepareDirectory(directory);
+        return directory;
     }
 
     public static String getImagesDirectory(String unitId) {
-        return FileUtility.ImagesRootFolder + unitId + "/";
+        String directory = FileUtility.ImagesRootFolder + unitId + "/";
+        prepareDirectory(directory);
+        return directory;
     }
 
     public static String getDriversSignDirectory() {
-        return FileUtility.DriversSignRootFolder;
+        String directory = FileUtility.DriversSignRootFolder;
+        prepareDirectory(directory);
+        return directory;
     }
 
     public static void prepareDirectories()
@@ -37,11 +43,11 @@ public class FileUtility {
         prepareDirectory(DriversSignRootFolder);
     }
 
-    public static boolean prepareDirectory(String directoryName)
+    public static boolean prepareDirectory(String directory)
     {
         try
         {
-            return makeDirs(directoryName);
+            return makeDirs(directory);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -51,10 +57,10 @@ public class FileUtility {
 
     private static boolean makeDirs(String directoryName)
     {
-        File tempDir = new File(directoryName);
-        if (!tempDir.exists())
-            tempDir.mkdirs();
+        File directory = new File(directoryName);
+        if (!directory.exists())
+            directory.mkdirs();
 
-        return (tempDir.isDirectory());
+        return (directory.isDirectory());
     }
 }

@@ -14,10 +14,20 @@ import android.widget.TextView;
 import com.encore.piano.R;
 import com.encore.piano.data.NumberConstants;
 import com.encore.piano.data.StringConstants;
+import com.encore.piano.enums.TripStatusEnum;
+import com.encore.piano.exceptions.JSONNullableException;
+import com.encore.piano.exceptions.NetworkStatePermissionException;
+import com.encore.piano.exceptions.NotConnectedException;
+import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.model.AssignmentModel;
+import com.encore.piano.server.AssignmentService;
 import com.encore.piano.server.Service;
 import com.encore.piano.logic.PreferenceUtility;
 import com.encore.piano.util.Alerter;
+
+import org.json.JSONException;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AssignmentDetails extends AppCompatActivity implements
 		OnClickListener {
@@ -36,13 +46,15 @@ public class AssignmentDetails extends AppCompatActivity implements
 	Button btnDeliveryDetails;
 	Button btnUnits;
 	Button btnStart;
+	Button btnMap;
 	Button btnProgress;
+	Button btnComplete;
 
 	ActionBar actionBar;
 
 	// GoogleMap map = null;
 	AssignmentModel model = null;
-	String consignmentId;
+	String assignmentId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -63,33 +75,39 @@ public class AssignmentDetails extends AppCompatActivity implements
 		btnDeliveryDetails = (Button) findViewById(R.id.btnDeliveryDetails);
 		btnUnits = (Button) findViewById(R.id.btnUnits);
 		btnStart = (Button) findViewById(R.id.btnStart);
+		btnMap = (Button) findViewById(R.id.btnMap);
 		btnProgress = (Button) findViewById(R.id.btnProgress);
+		btnComplete = (Button) findViewById(R.id.btnComplete);
 
 		btnPickupDetails.setOnClickListener(this);
 		btnDeliveryDetails.setOnClickListener(this);
 		btnUnits.setOnClickListener(this);
 		btnStart.setOnClickListener(this);
+		btnMap.setOnClickListener(this);
 		btnProgress.setOnClickListener(this);
+		btnComplete.setOnClickListener(this);
 
 		InitializeWidgets();
 	}
 
 	private void InitializeWidgets()
 	{
-		PreferenceUtility.GetPreferences(this);
-		consignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
-		model = Service.assignmentService.getAll(consignmentId);
+		assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+		model = Service.assignmentService.getAll(assignmentId);
 
-		tvAssignmentNumber.setText(model.getConsignmentNumber());
-		tvDrivers.setText(model.getDriverName());
-		tvOrderType.setText(model.getOrderType());
-		tvCallerName.setText(model.getCallerName());
-		tvCallerPhoneNumber.setText(model.getCallerPhoneNumber());
-		tvPickupAddress.setText(model.getPickupAddress());
-		tvDeliveryAddress.setText(model.getDeliveryAddress());
-		tvCustomer.setText(model.getCustomerCode() + " - " + model.getCustomerName());
-		tvUnitsCount.setText(model.getNumberOfItems() + " piano(s)");
-
+        if(model == null)
+            Alerter.error(AssignmentDetails.this, "Assignment not found.");
+        else {
+            tvAssignmentNumber.setText(model.getConsignmentNumber());
+            tvDrivers.setText(model.getDriverName());
+            tvOrderType.setText(model.getOrderType());
+            tvCallerName.setText(model.getCallerName());
+            tvCallerPhoneNumber.setText(model.getCallerPhoneNumber());
+            tvPickupAddress.setText(model.getPickupAddress());
+            tvDeliveryAddress.setText(model.getDeliveryAddress());
+            tvCustomer.setText(model.getCustomerCode() + " - " + model.getCustomerName());
+            tvUnitsCount.setText(model.getNumberOfItems() + " piano(s)");
+        }
 	}
 
 	@Override
@@ -106,13 +124,9 @@ public class AssignmentDetails extends AppCompatActivity implements
 		case R.id.backtoassignments:
 			AssignmentDetails.this.finish();
 			break;
-		//			case R.id.changestatussinglemenuitem:
-		//				onChangeStatusOptionsClicked();
-		//				break;
 		default:
 			break;
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -158,19 +172,67 @@ public class AssignmentDetails extends AppCompatActivity implements
 				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
 				startActivityForResult(i, NumberConstants.REQUEST_CODE_START_TRIP );
 				break;
+            case R.id.btnMap:
+                i = new Intent(this, Map.class);
+                i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
+                i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                break;
 			case R.id.btnProgress:
 				i = new Intent(AssignmentDetails.this, AssignmentProgress.class);
-				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, consignmentId);
+				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, assignmentId);
 				startActivity(i);
 			break;
 			case R.id.btnComplete:
-				break;
+                new SweetAlertDialog(AssignmentDetails.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(Alerter.title)
+                        .setContentText("Are you sure?")
+                        .setConfirmText("Yes,Complete")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                            complete();
+                            sDialog.hide();
+                            Alerter.success(AssignmentDetails.this, "Assignment completed successfully!");
+
+                            }
+                        })
+                        .setCancelText("No, cancel!")
+                        .showCancelButton(true)
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.cancel();
+                            }
+                        })
+                        .show();
+
+			    break;
 		default:
 			break;
 		}
 	}
 
-	@Override
+    private void complete() {
+        try {
+            Service.assignmentService = new AssignmentService(AssignmentDetails.this);
+            Service.assignmentService.completeTrip(assignmentId);
+
+        } catch (UrlConnectionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (JSONNullableException e) {
+            e.printStackTrace();
+        } catch (NotConnectedException e) {
+            e.printStackTrace();
+        } catch (NetworkStatePermissionException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == NumberConstants.REQUEST_CODE_START_TRIP && resultCode == RESULT_OK)

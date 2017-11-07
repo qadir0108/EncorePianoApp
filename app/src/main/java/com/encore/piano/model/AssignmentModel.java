@@ -45,23 +45,19 @@ public class AssignmentModel extends BaseModel implements Serializable {
     private int NumberOfItems;
     private UnitModel[] Pianos;
 
-    private String createdAt;
+	private boolean unread;
+	private String createdAt;
     private String tripStatus;
     private String departureTime;
     private String estimatedTime;
-	private LatLng pickupLocation;
-	private String receiverSignaturePath;
-	private String receiverName;
-	private String dateSigned;
-    private boolean signed;
 	private boolean synced;
 	private boolean saved;
-	private boolean unread;
 
     // Not Used
     private String serviceType;
+    private LatLng pickupLocation;
 
-	@Override
+    @Override
 	public String toString()
 	{
 		return this.getOrderNumber();
@@ -177,46 +173,6 @@ public class AssignmentModel extends BaseModel implements Serializable {
 
 	public void setEstimatedTime(String estimatedTime) {
 		this.estimatedTime = estimatedTime;
-	}
-
-	public LatLng getPickupLocation() {
-		return pickupLocation;
-	}
-
-	public void setPickupLocation(LatLng pickupLocation) {
-		this.pickupLocation = pickupLocation;
-	}
-
-	public String getReceiverSignaturePath() {
-		return receiverSignaturePath;
-	}
-
-	public void setReceiverSignaturePath(String receiverSignaturePath) {
-		this.receiverSignaturePath = receiverSignaturePath;
-	}
-
-	public String getReceiverName() {
-		return receiverName;
-	}
-
-	public void setReceiverName(String receiverName) {
-		this.receiverName = receiverName;
-	}
-
-	public String getDateSigned() {
-		return dateSigned;
-	}
-
-	public void setDateSigned(String dateSigned) {
-		this.dateSigned = dateSigned;
-	}
-
-	public boolean isSigned() {
-		return signed;
-	}
-
-	public void setSigned(boolean signed) {
-		this.signed = signed;
 	}
 
 	public boolean isSynced() {
@@ -442,4 +398,12 @@ public class AssignmentModel extends BaseModel implements Serializable {
 	public void setDeliveryInstructions(String deliveryInstructions) {
 		DeliveryInstructions = deliveryInstructions;
 	}
+
+    public void setPickupLocation(LatLng pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    public LatLng getPickupLocation() {
+        return pickupLocation;
+    }
 }

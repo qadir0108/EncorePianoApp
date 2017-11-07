@@ -78,7 +78,7 @@ public class UnitAdapter extends UnitAdapterBase {
                 Intent i = new Intent(context, UnitDeliveryUnLoad.class);
                 i.putExtra(StringConstants.INTENT_KEY_UNIT_ID, h.tvUnitId.getText().toString());
                 i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, h.tvAssignmentId.getText().toString());
-                ((Activity)context).startActivityForResult(i, NumberConstants.REQUEST_CODE_LOAD_UNIT);
+                ((Activity)context).startActivityForResult(i, NumberConstants.REQUEST_CODE_UNLOAD_UNIT);
             }
         });
 	}

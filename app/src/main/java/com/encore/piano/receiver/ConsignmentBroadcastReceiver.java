@@ -3,7 +3,6 @@ package com.encore.piano.receiver;
 import static com.encore.piano.util.CommonUtility.EXTRA_MESSAGE;
 import static com.encore.piano.util.CommonUtility.EXTRA_NOTIFICATION_ID;
 import static com.encore.piano.util.CommonUtility.ACTION_POD_MESSAGE_C;
-import static com.encore.piano.util.CommonUtility.ACTION_POD_MESSAGE_CD;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +26,6 @@ public class ConsignmentBroadcastReceiver extends BroadcastReceiver {
 		
 		if(intent.getAction().equals(ACTION_POD_MESSAGE_C))
 			new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-//		else if(intent.getAction().equals(ACTION_POD_MESSAGE_CD))
-//			new deleteAssignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 	}
 	
 }

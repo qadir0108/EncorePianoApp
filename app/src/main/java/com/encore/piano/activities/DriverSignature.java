@@ -166,7 +166,7 @@ public class DriverSignature extends Activity implements ProgressUpdateListener 
 		try {
 			Service.loginService.ActivateLoginData();
 		} catch (EmptyAuthTokenException e) {
-			ShowMessage("Error", "Login session not saved. Error occured.");
+			ShowMessage("Error", "doLogin session not saved. Error occured.");
 		}
 		
 		TaskQueue.getQueue().add(TaskQueue.EnumTask.SendSignature);

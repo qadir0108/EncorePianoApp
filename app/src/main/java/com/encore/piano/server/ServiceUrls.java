@@ -18,21 +18,19 @@ public class ServiceUrls {
     public static String getLoginServiceUrl(Context context){
         return getServiceUrl(context) + "/api/user/login";
     }
-    public static String getFCMRegisterUrl(Context context){
-        return getServiceUrl(context) + "/api/user/register";
-    }
     public static String getConsignmentsUrl(Context context){
         return getServiceUrl(context) + "/api/consignments?AuthToken=[authtokenvalue]";
     }
     public static String getConsignmentUrl(Context context){
         return getServiceUrl(context) + "/api/consignment?AuthToken=[authtokenvalue]&Id=[id]";
     }
+    public static String getSyncStartUrl(Context context){
+        return getServiceUrl(context) + "/api/sync/start?AuthToken=[authtokenvalue]";
+    }
     public static String getSendLogUrl(Context context){
         return getServiceUrl(context) + "/ws/json/syncreply/SendErrorLog";
     }
-    public static String GetDataSynchornizationUrl(Context context){
-        return getServiceUrl(context) + "/ws/json/syncreply/UpdateConsignment";
-    }
+
     public static String GetGpsSynchornizationUrl(Context context){
         return getServiceUrl(context);
     }

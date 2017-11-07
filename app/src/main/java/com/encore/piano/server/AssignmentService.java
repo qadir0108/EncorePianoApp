@@ -1,6 +1,5 @@
 package com.encore.piano.server;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import com.encore.piano.enums.PianoEnum;
 import com.encore.piano.enums.PianoStatusEnum;
 import com.encore.piano.enums.TripStatusEnum;
 import com.encore.piano.exceptions.DatabaseInsertException;
-import com.encore.piano.exceptions.DatabaseUpdateException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
@@ -40,7 +38,7 @@ public class AssignmentService extends BaseService {
 
 	JSONArray array = new JSONArray();
 
-	public int numberOfImportedConsigments = 0;
+	public int numberOfImportedAssignments = 0;
 	public int numberOfImportedItems = 0;
 
 	public AssignmentService(Context context) throws UrlConnectionException, JSONException, JSONNullableException, NotConnectedException, NetworkStatePermissionException {
@@ -109,14 +107,14 @@ public class AssignmentService extends BaseService {
             }
 		}
 
-		int importresult = AssignmentDb.writeAll(context, assignments);
+		int assignWritten = AssignmentDb.writeAll(context, assignments);
 
-		if (importresult == -1)
+		if (assignWritten == -1)
 			throw new DatabaseInsertException();
-		else {
-            int importresult2 = UnitDb.writeAll(context, pianos);
-            numberOfImportedConsigments = importresult;
-            numberOfImportedItems = importresult2;
+		else if (assignWritten > 0){
+            int unitsWritten = UnitDb.writeAll(context, pianos);
+            numberOfImportedAssignments = assignWritten;
+            numberOfImportedItems = unitsWritten;
         }
 
 	}
@@ -169,7 +167,6 @@ public class AssignmentService extends BaseService {
     public AssignmentModel getAssignment(JSONObject object)
     {
         AssignmentModel model = new AssignmentModel();
-
 
         model.setId(setStringValueFromJSON(AssignmentEnum.Id.Value, object));
         model.setConsignmentNumber(setStringValueFromJSON(AssignmentEnum.ConsignmentNumber.Value, object));
@@ -244,34 +241,37 @@ public class AssignmentService extends BaseService {
 
 	public AssignmentModel getAll(String id)
 	{
-		return AssignmentDb.getAll(context, false, false, id).get(0);
+        ArrayList<AssignmentModel> models = AssignmentDb.getAll(context, false, false, id);
+        if(models.size() > 0)
+		    return models.get(0);
+        else
+            return null;
 	}
 
-    public boolean startTrip(String consignmentId, String departureTime, String estimatedTime)
+    public boolean startTrip(String assignmentId, String departureTime, String estimatedTime)
     {
-        if (AssignmentDb.startTrip(context, consignmentId, departureTime, estimatedTime) != 1)
+        if (AssignmentDb.startTrip(context, assignmentId, departureTime, estimatedTime) != 1)
             return false;
         return true;
     }
 
-	public void writeCustomerSignatureAndStatus(String customerName, String customerSinaturePath, String consignmentId) throws DatabaseUpdateException
-	{
-		// Customer Size and Sign
-		if (AssignmentDb.writeCustomerSignature(context, customerName, customerSinaturePath, consignmentId) != 1)
-			throw new DatabaseUpdateException();
-
-	}
-
-    public boolean setTripStatus(String consignmentId, String tripStatus)
+    public boolean completeTrip(String assignmentId)
     {
-        if (AssignmentDb.setTripStatus(context, consignmentId, tripStatus) != 1)
+        if (AssignmentDb.completeTrip(context, assignmentId) != 1)
             return false;
         return true;
     }
 
-	public int GetImagesCount(String consignmentId)
+    public boolean setTripStatus(String asssignmentId, String tripStatus)
+    {
+        if (AssignmentDb.setTripStatus(context, asssignmentId, tripStatus) != 1)
+            return false;
+        return true;
+    }
+
+	public int getImagesCount(String assignmentId)
 	{
-		return ImageDb.getImageCountForAssignment(context, consignmentId);
+		return ImageDb.getImageCountForAssignment(context, assignmentId);
 	}
 
 	public void deleteAssignments(String consignmentId) throws IOException
@@ -279,17 +279,9 @@ public class AssignmentService extends BaseService {
 		ArrayList<AssignmentModel> consToDelete = AssignmentDb.getAll(context, false, false, consignmentId);
 		for (AssignmentModel assignmentModel : consToDelete)
 		{
-			if (assignmentModel.getReceiverSignaturePath() != null && !assignmentModel.getReceiverSignaturePath().equals(""))
-			{
-				File f = new File(assignmentModel.getReceiverSignaturePath());
-				if (f.exists())
-					f.delete();
-			}
-
 			ImageDb.deleteImagesForAssignments(context, assignmentModel.getId());
 			UnitDb.delete(context, assignmentModel.getId());
 		}
-
 		AssignmentDb.delete(context, consToDelete);
 	}
 

@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
-import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
@@ -39,7 +38,7 @@ import com.encore.piano.server.Service;
 import com.encore.piano.interfaces.CallBackHandler;
 import com.encore.piano.R;
 import com.encore.piano.server.AssignmentService;
-import com.encore.piano.server.DataSynchronizationService;
+import com.encore.piano.server.SyncService;
 import com.encore.piano.server.GPSTrackingService;
 import com.encore.piano.server.GpxService;
 import com.encore.piano.server.LoginService;
@@ -55,9 +54,10 @@ import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.interfaces.ProgressUpdateListener;
 import com.encore.piano.model.ProgressUpdateModel;
+import com.encore.piano.util.Alerter;
 import com.encore.piano.util.CommonUtility;
+import com.encore.piano.util.FileUtility;
 import com.encore.piano.util.PermissionsUtility;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.encore.piano.util.PermissionsUtility.REQUEST_ID_MULTIPLE_PERMISSIONS;
 
@@ -73,8 +73,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	Button btnLogOff;
 
 	Intent serviceIntentGPS;
-
-	ActionBar actionBar;
 
 	String myPath,
 			fileName;
@@ -165,7 +163,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 				e.printStackTrace();
 			}
 
-		if (Service.loginService.CheckLoginStatus())
+		if (Service.loginService.checkLoginStatus())
 		{
 			serviceIntentGPS.putExtra(StringConstants.AUTH_TOKEN, Service.loginService.LoginModel.getAuthToken());
 
@@ -215,15 +213,11 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted, yay! do the
-                    // calendar task you need to do.
                     listView.setEnabled(true);
+                    FileUtility.prepareDirectories();
                 } else {
-                    new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Enore Piano App!")
-                            .setContentText("Permissions are required to run the application!")
-                            .show();
+                    Alerter.error(StartScreen.this, "Permissions are required to run the application!");
                     listView.setEnabled(false);
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -257,7 +251,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 				new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 				// Remove Consignments Task and add Sync Message
 				TaskQueue.getQueue().remove();
-				TaskQueue.getQueue().add(EnumTask.SyncMessages);
+				//TaskQueue.getQueue().add(EnumTask.SyncMessages);
 
 			}
 
@@ -270,16 +264,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 //
 //			}
 //
-//			// Sync Messages on Startup
-//			if (TaskQueue.getQueue().peek() == EnumTask.SyncMessages)
-//			{
-//				AsyncParams[] params = {
-//						new AsyncParams(this, "", -1, EnumSyncMessagesFrom.Activity, "")
-//				};
-//
-//				new SyncMessages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-//				TaskQueue.getQueue().remove();
-//			}
 
 		}
 
@@ -288,26 +272,19 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
-		switch (item.getItemId())
+	    switch (item.getItemId())
 		{
+            case R.id.map:
+			    onShowMapClicked();
+			break;
+            case R.id.btnSync:
+			    onSyncOptionClicked();
+			break;
+            case R.id.btnLogoff:
+			    onLogoffOptionClicked();
+			break;
 
-		//		case R.id.main:				
-		//			onMainClicked();
-		//			break;
-		case R.id.map:
-			onShowMapClicked();
-			break;
-		//			case R.id.reloadconsignments:
-		//				onConsignmentsReloadOptionClicked();
-		//				break;
-		case R.id.sync:
-			onSyncOptionClicked();
-			break;
-		case R.id.logoff:
-			onLogoffOptionClicked();
-			break;
-		default:
+            default:
 			break;
 		}
 
@@ -389,7 +366,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	{
 		try
 		{
-			DataSynchronizationService dsp = new DataSynchronizationService(StartScreen.this);
+			SyncService dsp = new SyncService(StartScreen.this);
 
 			//			if (!dsp.AreAllConsignementsSynced()) {
 			//				TaskQueue.getQueue().add(EnumTask.SyncConsignments);
@@ -445,7 +422,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 	}
 
-	DataSynchronizationService dsp = null;
+	SyncService dsp = null;
 	boolean synced = false;
 
 	@Override
@@ -603,7 +580,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 					Service.loginService.ActivateLoginData();
 				} catch (EmptyAuthTokenException e)
 				{
-					ShowMessage("Error in Sending Signature", "Login session not saved. Error occured.");
+					ShowMessage("Error in Sending Signature", "doLogin session not saved. Error occured.");
 				}
 
 			}
@@ -704,14 +681,11 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			}
 			else
 			{
-				updateProgressBar(5, 5, "Finished", "Imported " + Service.assignmentService.numberOfImportedConsigments + " new assignments" +
+				updateProgressBar(5, 5, "Finished", "Imported " + Service.assignmentService.numberOfImportedAssignments + " new assignments" +
 						" and " + Service.assignmentService.numberOfImportedItems + " new units.");
 
-				if (signatureSend)
-				{
-					progressBar.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
-					CommonUtility.fadeOutView(StartScreen.this, layoutProgress);
-				}
+                progressBar.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
+                CommonUtility.fadeOutView(StartScreen.this, layoutProgress);
 			}
 
 			loaded = true;
@@ -780,10 +754,10 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 			try
 			{
-				dsp = new DataSynchronizationService(StartScreen.this);
+				dsp = new SyncService(StartScreen.this);
 				dsp.RegisterProgressUpdateListener(StartScreen.this);
 				dsp.setTaskName("Synchronizing Data");
-				dsp.SynchronizeConsignments();
+				dsp.syncAll();
 			} catch (ClientProtocolException e)
 			{
 				return "ClientProtocolException";

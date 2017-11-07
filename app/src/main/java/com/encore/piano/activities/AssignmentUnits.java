@@ -57,6 +57,12 @@ public class AssignmentUnits extends AppCompatActivity {
             adapter = new UnitAdapter(this, assignmentId);
             listView.setAdapter(adapter);
             Alerter.success(AssignmentUnits.this, "Unit loaded successfully.");
+        } else if (requestCode == NumberConstants.REQUEST_CODE_UNLOAD_UNIT && resultCode == RESULT_OK)
+        {
+            assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+            adapter = new UnitAdapter(this, assignmentId);
+            listView.setAdapter(adapter);
+            Alerter.success(AssignmentUnits.this, "Unit delivered successfully.");
         }
     }
 }

@@ -30,8 +30,7 @@ public final class CommonUtility {
 
 	public static final String ACTION_POD_MESSAGE_M = "POD_MESSAGE_M";
 	public static final String ACTION_POD_MESSAGE_C = "POD_MESSAGE_C";
-	public static final String ACTION_POD_MESSAGE_CD = "POD_MESSAGE_CD";
-	
+
 	public static final String ACTION_UPDATE_CONSIGNMENTS = "UPDATE_CONSIGNMENTS";
 
 	/**
@@ -75,8 +74,6 @@ public final class CommonUtility {
 			intent = new Intent(ACTION_POD_MESSAGE_M);
 		else if (type.equals(MessageTypeEnum.Consignment.Value))
 			intent = new Intent(ACTION_POD_MESSAGE_C);
-		else if (type.equals("CD"))
-			intent = new Intent(ACTION_POD_MESSAGE_CD);
 
 		intent.putExtra(EXTRA_MESSAGE, Id);
 		intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);

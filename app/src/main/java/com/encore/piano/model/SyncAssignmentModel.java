@@ -1,24 +1,25 @@
 package com.encore.piano.model;
 
 
-public class DataSyncModel extends BaseModel {
-	
+public class SyncAssignmentModel extends BaseModel {
+
+    private String Id;
+    private String tripStatus;
+    private String departureTime;
+    private String arrivalTime;
+
 	private String ConsignmentReference;
 	private String ColCode;
 	private String DeliveryCode;
 	private String CustomerReference;
-	private String TripStatus;
-	private String PodStatus;	
+	private String PodStatus;
 	private String AuthToken;
 	private String CustomerUsername;
 	private String DateSigned;
 	private String[] images;	
 	private String SignatureImagePath;
-	private String ConsignmentId;
 	private boolean Signed;
 	private String SignedBy;
-	private String arrivalTime;
-	private String departureTime;
 	private boolean saved;
 	
 	public String getConsignmentReference() {
@@ -46,10 +47,10 @@ public class DataSyncModel extends BaseModel {
 		CustomerReference = customerReference;
 	}
 	public String getTripStatus() {
-		return TripStatus;
+		return tripStatus;
 	}
 	public void setTripStatus(String tripStatus) {
-		TripStatus = tripStatus;
+		this.tripStatus = tripStatus;
 	}
 	public String getPodStatus() {
 		return PodStatus;
@@ -81,11 +82,11 @@ public class DataSyncModel extends BaseModel {
 	public void setImages(String[] imagePaths) {
 		this.images = imagePaths;
 	}
-	public String getConsignmentId() {
-		return ConsignmentId;
+	public String getId() {
+		return Id;
 	}
-	public void setConsignmentId(String consignmentId) {
-		ConsignmentId = consignmentId;
+	public void setId(String id) {
+		Id = id;
 	}
 	public boolean isSigned() {
 		return Signed;
@@ -136,50 +137,4 @@ public class DataSyncModel extends BaseModel {
 		this.saved = saved;
 	}
 
-	public enum DataSyncModelEnum
-	{
-		ConsignmentReference("ConsignmentReference"),
-		ColCode("ColCode"),
-		DeliveryCode("DeliveryCode"),
-		CustomerReference("CustomerReference"),
-		TripStatus("TripStatus"),
-		PodStatus("PodStatus"),
-		AuthToken("AuthToken"),
-		CustomerUsername("CustomerUsername"),
-		DateSigned("DateSigned"),
-		Images("Images"),
-		ConsignmentID("ConsignmentID"),
-		Signed("Signed"),
-		SignedBy("SignedBy"),
-		SignatureImage("SignatureImage"),
-		ArrivalTime("ArrivalTime"),
-		DepartureTime("DepartureTime"),
-		RunSheetID("RunSheetID"),
-		MessageID("MessageID"),
-		Acknowledged("Acknowledged"),
-		Saved("Saved")
-		;
-		
-		public String Value;
-		
-		private DataSyncModelEnum(String v){
-			Value = v;
-		}
-	}
-	
-	
-	public enum DataSyncImageModelEnum
-	{		
-		ConsignmentID("ConsignmentID"),
-		ImageId("ID"),
-		AuthToken("AuthToken");
-		
-		public String Value;
-		
-		private DataSyncImageModelEnum(String v){
-			Value = v;
-		}
-	}
-	
-	
 }

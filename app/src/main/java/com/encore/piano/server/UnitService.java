@@ -72,6 +72,10 @@ public class UnitService extends BaseService {
 		UnitDb.setUnitDelivered(context, model);
 	}
 
+    public void saveUnit(UnitModel model) throws DatabaseUpdateException {
+        UnitDb.saveUnit(context, model);
+    }
+
     @Override
     public URL getServiceUrl() {
         String url = ServiceUrls.GetItemUrl(context).replace("authtokenvalue", Service.loginService.LoginModel.getAuthToken())

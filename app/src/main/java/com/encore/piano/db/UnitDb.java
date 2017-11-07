@@ -11,8 +11,8 @@ import com.encore.piano.enums.TripStatusEnum;
 import com.encore.piano.exceptions.DatabaseUpdateException;
 import com.encore.piano.model.AssignmentModel;
 import com.encore.piano.model.UnitModel;
-import com.encore.piano.util.DateTimeUtility;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class UnitDb extends Database {
@@ -135,6 +135,19 @@ public class UnitDb extends Database {
 				PianoEnum.additionalCoverStatus.Value,
 				PianoEnum.additionalCasterCupsStatus.Value,
 				PianoEnum.additionalBenchesStatus.Value,
+
+                PianoEnum.deliveredAt.Value,
+                PianoEnum.benchesUnloaded.Value,
+                PianoEnum.casterCupsUnloaded.Value,
+                PianoEnum.coverUnloaded.Value,
+                PianoEnum.lampUnloaded.Value,
+                PianoEnum.ownersManualUnloaded.Value,
+
+                PianoEnum.receiverName.Value,
+                PianoEnum.receiverSignaturePath.Value,
+                PianoEnum.dateSigned.Value,
+                PianoEnum.signed.Value,
+                PianoEnum.synced.Value
 		};
 
 		Cursor results = null;
@@ -200,27 +213,61 @@ public class UnitDb extends Database {
 		ContentValues cv = new ContentValues();
 		cv.put(PianoEnum.pianoStatus.Value, model.getPianoStatus());
 		cv.put(PianoEnum.deliveredAt.Value, model.getDeliveredAt());
-		cv.put(PianoEnum.additionalBenchesStatus.Value, model.getAdditionalBenchesStatus().ordinal());
-		cv.put(PianoEnum.additionalCasterCupsStatus.Value, model.getAdditionalCasterCupsStatus().ordinal());
-		cv.put(PianoEnum.additionalCoverStatus.Value, model.getAdditionalCoverStatus().ordinal());
-		cv.put(PianoEnum.additionalLampStatus.Value, model.getAdditionalOwnersManualStatus().ordinal());
-		cv.put(PianoEnum.additionalOwnersManualStatus.Value, model.getAdditionalOwnersManualStatus().ordinal());
+		cv.put(PianoEnum.benchesUnloaded.Value, model.isBenchesUnloaded());
+		cv.put(PianoEnum.casterCupsUnloaded.Value, model.isCasterCupsUnloaded());
+		cv.put(PianoEnum.coverUnloaded.Value, model.isCoverUnloaded());
+		cv.put(PianoEnum.lampUnloaded.Value, model.isLampUnloaded());
+		cv.put(PianoEnum.ownersManualUnloaded.Value, model.isOwnersManualUnloaded());
+
+        cv.put(PianoEnum.receiverName.Value, model.getReceiverName());
+        cv.put(PianoEnum.receiverSignaturePath.Value, model.getReceiverSignaturePath());
+        cv.put(PianoEnum.dateSigned.Value, model.getDateSigned());
+        cv.put(PianoEnum.signed.Value, 1);
+
 		if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { model.getId() }) != 1)
 			throw new DatabaseUpdateException();
 		wdb.close();
 	}
 
-	public static synchronized void delete(Context context, String consignmentId)
+    public static synchronized void saveUnit(Context context, UnitModel model) throws DatabaseUpdateException {
+        SQLiteDatabase wdb = getSqliteHelper(context);
+        ContentValues cv = new ContentValues();
+        cv.put(PianoEnum.Category.Value, model.getCategory());
+        cv.put(PianoEnum.Type.Value, model.getType());
+        cv.put(PianoEnum.Size.Value, model.getSize());
+        cv.put(PianoEnum.Make.Value, model.getMake());
+        cv.put(PianoEnum.Model.Value, model.getModel());
+        cv.put(PianoEnum.Finish.Value, model.getFinish());
+        cv.put(PianoEnum.SerialNumber.Value, model.getSerialNumber());
+        cv.put(PianoEnum.IsBench.Value, model.isBench() ? 1 : 0);
+        cv.put(PianoEnum.IsPlayer.Value, model.isPlayer() ? 1 : 0);
+        cv.put(PianoEnum.IsBoxed.Value, model.isBoxed() ? 1 : 0);
+
+        if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { model.getId() }) != 1)
+            throw new DatabaseUpdateException();
+        wdb.close();
+    }
+
+	public static synchronized void delete(Context context, String assignmentId)
 	{
+        ArrayList<UnitModel> units = getUnitsByAssignmentId(context, assignmentId);
+        for (UnitModel unit : units)
+        {
+            if (unit.getReceiverSignaturePath() != null && !unit.getReceiverSignaturePath().equals(""))
+            {
+                File f = new File(unit.getReceiverSignaturePath());
+                if (f.exists())
+                    f.delete();
+            }
+        }
 		SQLiteDatabase wdb = getSqliteHelper(context);
-		wdb.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + consignmentId + "'", null);
+		wdb.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + assignmentId + "'", null);
 		wdb.close();
 	}
 
 	public static synchronized void delete(SQLiteDatabase wdb, String consignmentId)
 	{
 		wdb.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + consignmentId + "'", null);
-
 	}
 
 }

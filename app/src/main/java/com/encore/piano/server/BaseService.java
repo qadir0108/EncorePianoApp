@@ -72,11 +72,8 @@ public abstract class BaseService {
 	protected static final String EMPTY_STRING = "";
 	protected static Context context;
 
-	protected CookieStore cookieStore;
-
 	public BaseService(Context context) {
 		this.context = context;
-
 	}
 
 	public void initialize() throws UrlConnectionException,
@@ -315,7 +312,7 @@ public abstract class BaseService {
 		}
 	}
 
-	protected boolean UploadImage(String url, String imagePath)
+	protected boolean postImage(String url, String imagePath)
 			throws EmptyStringException {
 
 		DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -324,7 +321,6 @@ public abstract class BaseService {
 						.getSchemeRegistry()), httpClient.getParams());
 
 		HttpContext localContext = new BasicHttpContext();
-
 		HttpPost signaturePost = new HttpPost(url);
 
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -349,7 +345,6 @@ public abstract class BaseService {
 			}
 
 			signaturePost.setEntity(entity);
-
 			HttpResponse signatureResponse = httpClient.execute(signaturePost,
 					localContext);
 
@@ -370,58 +365,40 @@ public abstract class BaseService {
 
 				if (response.equals(EMPTY_STRING))
 					throw new EmptyStringException();
-				// else
-				// {
-				// JSONObject object = getJSONData(response);
-				// String messageJson =
-				// setStringValueFromJSON(MessageEnum.Message.Value, object);
-				//
-				// boolean success =
-				// setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value,
-				// getJSONData(messageJson));
-				//
-				// if(!success)
-				// return
-				// setStringValueFromJSON(JsonResponseEnum.ErrorMessage.Value,
-				// getJSONData(messageJson));
-				// }
+				 else
+				 {
+                     JSONObject object = getJSONData(response);
+                     String messageJson = setStringValueFromJSON(MessageEnum.Message.Value, object);
+                     boolean success = setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value,
+                     getJSONData(messageJson));
+
+                     if(!success)
+                     setErrorMessage(setStringValueFromJSON(JsonResponseEnum.ErrorMessage.Value, getJSONData(messageJson)));
+				 }
 			}
 
 		} catch (IOException e) {
 			return false;
-		}
+		} catch (JSONNullableException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-		return true;
+        return true;
 	}
 
-	protected boolean FinalizeConsignmentSynchronization(String runSheetID, int status)
+	protected boolean post(String url, String requestJson)
 			throws JSONException, ClientProtocolException, IOException,
 			JSONNullableException {
-		HttpPost postRequest = new HttpPost(
-				ServiceUrls.FinalizeConsignmentSynchonizationUrl(context));
 
+		HttpPost postRequest = new HttpPost(url);
 		postRequest.setHeader("Content-Type", "application/json");
-
-		JSONStringer completedJson = new JSONStringer();
-
-		String authToken = Service.loginService.LoginModel
-				.getAuthToken();
-
-		completedJson.object();
-//		completedJson.key(CompletedConsignmentsEnum.AuthToken.Value).value(
-//				authToken);
-//		completedJson.key(CompletedConsignmentsEnum.RunSheetID.Value).value(
-//				runSheetID);
-//		completedJson.key(CompletedConsignmentsEnum.Status.Value).value(status);
-		completedJson.endObject();
-
-		StringEntity loginEntity = new StringEntity(completedJson.toString());
+		StringEntity loginEntity = new StringEntity(requestJson);
 		postRequest.setEntity(loginEntity);
-
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpResponse httpResponse = httpClient.execute(postRequest);
 		HttpEntity responseEntity = httpResponse.getEntity();
-
 		if (responseEntity != null) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					responseEntity.getContent()));
@@ -432,14 +409,8 @@ public abstract class BaseService {
 			while ((temp = br.readLine()) != null) {
 				responseStringBuilder.append(temp);
 			}
-
 			String response = responseStringBuilder.toString();
-
-			boolean success = setBooleanValueFromJSON(
-					JsonResponseEnum.IsSucess.Value,
-					getJSONData(response).getJSONObject(
-							MessageEnum.Message.Value));
-
+			boolean success = setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value, getJSONData(response));
 			if (!success)
 				return false;
 		}

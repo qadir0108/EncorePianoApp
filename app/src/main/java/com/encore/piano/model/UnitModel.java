@@ -21,12 +21,24 @@ public class UnitModel extends BaseModel {
     private String createdAt;
     private String pianoStatus;
     private String pickedAt;
-    private String deliveredAt;
     private AdditionalItemStatusEnum additionalBenchesStatus;
     private AdditionalItemStatusEnum additionalCasterCupsStatus;
     private AdditionalItemStatusEnum additionalCoverStatus;
     private AdditionalItemStatusEnum additionalLampStatus;
     private AdditionalItemStatusEnum additionalOwnersManualStatus;
+
+    private String deliveredAt;
+    private boolean benchesUnloaded;
+    private boolean casterCupsUnloaded;
+    private boolean coverUnloaded;
+    private boolean lampUnloaded;
+    private boolean ownersManualUnloaded;
+
+    private String receiverName;
+    private String receiverSignaturePath;
+    private String dateSigned;
+    private boolean signed;
+    private boolean synced;
 
     public boolean isLoaded() {
         return PianoStatusEnum.Picked.name().equals(pianoStatus);
@@ -198,5 +210,85 @@ public class UnitModel extends BaseModel {
 
     public void setDeliveredAt(String deliveredAt) {
         this.deliveredAt = deliveredAt;
+    }
+
+    public boolean isBenchesUnloaded() {
+        return benchesUnloaded;
+    }
+
+    public void setBenchesUnloaded(boolean benchesUnloaded) {
+        this.benchesUnloaded = benchesUnloaded;
+    }
+
+    public boolean isCasterCupsUnloaded() {
+        return casterCupsUnloaded;
+    }
+
+    public void setCasterCupsUnloaded(boolean casterCupsUnloaded) {
+        this.casterCupsUnloaded = casterCupsUnloaded;
+    }
+
+    public boolean isCoverUnloaded() {
+        return coverUnloaded;
+    }
+
+    public void setCoverUnloaded(boolean coverUnloaded) {
+        this.coverUnloaded = coverUnloaded;
+    }
+
+    public boolean isLampUnloaded() {
+        return lampUnloaded;
+    }
+
+    public void setLampUnloaded(boolean lampUnloaded) {
+        this.lampUnloaded = lampUnloaded;
+    }
+
+    public boolean isOwnersManualUnloaded() {
+        return ownersManualUnloaded;
+    }
+
+    public void setOwnersManualUnloaded(boolean ownersManualUnloaded) {
+        this.ownersManualUnloaded = ownersManualUnloaded;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverSignaturePath() {
+        return receiverSignaturePath;
+    }
+
+    public void setReceiverSignaturePath(String receiverSignaturePath) {
+        this.receiverSignaturePath = receiverSignaturePath;
+    }
+
+    public String getDateSigned() {
+        return dateSigned;
+    }
+
+    public void setDateSigned(String dateSigned) {
+        this.dateSigned = dateSigned;
+    }
+
+    public boolean isSigned() {
+        return signed;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+
+    public boolean isSynced() {
+        return synced;
+    }
+
+    public void setSynced(boolean synced) {
+        this.synced = synced;
     }
 }

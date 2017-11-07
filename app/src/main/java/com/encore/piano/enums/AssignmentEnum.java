@@ -49,14 +49,9 @@ public enum AssignmentEnum
     createdAt("createdAt"),
     tripStaus("tripStaus"),
     unread("unread"),
+    pickupLocation("pickupLocation"),
     departureTime("departureTime"),
     estimatedTime("estimatedTime"),
-
-    pickupLocation("pickupLocation"),
-    receiverName("receiverName"),
-    receiverSignaturePath("receiverSignaturePath"),
-    dateSigned("dateSigned"),
-    signed("signed"),
     saved("saved"),
     synced("synced");
 

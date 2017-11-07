@@ -158,7 +158,7 @@ public class SignatureService extends BaseService {
 				.replace("signatureidvalue", SignatureModel.getGuid())
 				.replace("authtokenvalue", SignatureModel.getAuthToken());
 
-		if (!UploadImage(url, SignatureAbsolutePath))
+		if (!postImage(url, SignatureAbsolutePath))
 			return "Upload error.";
 
 		UpdateProgressListener(4, 4, "Send Signature Completed", "Signing successfull");

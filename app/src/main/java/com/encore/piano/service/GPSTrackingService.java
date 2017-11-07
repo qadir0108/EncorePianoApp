@@ -87,7 +87,7 @@ public class GPSTrackingService extends android.app.Service {
 			if (Service.loginService == null)
 				Service.loginService = new LoginService(getApplicationContext());
 
-			if (Service.loginService.CheckLoginStatus())
+			if (Service.loginService.checkLoginStatus())
 				AuthToken = Service.loginService.LoginModel.getAuthToken();
 			else
 				throw new LoginException();
@@ -133,7 +133,7 @@ public class GPSTrackingService extends android.app.Service {
 			// for ActivityCompat#requestPermissions for more details.
 			return;
 		}
-		if (Service.loginService.CheckLoginStatus())
+		if (Service.loginService.checkLoginStatus())
 
 			gpsLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, PreferenceUtility.GetPreferences(getApplicationContext()).GetGpsFrequency() * 1000 + 17, 50, new LocationListener() {
 

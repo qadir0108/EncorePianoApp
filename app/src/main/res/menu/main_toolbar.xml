@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/sync"
+        android:id="@+id/btnSync"
         android:icon="@drawable/ic_refresh_white"
         app:showAsAction="always"
         android:title="Sync" />
 
     <item
-        android:id="@+id/logoff"
+        android:id="@+id/btnLogoff"
         android:icon="@drawable/ic_exit_to_app_white"
         app:showAsAction="always"
         android:title="Log Off"

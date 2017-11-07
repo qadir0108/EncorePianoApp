@@ -109,7 +109,7 @@ public class AssignmentAdapter extends AssignmentAdapterBase {
 		else
 			h.tvConsignmentId.setChecked(false);
 		
-		if (h.assignment.getTripStatus() != TripStatusEnum.Completed.Value || !h.assignment.isSigned())
+		if (h.assignment.getTripStatus() != TripStatusEnum.Completed.Value )
 			h.imgCompleted.setVisibility(View.INVISIBLE);
 		else
 			h.imgCompleted.setVisibility(View.VISIBLE);

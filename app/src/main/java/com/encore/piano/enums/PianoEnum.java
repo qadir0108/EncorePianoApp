@@ -24,12 +24,24 @@ public enum PianoEnum
     createdAt("createdAt"),
     pianoStatus("pianoStatus"),
     pickedAt("pickedAt"),
-    deliveredAt("deliveredAt"),
     additionalBenchesStatus("additionalBenchesStatus"),
     additionalCasterCupsStatus("additionalCasterCupsStatus"),
     additionalCoverStatus("additionalCoverStatus"),
     additionalLampStatus("additionalLampStatus"),
-    additionalOwnersManualStatus("additionalOwnersManualStatus")
+    additionalOwnersManualStatus("additionalOwnersManualStatus"),
+
+    deliveredAt("deliveredAt"),
+    benchesUnloaded("benchesUnloaded"),
+    casterCupsUnloaded("casterCupsUnloaded"),
+    coverUnloaded("coverUnloaded"),
+    lampUnloaded("lampUnloaded"),
+    ownersManualUnloaded("ownersManualUnloaded"),
+
+    receiverName("receiverName"),
+    receiverSignaturePath("receiverSignaturePath"),
+    dateSigned("dateSigned"),
+    signed("signed"),
+    synced("synced")
     ;
 
     public String Value;

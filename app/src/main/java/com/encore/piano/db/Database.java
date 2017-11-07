@@ -85,10 +85,6 @@ public class Database extends SQLiteOpenHelper {
                 AssignmentEnum.departureTime.Value + " text ," +
                 AssignmentEnum.estimatedTime.Value + " text ," +
                 AssignmentEnum.pickupLocation.Value + " text ," +
-                AssignmentEnum.receiverName.Value + " text ," +
-                AssignmentEnum.receiverSignaturePath.Value + " text ," +
-                AssignmentEnum.dateSigned.Value + " text ," +
-                AssignmentEnum.signed.Value + " integer ," +
                 AssignmentEnum.saved.Value + " integer ," +
                 AssignmentEnum.synced.Value + " integer );";
 
@@ -113,7 +109,21 @@ public class Database extends SQLiteOpenHelper {
 				PianoEnum.additionalOwnersManualStatus.Value + " integer," +
 				PianoEnum.additionalCoverStatus.Value + " integer," +
 				PianoEnum.additionalCasterCupsStatus.Value + " integer," +
-				PianoEnum.additionalBenchesStatus.Value + " integer" + ");";
+				PianoEnum.additionalBenchesStatus.Value + " integer, "  +
+
+				PianoEnum.deliveredAt.Value + " text," +
+				PianoEnum.benchesUnloaded.Value + " integer," +
+				PianoEnum.casterCupsUnloaded.Value + " integer," +
+				PianoEnum.coverUnloaded.Value + " integer," +
+				PianoEnum.lampUnloaded.Value + " integer," +
+				PianoEnum.ownersManualUnloaded.Value + " integer," +
+
+				PianoEnum.receiverName.Value + " text ," +
+				PianoEnum.receiverSignaturePath.Value + " text ," +
+				PianoEnum.dateSigned.Value + " text ," +
+				PianoEnum.signed.Value + " integer ," +
+				AssignmentEnum.synced.Value + " integer );"
+				+ ");";
 
 		String sqlImg = "create table " + GalleryEnum.TableName.Value + "(" +
                 GalleryEnum.Id.Value + " text, " +

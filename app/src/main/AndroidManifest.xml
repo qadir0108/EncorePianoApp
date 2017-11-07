@@ -129,10 +129,6 @@
                 <action android:name="POD_MESSAGE_C" />
                 <category android:name="com.encore.piano" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="POD_MESSAGE_CD" />
-                <category android:name="com.encore.piano" />
-            </intent-filter>
         </receiver>
     </application>
 

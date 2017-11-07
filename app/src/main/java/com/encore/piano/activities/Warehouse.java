@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.encore.piano.R;
 import com.encore.piano.data.NumberConstants;
 import com.encore.piano.exceptions.DatabaseInsertException;
+import com.encore.piano.exceptions.DatabaseUpdateException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
@@ -104,21 +105,24 @@ public class Warehouse extends AppCompatActivity {
             public void onClick(View v) {
 
                 new SweetAlertDialog(Warehouse.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Are you sure?")
-                        .setContentText("It will be saved!")
+                        .setTitleText(Alerter.title)
+                        .setContentText("Are you sure?")
                         .setConfirmText("Yes,Save")
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
 
-                                // SAVE
-                                sDialog
-                                        .setTitleText("Done!")
-                                        .setContentText("Saved!")
-                                        .setConfirmText("OK")
-                                        .setConfirmClickListener(null)
-                                        .showCancelButton(false)
-                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                saveUnit();
+                                sDialog.hide();
+
+                                Alerter.success(Warehouse.this, "Warehouse unit updated successfully!");
+
+//                                sDialog.setTitleText("Done!")
+//                                        .setContentText("Saved!")
+//                                        .setConfirmText("OK")
+//                                        .setConfirmClickListener(null)
+//                                        .showCancelButton(false)
+//                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                             }
                         })
                         .setCancelText("No, cancel!")
@@ -164,49 +168,89 @@ public class Warehouse extends AppCompatActivity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String serialNumber = "12345"; // scanResult.getContents();
-            try {
-                Alerter.success(this, serialNumber);
-
-                Service.unitService = new UnitService(Warehouse.this);
-                UnitModel model = Service.unitService.getUnitsBySerialNumber(serialNumber);
-
-                intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, model.getId());
-                btnGallery.setEnabled(true);
-
-                tvCategory.setText(model.getCategory());
-                tvType.setText(model.getCategory());
-                tvSize.setText(model.getSize());
-                tvMake.setText(model.getMake());
-                tvModel.setText(model.getModel());
-                tvFinish.setText(model.getFinish());
-                tvSerialNumber.setText(model.getSerialNumber());
-                chkBench.setChecked(model.isBench());
-                chkPlayer.setChecked(model.isPlayer());
-                chkBoxed.setChecked(model.isBoxed());
-
-            } catch (UrlConnectionException e)
-            {
-                e.printStackTrace();
-            } catch (JSONException e)
-            {
-                e.printStackTrace();
-            } catch (JSONNullableException e)
-            {
-                e.printStackTrace();
-            } catch (NotConnectedException e)
-            {
-                e.printStackTrace();
-            } catch (NetworkStatePermissionException e)
-            {
-                e.printStackTrace();
-            } catch (DatabaseInsertException e)
-            {
-                e.printStackTrace();
-            }
-
+            Alerter.success(this, serialNumber);
+            loadUnit(serialNumber);
         }
-        // else continue with any other code you need in the method
+    }
 
+    private void loadUnit(String serialNumber) {
+        try {
+            Service.unitService = new UnitService(Warehouse.this);
+            UnitModel model = Service.unitService.getUnitsBySerialNumber(serialNumber);
+            intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, model.getId());
+            btnGallery.setEnabled(true);
+
+            tvCategory.setText(model.getCategory());
+            tvType.setText(model.getCategory());
+            tvSize.setText(model.getSize());
+            tvMake.setText(model.getMake());
+            tvModel.setText(model.getModel());
+            tvFinish.setText(model.getFinish());
+            tvSerialNumber.setText(model.getSerialNumber());
+            chkBench.setChecked(model.isBench());
+            chkPlayer.setChecked(model.isPlayer());
+            chkBoxed.setChecked(model.isBoxed());
+
+        } catch (UrlConnectionException e)
+        {
+            e.printStackTrace();
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        } catch (JSONNullableException e)
+        {
+            e.printStackTrace();
+        } catch (NotConnectedException e)
+        {
+            e.printStackTrace();
+        } catch (NetworkStatePermissionException e)
+        {
+            e.printStackTrace();
+        } catch (DatabaseInsertException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveUnit() {
+        try {
+            Service.unitService = new UnitService(Warehouse.this);
+            String serialNumber = tvSerialNumber.getText().toString();
+            UnitModel model = Service.unitService.getUnitsBySerialNumber(serialNumber);
+            model.setCategory(tvCategory.getText().toString());
+            model.setType(tvType.getText().toString());
+            model.setSize(tvSize.getText().toString());
+            model.setMake(tvMake.getText().toString());
+            model.setModel(tvModel.getText().toString());
+            model.setFinish(tvFinish.getText().toString());
+            model.setSerialNumber(tvSerialNumber.getText().toString());
+            model.setBench(chkBench.isChecked());
+            model.setPlayer(chkPlayer.isChecked());
+            model.setBoxed(chkBoxed.isChecked());
+
+            Service.unitService.saveUnit(model);
+
+        } catch (UrlConnectionException e)
+        {
+            e.printStackTrace();
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        } catch (JSONNullableException e)
+        {
+            e.printStackTrace();
+        } catch (NotConnectedException e)
+        {
+            e.printStackTrace();
+        } catch (NetworkStatePermissionException e)
+        {
+            e.printStackTrace();
+        } catch (DatabaseInsertException e)
+        {
+            e.printStackTrace();
+        } catch (DatabaseUpdateException e) {
+            e.printStackTrace();
+        }
     }
 
 }

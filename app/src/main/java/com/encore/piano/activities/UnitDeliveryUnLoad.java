@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,10 +31,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.encore.piano.R;
+import com.encore.piano.asynctasks.SyncStart;
 import com.encore.piano.data.StaticData;
 import com.encore.piano.data.StringConstants;
-import com.encore.piano.enums.PianoStatusEnum;
-import com.encore.piano.enums.TripStatusEnum;
+import com.encore.piano.enums.AdditionalItemStatusEnum;
 import com.encore.piano.model.AssignmentModel;
 import com.encore.piano.model.UnitModel;
 import com.encore.piano.server.AssignmentService;
@@ -44,8 +43,8 @@ import com.encore.piano.server.UnitService;
 import com.encore.piano.util.Alerter;
 import com.encore.piano.util.DateTimeUtility;
 import com.encore.piano.util.FileUtility;
+import com.encore.piano.util.UIUtility;
 import com.encore.piano.views.SignatureView;
-import com.encore.piano.asynctasks.SyncConsignment;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.DatabaseUpdateException;
 import com.encore.piano.exceptions.JSONNullableException;
@@ -119,6 +118,12 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
             unitName = sb.toString().replace("null", "");
             tvUnitName.setText(unitName);
 
+            UIUtility.setVisible(this, R.id.chkBenches, model.getAdditionalBenchesStatus() == AdditionalItemStatusEnum.Loaded);
+            UIUtility.setVisible(this, R.id.chkCasterCups, model.getAdditionalCasterCupsStatus() == AdditionalItemStatusEnum.Loaded);
+            UIUtility.setVisible(this, R.id.chkCover, model.getAdditionalCoverStatus() == AdditionalItemStatusEnum.Loaded);
+            UIUtility.setVisible(this, R.id.chkLamp, model.getAdditionalLampStatus() == AdditionalItemStatusEnum.Loaded);
+            UIUtility.setVisible(this, R.id.chkOwnersManual, model.getAdditionalOwnersManualStatus() == AdditionalItemStatusEnum.Loaded);
+
             if (Service.assignmentService == null)
                 Service.assignmentService = new AssignmentService(this);
             assignmentModel = Service.assignmentService.getAll(assignmentId);
@@ -151,7 +156,7 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
         if (receivers.size() > 1)
             spnrReceiver.setSelection(1);
 
-        List statuses = StaticData.getPianoStatuses();
+        List statuses = StaticData.getPianoStatuses().subList(3, StaticData.getPianoStatuses().size());
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
 		statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnrStatus.setAdapter(statusAdapter);
@@ -204,7 +209,6 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
                 startActivity(intentGallery);
 			}
 		});
-
 	}
 
 	@Override
@@ -272,17 +276,28 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
         if (spnrReceiver.getSelectedItem() != null)
             username = spnrReceiver.getSelectedItem().toString();
 
+        String status = "";
+        if (spnrStatus.getSelectedItem() != null)
+            status = spnrStatus.getSelectedItem().toString();
+
 		try
 		{
             mSignature.SaveToCard(filePath);
-            Service.assignmentService.writeCustomerSignatureAndStatus(username, filePath.getAbsolutePath(), assignmentId);
 
-            model.setPianoStatus(PianoStatusEnum.Delivered.Value);
+            model.setPianoStatus(status);
             model.setDeliveredAt(DateTimeUtility.getCurrentTimeStamp());
-            model.setDeliveredAt(DateTimeUtility.getCurrentTimeStamp());
+            model.setBenchesUnloaded(UIUtility.isChecked(this, R.id.chkBenches));
+            model.setCasterCupsUnloaded(UIUtility.isChecked(this, R.id.chkCasterCups));
+            model.setCoverUnloaded(UIUtility.isChecked(this, R.id.chkCover));
+            model.setLampUnloaded(UIUtility.isChecked(this, R.id.chkLamp));
+            model.setOwnersManualUnloaded(UIUtility.isChecked(this, R.id.chkOwnersManual));
+
+            model.setReceiverName(username);
+            model.setReceiverSignaturePath(filePath.getAbsolutePath());
+            model.setDateSigned(DateTimeUtility.getCurrentTimeStamp());
             Service.unitService.setDelivered(model);
 
-            new SyncConsignment(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, assignmentId);
+            new SyncStart(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, assignmentId);
 
 		} catch (FileNotFoundException e)
 		{

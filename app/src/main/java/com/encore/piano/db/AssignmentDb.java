@@ -72,7 +72,7 @@ public class AssignmentDb extends Database {
     public static synchronized ArrayList<AssignmentModel> getAll(Context context, boolean showCompleted, boolean notSynced, String consignmentId)
     {
         SQLiteDatabase rdb = getSqliteHelper(context);
-        ArrayList<AssignmentModel> listmodel = new ArrayList<AssignmentModel>();
+        ArrayList<AssignmentModel> models = new ArrayList<>();
         String cols[] = new String[] {
                 AssignmentEnum.Id.Value,
                 AssignmentEnum.ConsignmentNumber.Value,
@@ -117,11 +117,6 @@ public class AssignmentDb extends Database {
                 AssignmentEnum.unread.Value,
                 AssignmentEnum.departureTime.Value,
                 AssignmentEnum.estimatedTime.Value,
-                AssignmentEnum.pickupLocation.Value,
-                AssignmentEnum.receiverName.Value,
-                AssignmentEnum.receiverSignaturePath.Value,
-                AssignmentEnum.dateSigned.Value,
-                AssignmentEnum.signed.Value,
                 AssignmentEnum.saved.Value,
                 AssignmentEnum.synced.Value,
         };
@@ -133,6 +128,8 @@ public class AssignmentDb extends Database {
             results = rdb.query(AssignmentEnum.TableName.Value, cols, AssignmentEnum.saved.Value + " = ? AND " + AssignmentEnum.synced.Value + " = ? ", new String[] { String.valueOf(1), "0" }, null, null, AssignmentEnum.OrderNumber  + " ASC");
         else if(consignmentId != "")
             results = rdb.query(AssignmentEnum.TableName.Value, cols, AssignmentEnum.Id.Value + " = ? ", new String[] { consignmentId }, null, null, AssignmentEnum.OrderNumber  + " ASC");
+        else if (!showCompleted)
+            results = rdb.query(AssignmentEnum.TableName.Value, cols, AssignmentEnum.tripStaus.Value + " != ? ", new String[] { TripStatusEnum.Completed.Value }, null, null, AssignmentEnum.OrderNumber + " ASC");
         else
             results = rdb.query(AssignmentEnum.TableName.Value, cols, null, null, null, null, AssignmentEnum.OrderNumber  + " ASC");
 
@@ -182,19 +179,14 @@ public class AssignmentDb extends Database {
             model.setUnread(results.getInt(35) == 1);
             model.setDepartureTime(results.getString(36));
             model.setEstimatedTime(results.getString(37));
-            model.setPickupLocation(new LatLng(results.getDouble(38),results.getDouble(38)));
-            model.setReceiverName(results.getString(39));
-            model.setReceiverSignaturePath(results.getString(40));
-            model.setDateSigned(results.getString(41));
-            model.setSigned(results.getInt(42) == 1);
-            model.setSaved(results.getInt(43) == 1);
-            model.setSynced(results.getInt(44) == 1);
-            listmodel.add(model);
+            model.setSaved(results.getInt(38) == 1);
+            model.setSynced(results.getInt(39) == 1);
+            models.add(model);
         }
 
         results.close();
         rdb.close();
-        return listmodel;
+        return models;
     }
 
     public static synchronized int writeAll(Context context, ArrayList<AssignmentModel> consignments)
@@ -204,20 +196,16 @@ public class AssignmentDb extends Database {
 		{
 			for (int i = 0; i < consignments.size(); i++)
 			{
-				ArrayList<AssignmentModel> alreadyExistsConsigments = getAll(context, false, false, consignments.get(i).getId());
-				if (alreadyExistsConsigments.size() != 0)
+				ArrayList<AssignmentModel> alreadys = getAll(context, false, false, consignments.get(i).getId());
+				if (alreadys.size() != 0)
 				{
-					AssignmentModel already = alreadyExistsConsigments.get(0);
-					// if assignmentService is not started yet
-					if (!TripStatusEnum.NotStarted.Value.equals(already.getTripStatus())) {
+					AssignmentModel already = alreadys.get(0);
+					// if assignment is not yet started
+					if (TripStatusEnum.NotStarted.Value.equals(already.getTripStatus())) {
                         // delete
-                        SQLiteDatabase wdb = getSqliteHelper(context);
-                        wdb.delete(AssignmentEnum.TableName.Value, AssignmentEnum.Id.Value + " = '" + already.getId() + "'", null);
-                        wdb.close();
+                        delete(context, already.getId());
                         // delete units
-                        SQLiteDatabase wdb1 = getSqliteHelper(context);
-                        wdb1.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + already.getId() + "'", null);
-                        wdb1.close();
+                        UnitDb.delete(context, already.getId());
 
                         if (WriteConsignment(context, consignments.get(i)) != -1)
                             imported++;
@@ -253,14 +241,10 @@ public class AssignmentDb extends Database {
 	public static synchronized boolean isAllSyned(Context context)
 	{
 		SQLiteDatabase rdb = getSqliteHelper(context);
-
 		Cursor results = rdb.query(AssignmentEnum.TableName.Value, null, AssignmentEnum.synced + " = 0", null, null, null, null);
-
 		int count = results.getCount();
-
 		results.close();
 		rdb.close();
-
 		return count == 0 ? true : false;
 	}
 
@@ -274,34 +258,12 @@ public class AssignmentDb extends Database {
 		wdb.close();
 	}
 
-	public static synchronized int writeCustomerSignature(Context context, String customerName, String customerSinaturePath, String consignmentId)
-	{
-		SQLiteDatabase wdb = getSqliteHelper(context);
-		int returnValue = 1;
-		try
-		{
-			wdb.beginTransaction();
-			ContentValues cv = new ContentValues();
-			cv.put(AssignmentEnum.signed.Value, 1);
-			cv.put(AssignmentEnum.receiverName.Value, customerName);
-			cv.put(AssignmentEnum.receiverSignaturePath.Value, customerSinaturePath);
-			cv.put(AssignmentEnum.dateSigned.Value, DateTimeUtility.getCurrentTimeStamp());
-			if ((returnValue = wdb.update(AssignmentEnum.TableName.Value, cv, AssignmentEnum.Id.Value + " = ?", new String[] { consignmentId })) != 1)
-				throw new DatabaseUpdateException();
-
-			wdb.setTransactionSuccessful();
-		} catch (Exception ex)
-		{
-
-		}
-		finally
-		{
-			wdb.endTransaction();
-		}
-
-		wdb.close();
-		return returnValue;
-	}
+    public static synchronized void delete(Context context, String assignmentId)
+    {
+        SQLiteDatabase wdb = getSqliteHelper(context);
+        wdb.delete(AssignmentEnum.TableName.Value, AssignmentEnum.Id.Value + " = '" + assignmentId + "'", null);
+        wdb.close();
+    }
 
 	public static synchronized int setTripStatus(Context context, String consignmentId, String tripStatus)
 	{
@@ -314,7 +276,7 @@ public class AssignmentDb extends Database {
 		return result;
 	}
 
-	public static synchronized int startTrip(Context context, String consignmentId, String departureTime, String estimatedTime)
+	public static synchronized int startTrip(Context context, String assignmentId, String departureTime, String estimatedTime)
 	{
 		SQLiteDatabase wdb = getSqliteHelper(context);
 		ContentValues cv = new ContentValues();
@@ -322,9 +284,20 @@ public class AssignmentDb extends Database {
         cv.put(AssignmentEnum.departureTime.Value, departureTime);
         cv.put(AssignmentEnum.estimatedTime.Value, estimatedTime);
         cv.put(AssignmentEnum.saved.Value, 1);
-		int result = wdb.update(AssignmentEnum.TableName.Value, cv, AssignmentEnum.Id.Value + " = ?", new String[] { consignmentId });
+		int result = wdb.update(AssignmentEnum.TableName.Value, cv, AssignmentEnum.Id.Value + " = ?", new String[] { assignmentId });
 		wdb.close();
 		return result;
 	}
+
+    public static synchronized int completeTrip(Context context, String assignmentId)
+    {
+        SQLiteDatabase wdb = getSqliteHelper(context);
+        ContentValues cv = new ContentValues();
+        cv.put(AssignmentEnum.tripStaus.Value, TripStatusEnum.Completed.Value);
+        cv.put(AssignmentEnum.saved.Value, 1);
+        int result = wdb.update(AssignmentEnum.TableName.Value, cv, AssignmentEnum.Id.Value + " = ?", new String[] { assignmentId });
+        wdb.close();
+        return result;
+    }
 
 }

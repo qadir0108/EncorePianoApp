@@ -181,7 +181,7 @@ public class Assignment extends AppCompatActivity implements ActionBar.TabListen
 //			{
 //				for (String unitId : consignmentIds)
 //				{
-//					new SyncConsignment(this).executeOnExecutor(
+//					new SyncStart(this).executeOnExecutor(
 //							AsyncTask.THREAD_POOL_EXECUTOR, unitId);
 //				}
 //			}

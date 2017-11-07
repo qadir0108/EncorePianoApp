@@ -32,10 +32,13 @@ import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
+import com.encore.piano.util.Alerter;
 import com.encore.piano.util.CommonUtility;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import org.json.JSONException;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Administrator on 8/6/2017.
@@ -249,9 +252,7 @@ public class AssignmentFragment extends Fragment implements View.OnClickListener
     public void onItemClick(AdapterView<?> arg0, View view, int position,
                             long arg3)
     {
-        Intent i = new Intent(this.getActivity(),
-                AssignmentDetails.class);
-
+        Intent i = new Intent(this.getActivity(),AssignmentDetails.class);
         String id = ((TextView) view.findViewById(R.id.tvConsignmentId))
                 .getText().toString();
         i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, id);
@@ -278,6 +279,16 @@ public class AssignmentFragment extends Fragment implements View.OnClickListener
             fragmentTransaction.remove(supportMap);
             fragmentTransaction.commit();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == NumberConstants.REQUEST_CODE_ASSIGNEMNT_DETAILS && resultCode == RESULT_OK)
+        {
+            adapter.notifyDataSetChanged();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public class ConsignmentReceiver extends BroadcastReceiver {
@@ -312,7 +323,6 @@ public class AssignmentFragment extends Fragment implements View.OnClickListener
                     e.printStackTrace();
                 }
                 consignmentListView.setAdapter(adapter);
-
                 adapter.notifyDataSetChanged();
             }
         }

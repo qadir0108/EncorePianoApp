@@ -29,14 +29,13 @@ public class LoginService extends BaseService {
 
 	public LoginModel LoginModel = new LoginModel();
 
-	
 	public LoginService(Context context) throws UrlConnectionException,
 			JSONException, JSONNullableException, NotConnectedException,
 			NetworkStatePermissionException {
 		super(context);
 	}
 	
-	public boolean CheckLoginStatus()
+	public boolean checkLoginStatus()
 	{
 		boolean savedLoginData = false;
 		try {
@@ -52,7 +51,7 @@ public class LoginService extends BaseService {
 		return savedLoginData;
 	}
 	
-	public String Login(LoginModel loginModel) throws 
+	public String doLogin(LoginModel loginModel) throws
 	JSONException, 
 	ClientProtocolException, 
 	IOException, 

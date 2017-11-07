@@ -7,7 +7,7 @@ package com.encore.piano.data;
 public class NumberConstants
 {
     public static final int REQUEST_CODE_LOAD_UNIT = 1000;
-    public static final int REQUEST_CODE_DELIVER_UNIT = 2000;
+    public static final int REQUEST_CODE_UNLOAD_UNIT = 2000;
     public static final int REQUEST_CODE_START_TRIP = 3000;
 
     public static final int CUSTOMER_ACTIVITY_REQUEST_CODE = 4000;

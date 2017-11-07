@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.TimePicker;
 
 import com.encore.piano.R;
+import com.encore.piano.asynctasks.SyncStart;
 import com.encore.piano.enums.TripStatusEnum;
 import com.encore.piano.data.StringConstants;
 import com.encore.piano.server.Service;
-import com.encore.piano.asynctasks.SyncConsignment;
 import com.encore.piano.model.AssignmentModel;
 import com.encore.piano.util.DateTimeUtility;
 import com.encore.piano.util.StringUtility;
@@ -109,7 +109,7 @@ public class TripStart extends AppCompatActivity implements OnClickListener {
                 String departureTime = DateTimeUtility.formatDateTime(c1.getTime());
                 String estimatedTime = DateTimeUtility.formatDateTime(c2.getTime());
                 Service.assignmentService.startTrip(consignmentId, departureTime, estimatedTime);
-                new SyncConsignment(TripStart.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, consignmentId);
+                new SyncStart(TripStart.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, consignmentId);
                 setResult(RESULT_OK);
                 finish();
                 break;

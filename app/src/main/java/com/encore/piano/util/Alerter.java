@@ -10,7 +10,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Alerter {
 
-    private static String title = "Encore Piano";
+    public static String title = "Encore Piano";
     public static void info(Context context, String message) {
         new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
                 .setTitleText(title)

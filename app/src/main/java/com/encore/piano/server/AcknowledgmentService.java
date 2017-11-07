@@ -20,13 +20,13 @@ import android.content.Context;
 
 import com.encore.piano.enums.JsonResponseEnum;
 import com.encore.piano.enums.MessageEnum;
+import com.encore.piano.enums.SyncAssignmentEnum;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.model.BaseModel;
-import com.encore.piano.model.DataSyncModel.DataSyncModelEnum;
 
 public class AcknowledgmentService extends BaseService {
 
@@ -56,9 +56,9 @@ public class AcknowledgmentService extends BaseService {
 		JSONStringer jsonData = new JSONStringer();
 		
 		jsonData.object();
-		jsonData.key(DataSyncModelEnum.AuthToken.Value).value(Service.loginService.LoginModel.getAuthToken());
-		jsonData.key(DataSyncModelEnum.RunSheetID.Value).value(this.RunsheetId);
-		jsonData.key(DataSyncModelEnum.Acknowledged.Value).value(isAcknowledged);
+		jsonData.key(SyncAssignmentEnum.AuthToken.Value).value(Service.loginService.LoginModel.getAuthToken());
+		jsonData.key(SyncAssignmentEnum.RunSheetID.Value).value(this.RunsheetId);
+		jsonData.key(SyncAssignmentEnum.Acknowledged.Value).value(isAcknowledged);
 		jsonData.endObject();
 			
 		StringEntity loginEntity = new StringEntity(jsonData.toString());
