@@ -8,19 +8,19 @@
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="5dp" >
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp" >
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/spinnerText"
@@ -32,7 +32,7 @@
 
                 <TextView
                     android:id="@+id/tvAssignmentNumber"
-                    android:layout_width="123dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="[NUMBER]"
@@ -44,13 +44,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" >
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/TextView01"
-                    android:layout_width="match_parent"
+                    android:layout_width="115dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
                     android:text="Drivers"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -61,19 +60,18 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" >
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/textView3"
-                    android:layout_width="match_parent"
+                    android:layout_width="115dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
                     android:text="Order Type"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -84,13 +82,13 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" >
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/TextView08"
@@ -106,21 +104,19 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" >
-
+                android:layout_marginBottom="5dp">
                 <TextView
                     android:id="@+id/TextView081"
                     android:layout_width="115dp"
                     android:layout_height="wrap_content"
                     android:text="Caller Phone"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <TextView
                     android:id="@+id/tvCallerPhoneNumber"
                     android:layout_width="match_parent"
@@ -128,116 +124,134 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:weightSum="3">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/TextView061"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Units"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvUnitsCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="1"
-                    android:text="Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    <TextView
+                        android:id="@+id/TextViess61"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="Pickup"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
 
-                <Button
-                    android:id="@+id/btnUnits"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="View" />
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/btnPickupDetails"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/icons8_view_details_24"
+                        />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                >
-
-                <TextView
-                    android:id="@+id/TextView02"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="Pickup"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvPickupAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="1"
-                    android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:layout_marginTop="5dp"
+                    android:text="Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
             </LinearLayout>
-            <Button
-                android:id="@+id/btnPickupDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pickup Details"
-                style="@style/Widget.AppCompat.Button.Colored"
-                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                >
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/TextView04"
-                    android:layout_width="87dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delivery"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TextViass61"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="Delivery"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <Button
+                        android:id="@+id/btnDeliveryDetails"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/icons8_view_details_24" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvDeliveryAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="1"
-                    android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:layout_marginTop="5dp"
+                    android:text="Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
             </LinearLayout>
-            <Button
-                android:id="@+id/btnDeliveryDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delivery Details"
-                style="@style/Widget.AppCompat.Button.Colored"
-                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                >
+                android:id="@+id/lLegDate">
+                <TextView
+                    android:id="@+id/TextVssiew081"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Leg Date"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/tvLegDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/lLegDetail">
+                <TextView
+                    android:id="@+id/TextaVsssiew081"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Leg Detail"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/tvLegDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/TextView041"
-                    android:layout_width="87dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:text="Customer"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -249,7 +263,96 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/TextView061"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Units"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/tvUnitsCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Button
+                    android:id="@+id/btnUnits"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="UNITS" />
+
+                <Button
+                    android:id="@+id/btnPrint"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="PRINT" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:weightSum="3"
+                >
+
+                <TextView
+                    android:id="@+id/TextViesdsw041"
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:text="Payment"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/tvPayment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ViaOnlinePayment - $ 500"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tvPaymentStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Button
+                    android:id="@+id/btnPayment"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pay" />
 
             </LinearLayout>
 
@@ -281,7 +384,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="View Map" />
+            android:text="Map" />
 
         <Button
         android:id="@+id/btnProgress"
@@ -289,7 +392,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Progress" />
+        android:text="STATUS" />
 
         <Button
             android:id="@+id/btnComplete"
@@ -297,8 +400,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Complete" />
-
+            android:text="Finish" />
     </LinearLayout>
 
 </LinearLayout>

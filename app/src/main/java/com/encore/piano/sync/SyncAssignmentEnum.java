@@ -1,4 +1,4 @@
-package com.encore.piano.enums;
+package com.encore.piano.sync;
 
 /**
  * Created by Administrator on 5/6/2017.
@@ -6,6 +6,7 @@ package com.encore.piano.enums;
 
 public enum SyncAssignmentEnum
 {
+    AuthToken("AuthToken"),
     Id("Id"),
     tripStatus("tripStatus"),
     departureTime("departureTime"),
@@ -16,7 +17,6 @@ public enum SyncAssignmentEnum
     DeliveryCode("DeliveryCode"),
     CustomerReference("CustomerReference"),
     PodStatus("PodStatus"),
-    AuthToken("AuthToken"),
     CustomerUsername("CustomerUsername"),
     DateSigned("DateSigned"),
     Images("Images"),

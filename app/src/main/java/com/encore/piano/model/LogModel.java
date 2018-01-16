@@ -4,11 +4,7 @@ public class LogModel extends BaseModel {
 	
 	public enum LogModelEnum
 	{
-		CompanyCode("CompanyCode"),
-		CompanyName("CompanyName"),
-		UserName("UserName"),
-		VehicleCode("FCMToken"),
-		Log("Log"),
+		log("log"),
 		;
 		
 		public String Value;

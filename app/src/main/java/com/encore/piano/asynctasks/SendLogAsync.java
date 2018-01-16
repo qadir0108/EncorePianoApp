@@ -32,7 +32,7 @@ public class SendLogAsync extends AsyncTask<String, Void, Object>
 		try
 		{
 			ErrorLogService dlp = new ErrorLogService(context);
-			dlp.SendLog(log);
+			dlp.sendErrorLog(log);
 		} catch (UrlConnectionException e)
 		{
 			// TODO Auto-generated catch block

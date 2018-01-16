@@ -44,8 +44,10 @@ import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
+import com.encore.piano.interfaces.ProgressUpdate;
 import com.encore.piano.model.BaseModel;
 import com.encore.piano.model.BaseModel.ServerResponse;
+import com.encore.piano.model.ProgressModel;
 
 public abstract class BaseService {
 
@@ -71,6 +73,30 @@ public abstract class BaseService {
 	private String ErrorMessage = "";
 	protected static final String EMPTY_STRING = "";
 	protected static Context context;
+	ProgressUpdate listener;
+
+	public void registerProgress(ProgressUpdate progressUpdate)
+	{
+		listener = progressUpdate;
+	}
+	public void unregisterProgress()
+	{
+		listener = null;
+	}
+	public void updateProgress(String taskName, int count, int step, String title, String message)
+	{
+		ProgressModel updateModel = new ProgressModel();
+		updateModel.setTaskName(taskName);
+		updateModel.setItemsCount(count);
+		updateModel.setStep(step);
+		updateModel.setTitle(title);
+		updateModel.setMessage(message);
+
+		if (listener != null)
+		{
+			listener.onProgressUpdate(updateModel);
+		}
+	}
 
 	public BaseService(Context context) {
 		this.context = context;
@@ -124,6 +150,8 @@ public abstract class BaseService {
 		String s;
 		try {
 			s = object.getString(property);
+			if("null".equals(s))
+				return EMPTY_STRING;
 		} catch (JSONException ex) {
 			return EMPTY_STRING;
 		}
@@ -392,6 +420,7 @@ public abstract class BaseService {
 			throws JSONException, ClientProtocolException, IOException,
 			JSONNullableException {
 
+		boolean success = false;
 		HttpPost postRequest = new HttpPost(url);
 		postRequest.setHeader("Content-Type", "application/json");
 		StringEntity loginEntity = new StringEntity(requestJson);
@@ -410,11 +439,8 @@ public abstract class BaseService {
 				responseStringBuilder.append(temp);
 			}
 			String response = responseStringBuilder.toString();
-			boolean success = setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value, getJSONData(response));
-			if (!success)
-				return false;
+			success = setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value, getJSONData(response));
 		}
-
-		return true;
+		return success;
 	}
 }

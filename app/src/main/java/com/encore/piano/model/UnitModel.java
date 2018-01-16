@@ -6,7 +6,8 @@ import com.encore.piano.enums.PianoStatusEnum;
 public class UnitModel extends BaseModel {
 
 	private String Id;
-	private String assignmentId;
+	private String AssignmentId; // for View only, not using in db
+	private String OrderId;
     private String Category;
     private String Type;
 	private String Size;
@@ -17,28 +18,37 @@ public class UnitModel extends BaseModel {
     private boolean IsBench;
     private boolean IsPlayer;
     private boolean IsBoxed;
-
     private String createdAt;
     private String pianoStatus;
+
     private String pickedAt;
-    private AdditionalItemStatusEnum additionalBenchesStatus;
+    private String pickerName;
+    private String pickerSignaturePath;
+    private AdditionalItemStatusEnum additionalBench1Status;
+    private AdditionalItemStatusEnum additionalBench2Status;
     private AdditionalItemStatusEnum additionalCasterCupsStatus;
     private AdditionalItemStatusEnum additionalCoverStatus;
     private AdditionalItemStatusEnum additionalLampStatus;
     private AdditionalItemStatusEnum additionalOwnersManualStatus;
+    private AdditionalItemStatusEnum additionalMisc1Status;
+    private AdditionalItemStatusEnum additionalMisc2Status;
+    private AdditionalItemStatusEnum additionalMisc3Status;
 
     private String deliveredAt;
-    private boolean benchesUnloaded;
+    private String receiverName;
+    private String receiverSignaturePath;
+    private boolean bench1Unloaded;
+    private boolean bench2Unloaded;
     private boolean casterCupsUnloaded;
     private boolean coverUnloaded;
     private boolean lampUnloaded;
     private boolean ownersManualUnloaded;
+    private boolean misc1Unloaded;
+    private boolean misc2Unloaded;
+    private boolean misc3Unloaded;
 
-    private String receiverName;
-    private String receiverSignaturePath;
-    private String dateSigned;
-    private boolean signed;
-    private boolean synced;
+    private boolean syncLoaded;
+    private boolean syncDelivered;
 
     public boolean isLoaded() {
         return PianoStatusEnum.Picked.name().equals(pianoStatus);
@@ -52,12 +62,12 @@ public class UnitModel extends BaseModel {
         Id = id;
     }
 
-    public String getAssignmentId() {
-        return assignmentId;
+    public String getOrderId() {
+        return OrderId;
     }
 
-    public void setAssignmentId(String assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setOrderId(String orderId) {
+        this.OrderId = orderId;
     }
 
     public String getType() {
@@ -188,12 +198,12 @@ public class UnitModel extends BaseModel {
         this.additionalCasterCupsStatus = additionalCasterCupsStatus;
     }
 
-    public AdditionalItemStatusEnum getAdditionalBenchesStatus() {
-        return additionalBenchesStatus;
+    public AdditionalItemStatusEnum getAdditionalBench1Status() {
+        return additionalBench1Status;
     }
 
-    public void setAdditionalBenchesStatus(AdditionalItemStatusEnum additionalBenchesStatus) {
-        this.additionalBenchesStatus = additionalBenchesStatus;
+    public void setAdditionalBench1Status(AdditionalItemStatusEnum additionalBench1Status) {
+        this.additionalBench1Status = additionalBench1Status;
     }
 
     public String getPickedAt() {
@@ -212,12 +222,12 @@ public class UnitModel extends BaseModel {
         this.deliveredAt = deliveredAt;
     }
 
-    public boolean isBenchesUnloaded() {
-        return benchesUnloaded;
+    public boolean isBench1Unloaded() {
+        return bench1Unloaded;
     }
 
-    public void setBenchesUnloaded(boolean benchesUnloaded) {
-        this.benchesUnloaded = benchesUnloaded;
+    public void setBench1Unloaded(boolean bench1Unloaded) {
+        this.bench1Unloaded = bench1Unloaded;
     }
 
     public boolean isCasterCupsUnloaded() {
@@ -268,27 +278,107 @@ public class UnitModel extends BaseModel {
         this.receiverSignaturePath = receiverSignaturePath;
     }
 
-    public String getDateSigned() {
-        return dateSigned;
+    public boolean isSyncLoaded() {
+        return syncLoaded;
     }
 
-    public void setDateSigned(String dateSigned) {
-        this.dateSigned = dateSigned;
+    public void setSyncLoaded(boolean syncLoaded) {
+        this.syncLoaded = syncLoaded;
     }
 
-    public boolean isSigned() {
-        return signed;
+    public boolean isSyncDelivered() {
+        return syncDelivered;
     }
 
-    public void setSigned(boolean signed) {
-        this.signed = signed;
+    public void setSyncDelivered(boolean syncDelivered) {
+        this.syncDelivered = syncDelivered;
     }
 
-    public boolean isSynced() {
-        return synced;
+    public AdditionalItemStatusEnum getAdditionalBench2Status() {
+        return additionalBench2Status;
     }
 
-    public void setSynced(boolean synced) {
-        this.synced = synced;
+    public void setAdditionalBench2Status(AdditionalItemStatusEnum additionalBench2Status) {
+        this.additionalBench2Status = additionalBench2Status;
+    }
+
+    public AdditionalItemStatusEnum getAdditionalMisc1Status() {
+        return additionalMisc1Status;
+    }
+
+    public void setAdditionalMisc1Status(AdditionalItemStatusEnum additionalMisc1Status) {
+        this.additionalMisc1Status = additionalMisc1Status;
+    }
+
+    public AdditionalItemStatusEnum getAdditionalMisc2Status() {
+        return additionalMisc2Status;
+    }
+
+    public void setAdditionalMisc2Status(AdditionalItemStatusEnum additionalMisc2Status) {
+        this.additionalMisc2Status = additionalMisc2Status;
+    }
+
+    public AdditionalItemStatusEnum getAdditionalMisc3Status() {
+        return additionalMisc3Status;
+    }
+
+    public void setAdditionalMisc3Status(AdditionalItemStatusEnum additionalMisc3Status) {
+        this.additionalMisc3Status = additionalMisc3Status;
+    }
+
+    public boolean isBench2Unloaded() {
+        return bench2Unloaded;
+    }
+
+    public void setBench2Unloaded(boolean bench2Unloaded) {
+        this.bench2Unloaded = bench2Unloaded;
+    }
+
+    public boolean isMisc1Unloaded() {
+        return misc1Unloaded;
+    }
+
+    public void setMisc1Unloaded(boolean misc1Unloaded) {
+        this.misc1Unloaded = misc1Unloaded;
+    }
+
+    public boolean isMisc2Unloaded() {
+        return misc2Unloaded;
+    }
+
+    public void setMisc2Unloaded(boolean misc2Unloaded) {
+        this.misc2Unloaded = misc2Unloaded;
+    }
+
+    public boolean isMisc3Unloaded() {
+        return misc3Unloaded;
+    }
+
+    public void setMisc3Unloaded(boolean misc3Unloaded) {
+        this.misc3Unloaded = misc3Unloaded;
+    }
+
+    public String getPickerName() {
+        return pickerName;
+    }
+
+    public void setPickerName(String pickerName) {
+        this.pickerName = pickerName;
+    }
+
+    public String getPickerSignaturePath() {
+        return pickerSignaturePath;
+    }
+
+    public void setPickerSignaturePath(String pickerSignaturePath) {
+        this.pickerSignaturePath = pickerSignaturePath;
+    }
+
+    public String getAssignmentId() {
+        return AssignmentId;
+    }
+
+    public void setAssignmentId(String assignmentId) {
+        AssignmentId = assignmentId;
     }
 }

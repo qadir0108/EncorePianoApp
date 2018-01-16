@@ -7,12 +7,10 @@ import org.json.JSONException;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.encore.piano.R;
-import com.encore.piano.enums.TripStatusEnum;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
@@ -27,8 +25,7 @@ public class AssignmentAdapter extends AssignmentAdapterBase {
 	TextView tvPosition;
 	TextView tvConsignmentId;
 	ImageView imgCompleted;
-	CheckBox chkSelectedItem;
-	
+
 	HashMap<Integer, Integer> selectedItems = new HashMap<Integer, Integer>();
 	private View rootView;
 	
@@ -70,10 +67,9 @@ public class AssignmentAdapter extends AssignmentAdapterBase {
 		tvPosition = (TextView)view.findViewById(R.id.tvPosition);
 		imgCompleted = (ImageView)view.findViewById(R.id.imgCompleted);
 		tvConsignmentId = (TextView)view.findViewById(R.id.tvConsignmentId);
-		chkSelectedItem = (CheckBox)view.findViewById(R.id.chkSelectedItem);
 		rootView = (View) view.findViewById(R.id.consignmentBg);
 
-		AssignmentViewHolder holder = new AssignmentViewHolder(tvConsigmentNumber,tvPickupAddress, tvDeliveryAddress, tvPosition, imgCompleted, tvConsignmentId, chkSelectedItem);
+		AssignmentViewHolder holder = new AssignmentViewHolder(tvConsigmentNumber,tvPickupAddress, tvDeliveryAddress, tvPosition, imgCompleted, tvConsignmentId);
 		holder.rootView = rootView;
 		return holder;
 	}
@@ -83,35 +79,17 @@ public class AssignmentAdapter extends AssignmentAdapterBase {
 		
 		AssignmentViewHolder h = (AssignmentViewHolder)holder;
 
-		h.tvConsigmentNumber.setText(h.assignment.getConsignmentNumber());
+		h.tvConsigmentNumber.setText(h.assignment.getAssignmentNumber());
 		h.tvPickupAddress.setText(h.assignment.getPickupAddress());
 		h.tvDeliveryAddress.setText(h.assignment.getDeliveryAddress());
-		h.tvPosition.setText(String.valueOf(h.position+1));
+		h.tvPosition.setText("#" + String.valueOf(h.position+1));
 		h.Id.setText(h.assignment.getId());
-		
+		h.imgCompleted.setImageResource(R.drawable.icons8_truck_64);
+
 //		if (h.assignment.getTripStatus() == TripStatusEnum.Started.Value)
 //			h.rootView.setBackgroundColor(0xFF63d5ff);
 //		else
 //			h.rootView.setBackgroundColor(0xFFffffff);
-//
-//		if (h.assignment.isUnread())
-//			h.rootView.setBackgroundColor(0xFF63d5ff);
-//		else
-//			h.rootView.setBackgroundColor(0xFFffffff);
 
-		if (selectedItems.size() > 0)
-			h.tvConsignmentId.setVisibility(View.VISIBLE);
-		else
-			h.tvConsignmentId.setVisibility(View.GONE);
-
-		if(selectedItems.containsKey(h.position))
-			h.tvConsignmentId.setChecked(true);
-		else
-			h.tvConsignmentId.setChecked(false);
-		
-		if (h.assignment.getTripStatus() != TripStatusEnum.Completed.Value )
-			h.imgCompleted.setVisibility(View.INVISIBLE);
-		else
-			h.imgCompleted.setVisibility(View.VISIBLE);
 	}
 }

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class GalleryService extends BaseService {
 	
-	
 	public GalleryService(Context context) throws UrlConnectionException,
 			JSONException, JSONNullableException, NotConnectedException,
 			NetworkStatePermissionException {
@@ -22,23 +21,32 @@ public class GalleryService extends BaseService {
 		
 	}
 	
-	public ArrayList<GalleryModel> GetImagesForConsignment(String consignmentId)
+	public ArrayList<GalleryModel> getImagesForUnit(String unitId)
 	{
-		return ImageDb.getImagesForAssignment(context, consignmentId);
+		return ImageDb.getImagesForUnit(context, unitId);
 	}
 
-	public ArrayList<GalleryModel> GetImagesForConsignments(ArrayList<String> consignmentIds)
+	public ArrayList<GalleryModel> getImagesForUnit(String unitId, String takenLocation)
 	{
-		return ImageDb.getImagesForAssignments(context, consignmentIds);
+		return ImageDb.getImagesForUnit(context, unitId, takenLocation);
+	}
+
+	public ArrayList<GalleryModel> getImagesForUnits(ArrayList<String> consignmentIds)
+	{
+		return ImageDb.getImagesForUnits(context, consignmentIds);
 	}
 	
 	
-	public void WriteImageInfo(String consignmentId, String imagePath, String imageRef) throws DatabaseUpdateException
+	public void writeImage(GalleryModel model) throws DatabaseUpdateException
 	{
-		if(ImageDb.write(context, consignmentId, imagePath, imageRef) == -1)
+		if(ImageDb.write(context, model) == -1)
 			throw new DatabaseUpdateException();
 	}
-	
+
+	public void setSynced(String unitId) throws DatabaseUpdateException
+	{
+		ImageDb.setSynced(context, unitId);
+	}
 	
 	@Override
 	public URL getServiceUrl() {

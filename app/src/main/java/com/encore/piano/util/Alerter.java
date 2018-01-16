@@ -31,4 +31,11 @@ public class Alerter {
                 .setContentText(message)
                 .show();
     }
+
+    public static void progress(Context context, String message) {
+        new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
+                .setTitleText(title)
+                .setContentText(message)
+                .show();
+    }
 }

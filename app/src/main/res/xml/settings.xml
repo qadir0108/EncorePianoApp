@@ -2,18 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="Settings">
-    <!-- TF, MCL, RAPID  -->
-    <EditTextPreference android:title="Company code" android:summary="Enter company code" android:key="company_code" android:defaultValue="EPM"/>
-    
-    <!-- Transfocus Pty Ltd , Mc Neill's Logistics , Rapid Haulage Pty Ltd -->
-    <EditTextPreference android:title="Company Name" android:summary="Enter company Name" android:key="company_name" android:defaultValue="Encore Piano Moving"/>
-    
-    <!-- 13.58.30.37 , 10.0.2.2 -->
-    <EditTextPreference android:title="WebService" android:summary="Enter webservice hostname" android:key="hostname" android:defaultValue="http://13.58.30.37"/>
-    <EditTextPreference android:title="Port" android:summary="Enter webservice port" android:key="port" android:defaultValue="80"/>
-    
-    <EditTextPreference android:title="GPS frequency" android:summary="Set GPS frequency in seconds." android:key="gps_frequency"/>
-
+        <EditTextPreference android:title="Company code" android:summary="Enter company code" android:key="company_code" android:defaultValue="EPM"/>
+        <EditTextPreference android:title="Company Name" android:summary="Enter company Name" android:key="company_name" android:defaultValue="Encore Piano Moving"/>
+        <!-- 13.58.30.37 , 10.0.2.2 -->
+        <EditTextPreference android:title="WebService" android:summary="Enter webservice hostname" android:key="hostname"
+            android:defaultValue="http://10.0.2.2"/>
+        <EditTextPreference android:title="Port" android:summary="Enter webservice port" android:key="port" android:defaultValue="80"/>
+        <EditTextPreference android:title="GPS frequency" android:summary="Set GPS frequency in seconds." android:key="gps_frequency"/>
     </PreferenceCategory>
     <!-- 
 	<PreferenceCategory android:title="GCM Settings">

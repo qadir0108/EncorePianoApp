@@ -1,7 +1,7 @@
 package com.encore.piano.activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -9,9 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.encore.piano.R;
+import com.encore.piano.asynctasks.SyncStatus;
 import com.encore.piano.data.NumberConstants;
 import com.encore.piano.data.StringConstants;
 import com.encore.piano.enums.TripStatusEnum;
@@ -22,8 +24,8 @@ import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.model.AssignmentModel;
 import com.encore.piano.server.AssignmentService;
 import com.encore.piano.server.Service;
-import com.encore.piano.logic.PreferenceUtility;
 import com.encore.piano.util.Alerter;
+import com.encore.piano.util.DateTimeUtility;
 
 import org.json.JSONException;
 
@@ -41,22 +43,26 @@ public class AssignmentDetails extends AppCompatActivity implements
 	TextView tvCallerName;
 	TextView tvCallerPhoneNumber;
 	TextView tvCustomer;
+	TextView tvPayment;
+	TextView tvPaymentStatus;
+    TextView tvLegDate;
+    TextView tvLegDetail;
 
 	Button btnPickupDetails;
 	Button btnDeliveryDetails;
+	Button btnPayment;
+	Button btnPrint;
 	Button btnUnits;
 	Button btnStart;
 	Button btnMap;
 	Button btnProgress;
 	Button btnComplete;
 
-	ActionBar actionBar;
-
 	// GoogleMap map = null;
 	AssignmentModel model = null;
 	String assignmentId;
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -71,13 +77,19 @@ public class AssignmentDetails extends AppCompatActivity implements
 		tvCallerName = (TextView) findViewById(R.id.tvCallerName);
 		tvCallerPhoneNumber = (TextView) findViewById(R.id.tvCallerPhoneNumber);
 		tvCustomer = (TextView) findViewById(R.id.tvCustomer);
+		tvPayment = (TextView) findViewById(R.id.tvPayment);
+        tvPaymentStatus = (TextView) findViewById(R.id.tvPaymentStatus);
 		btnPickupDetails = (Button) findViewById(R.id.btnPickupDetails);
 		btnDeliveryDetails = (Button) findViewById(R.id.btnDeliveryDetails);
+        tvLegDate = (TextView) findViewById(R.id.tvLegDate);
+        tvLegDetail = (TextView) findViewById(R.id.tvLegDetail);
 		btnUnits = (Button) findViewById(R.id.btnUnits);
 		btnStart = (Button) findViewById(R.id.btnStart);
 		btnMap = (Button) findViewById(R.id.btnMap);
 		btnProgress = (Button) findViewById(R.id.btnProgress);
 		btnComplete = (Button) findViewById(R.id.btnComplete);
+		btnPayment = (Button) findViewById(R.id.btnPayment);
+		btnPrint = (Button) findViewById(R.id.btnPrint);
 
 		btnPickupDetails.setOnClickListener(this);
 		btnDeliveryDetails.setOnClickListener(this);
@@ -86,6 +98,8 @@ public class AssignmentDetails extends AppCompatActivity implements
 		btnMap.setOnClickListener(this);
 		btnProgress.setOnClickListener(this);
 		btnComplete.setOnClickListener(this);
+		btnPayment.setOnClickListener(this);
+		btnPrint.setOnClickListener(this);
 
 		InitializeWidgets();
 	}
@@ -98,14 +112,19 @@ public class AssignmentDetails extends AppCompatActivity implements
         if(model == null)
             Alerter.error(AssignmentDetails.this, "Assignment not found.");
         else {
-            tvAssignmentNumber.setText(model.getConsignmentNumber());
+            tvAssignmentNumber.setText(model.getAssignmentNumber());
             tvDrivers.setText(model.getDriverName());
             tvOrderType.setText(model.getOrderType());
             tvCallerName.setText(model.getCallerName());
             tvCallerPhoneNumber.setText(model.getCallerPhoneNumber());
             tvPickupAddress.setText(model.getPickupAddress());
             tvDeliveryAddress.setText(model.getDeliveryAddress());
+			tvLegDate.setText(model.getLegDate());
+			tvLegDetail.setText("From " + model.getLegFromLocation() + " to " + model.getLegToLocation());
+
             tvCustomer.setText(model.getCustomerCode() + " - " + model.getCustomerName());
+			tvPayment.setText(model.getPaymentOption() + " - " + model.getPaymentAmount());
+            tvPaymentStatus.setText(model.isPaid() ? "PAID at " + model.getPaymentTime() : "NOT PAID");
             tvUnitsCount.setText(model.getNumberOfItems() + " piano(s)");
         }
 	}
@@ -162,9 +181,20 @@ public class AssignmentDetails extends AppCompatActivity implements
 				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
 				startActivity(i);
 				break;
+			case R.id.btnPrint:
+				i = new Intent(AssignmentDetails.this, AssignmentPrint.class);
+				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
+				startActivityForResult(i, NumberConstants.REQUEST_CODE_PRINT_LABEL);
+				break;
+			case R.id.btnPayment:
+				i = new Intent(AssignmentDetails.this, AssignmentPayment.class);
+				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
+				startActivityForResult(i,  NumberConstants.REQUEST_CODE_PAYMENT_UNIT);
+				break;
 			case R.id.btnUnits:
 				i = new Intent(AssignmentDetails.this, AssignmentUnits.class);
 				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, model.getId());
+				i.putExtra(StringConstants.INTENT_KEY_ORDER_ID, model.getOrderId());
 				startActivity(i);
 			break;
 			case R.id.btnStart:
@@ -191,9 +221,12 @@ public class AssignmentDetails extends AppCompatActivity implements
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
-                            complete();
-                            sDialog.hide();
-                            Alerter.success(AssignmentDetails.this, "Assignment completed successfully!");
+
+                                Service.assignmentService.setTripStatus(assignmentId, TripStatusEnum.Completed.Value, DateTimeUtility.getCurrentTimeStamp());
+                                new SyncStatus(AssignmentDetails.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, assignmentId);
+                                complete();
+                                sDialog.hide();
+                                Alerter.success(AssignmentDetails.this, "Assignment completed successfully!");
 
                             }
                         })
@@ -235,7 +268,18 @@ public class AssignmentDetails extends AppCompatActivity implements
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == NumberConstants.REQUEST_CODE_START_TRIP && resultCode == RESULT_OK)
+        if (requestCode == NumberConstants.REQUEST_CODE_PRINT_LABEL && resultCode == RESULT_OK)
+        {
+            assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+            String message = data.getExtras().getString(StringConstants.INTENT_KEY_MESSAGE);
+            Alerter.success(this, message);
+        } else if (requestCode == NumberConstants.REQUEST_CODE_PAYMENT_UNIT && resultCode == RESULT_OK)
+        {
+            assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+            String message = data.getExtras().getString(StringConstants.INTENT_KEY_MESSAGE);
+            Alerter.success(this, message);
+        }
+        else if (requestCode == NumberConstants.REQUEST_CODE_START_TRIP && resultCode == RESULT_OK)
 		{
             Alerter.success(this, "Trip started successfully.");
         }

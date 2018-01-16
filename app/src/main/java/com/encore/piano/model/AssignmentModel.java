@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class AssignmentModel extends BaseModel implements Serializable {
 
 	private String Id;
-	private String ConsignmentNumber;
+	private String AssignmentNumber;
     private String VehicleCode;
 	private String VehicleName;
     private String DriverCode;
@@ -22,6 +22,7 @@ public class AssignmentModel extends BaseModel implements Serializable {
 	private String CallerPhoneNumberAlt;
 	private String CallerEmail;
 
+	private String PickupName;
 	private String PickupDate;
 	private String PickupAddress;
 	private String PickupPhoneNumber;
@@ -31,6 +32,7 @@ public class AssignmentModel extends BaseModel implements Serializable {
 	private String PickupNumberTurns;
 	private String PickupInstructions;
 
+	private String DeliveryName;
 	private String DeliveryDate;
 	private String DeliveryAddress;
 	private String DeliveryPhoneNumber;
@@ -42,6 +44,11 @@ public class AssignmentModel extends BaseModel implements Serializable {
 
     private String CustomerCode;
     private String CustomerName;
+    private String PaymentOption;
+    private String PaymentAmount;
+    private String LegDate;
+    private String LegFromLocation;
+    private String LegToLocation;
     private int NumberOfItems;
     private UnitModel[] Pianos;
 
@@ -50,11 +57,14 @@ public class AssignmentModel extends BaseModel implements Serializable {
     private String tripStatus;
     private String departureTime;
     private String estimatedTime;
+	private String completionTime;
 	private boolean synced;
 	private boolean saved;
 
+	private boolean paid;
+	private String paymentTime;
+
     // Not Used
-    private String serviceType;
     private LatLng pickupLocation;
 
     @Override
@@ -71,12 +81,12 @@ public class AssignmentModel extends BaseModel implements Serializable {
 		Id = id;
 	}
 
-	public String getConsignmentNumber() {
-		return ConsignmentNumber;
+	public String getAssignmentNumber() {
+		return AssignmentNumber;
 	}
 
-	public void setConsignmentNumber(String consignmentNumber) {
-		ConsignmentNumber = consignmentNumber;
+	public void setAssignmentNumber(String assignmentNumber) {
+		AssignmentNumber = assignmentNumber;
 	}
 
 	public String getVehicleName() {
@@ -271,14 +281,6 @@ public class AssignmentModel extends BaseModel implements Serializable {
         Pianos = pianos;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
 	public String getCallerEmail() {
 		return CallerEmail;
 	}
@@ -399,11 +401,92 @@ public class AssignmentModel extends BaseModel implements Serializable {
 		DeliveryInstructions = deliveryInstructions;
 	}
 
-    public void setPickupLocation(LatLng pickupLocation) {
-        this.pickupLocation = pickupLocation;
+	public String getCompletionTime() {
+		return completionTime;
+	}
+
+	public void setCompletionTime(String completionTime) {
+		this.completionTime = completionTime;
+	}
+
+	public String getPaymentOption() {
+		return PaymentOption;
+	}
+
+	public void setPaymentOption(String paymentOption) {
+		PaymentOption = paymentOption;
+	}
+
+	public String getPaymentAmount() {
+		return PaymentAmount;
+	}
+
+	public void setPaymentAmount(String paymentAmount) {
+		PaymentAmount = paymentAmount;
+	}
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
+    public String getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(String paymentTime) {
+        this.paymentTime = paymentTime;
     }
 
     public LatLng getPickupLocation() {
         return pickupLocation;
     }
+
+    public void setPickupLocation(LatLng pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+	public String getLegDate() {
+		return LegDate;
+	}
+
+	public void setLegDate(String legDate) {
+		LegDate = legDate;
+	}
+
+	public String getLegFromLocation() {
+		return LegFromLocation;
+	}
+
+	public void setLegFromLocation(String legFromLocation) {
+		LegFromLocation = legFromLocation;
+	}
+
+	public String getLegToLocation() {
+		return LegToLocation;
+	}
+
+	public void setLegToLocation(String legToLocation) {
+		LegToLocation = legToLocation;
+	}
+
+    public String getPickupName() {
+        return PickupName;
+    }
+
+    public void setPickupName(String pickupName) {
+        PickupName = pickupName;
+    }
+
+    public String getDeliveryName() {
+        return DeliveryName;
+    }
+
+    public void setDeliveryName(String deliveryName) {
+        DeliveryName = deliveryName;
+    }
+
 }

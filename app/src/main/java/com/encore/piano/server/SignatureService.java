@@ -25,11 +25,11 @@ import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
-import com.encore.piano.interfaces.ProgressUpdateListener;
+import com.encore.piano.interfaces.ProgressUpdate;
 import com.encore.piano.model.BaseModel;
 import com.encore.piano.model.ConfirmationModel;
 import com.encore.piano.model.ConfirmationModel.ConfirmationModelEnum;
-import com.encore.piano.model.ProgressUpdateModel;
+import com.encore.piano.model.ProgressModel;
 import com.encore.piano.model.SignatureModel;
 import com.encore.piano.model.SignatureModel.SignatureEnum;
 
@@ -40,8 +40,8 @@ public class SignatureService extends BaseService {
 
 	String taskName;
 
-	ProgressUpdateListener OnProgressUpdate;
-	ProgressUpdateModel updateModel = new ProgressUpdateModel();
+	ProgressUpdate OnProgressUpdate;
+	ProgressModel updateModel = new ProgressModel();
 
 	public SignatureService(Context context)
 			throws UrlConnectionException, JSONException,
@@ -51,7 +51,7 @@ public class SignatureService extends BaseService {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void RegisterProgressUpdateListener(ProgressUpdateListener listener)
+	public void RegisterProgressUpdateListener(ProgressUpdate listener)
 	{
 		OnProgressUpdate = listener;
 	}
@@ -70,7 +70,7 @@ public class SignatureService extends BaseService {
 		updateModel.setMessage(message);
 
 		if (OnProgressUpdate != null)
-			OnProgressUpdate.OnProgressUpdateListener(updateModel);
+			OnProgressUpdate.onProgressUpdate(updateModel);
 	}
 
 	public String SendSignature() throws JSONException, ClientProtocolException, IOException, EmptyStringException, JSONNullableException

@@ -14,8 +14,8 @@ import com.encore.piano.data.StringConstants;
 
 public class UnitAdapter extends UnitAdapterBase {
 
-	public UnitAdapter(Context context, String consignmentId) {
-		super(context, R.layout.assignment_units_row, consignmentId);
+	public UnitAdapter(Context context, String assignmentId, String orderId) {
+		super(context, R.layout.assignment_units_row, assignmentId, orderId);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,6 +25,7 @@ public class UnitAdapter extends UnitAdapterBase {
 		UnitViewHolder holder = new UnitViewHolder(
                 (TextView)view.findViewById(R.id.tvUnitId),
                 (TextView)view.findViewById(R.id.tvAssignmentId),
+                (TextView)view.findViewById(R.id.tvOrderId),
                 (TextView)view.findViewById(R.id.tvCategory),
 				(TextView)view.findViewById(R.id.tvType),
 				(TextView)view.findViewById(R.id.tvSize),
@@ -49,6 +50,7 @@ public class UnitAdapter extends UnitAdapterBase {
 		final UnitViewHolder h = (UnitViewHolder)holder;
         h.tvUnitId.setText(h.unit.getId());
         h.tvAssignmentId.setText(h.unit.getAssignmentId());
+        h.tvOrderId.setText(h.unit.getOrderId());
 		h.tvCategory.setText(h.unit.getCategory());
 		h.tvType.setText(h.unit.getType());
 		h.tvSize.setText(h.unit.getSize());
@@ -67,7 +69,9 @@ public class UnitAdapter extends UnitAdapterBase {
             {
                 Intent i = new Intent(context, UnitDeliveryLoad.class);
                 i.putExtra(StringConstants.INTENT_KEY_UNIT_ID, h.tvUnitId.getText().toString());
-                ((Activity)context).startActivityForResult(i, NumberConstants.REQUEST_CODE_LOAD_UNIT);
+				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, h.tvAssignmentId.getText().toString());
+				i.putExtra(StringConstants.INTENT_KEY_ORDER_ID, h.tvOrderId.getText().toString());
+				((Activity)context).startActivityForResult(i, NumberConstants.REQUEST_CODE_LOAD_UNIT);
             }
         });
 
@@ -77,10 +81,12 @@ public class UnitAdapter extends UnitAdapterBase {
             {
                 Intent i = new Intent(context, UnitDeliveryUnLoad.class);
                 i.putExtra(StringConstants.INTENT_KEY_UNIT_ID, h.tvUnitId.getText().toString());
-                i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, h.tvAssignmentId.getText().toString());
+				i.putExtra(StringConstants.INTENT_KEY_ASSIGNMENT_ID, h.tvAssignmentId.getText().toString());
+                i.putExtra(StringConstants.INTENT_KEY_ORDER_ID, h.tvOrderId.getText().toString());
                 ((Activity)context).startActivityForResult(i, NumberConstants.REQUEST_CODE_UNLOAD_UNIT);
             }
         });
+
 	}
 
 }

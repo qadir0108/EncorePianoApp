@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.encore.piano.enums.JsonResponseEnum;
 import com.encore.piano.enums.MessageEnum;
-import com.encore.piano.enums.SyncAssignmentEnum;
+import com.encore.piano.sync.SyncAssignmentEnum;
 import com.encore.piano.exceptions.DatabaseInsertException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;

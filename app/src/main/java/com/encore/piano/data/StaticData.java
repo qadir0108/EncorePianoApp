@@ -56,7 +56,7 @@ public class StaticData {
 		AssignmentModel m2 = new AssignmentModel();
 		AssignmentModel m3 = new AssignmentModel();
 		
-//		m1.setId("1100");
+//		m1.setUnitId("1100");
 //		m1.setConsignmentReference("CON NOTE");
 //		m1.setColCode("Mc Neills Warehouse A");
 //		m1.setDeliveryCode("AC Chemical Company");
@@ -67,7 +67,7 @@ public class StaticData {
 //		m1.setAuthToken();
 //		m1.setSigned(0);
 //
-//		m2.setId("1101");
+//		m2.setUnitId("1101");
 //		m2.setConsignmentReference("CON NOTE3");
 //		m2.setColCode("Mc Neills Warehouse C");
 //		m2.setDeliveryCode("AC Chemical Company");
@@ -77,7 +77,7 @@ public class StaticData {
 ////		m2.setAddress("Camden street 2");
 //		m2.setSigned(0);
 //
-//		m3.setId("1102");
+//		m3.setUnitId("1102");
 //		m3.setConsignmentReference("CON NOTE2");
 //		m3.setColCode("Mc Neills Warehouse B");
 //		m3.setDeliveryCode("AC Chemical Company");
@@ -109,48 +109,48 @@ public class StaticData {
 //		
 //		im1.setCode("X00001");
 //		im1.setBarcode("123456789984");
-//		im1.setAssignmentId("1100");
-//		im1.setId(1);		
+//		im1.setOrderId("1100");
+//		im1.setUnitId(1);
 //		im1.setSize("ITEM NAMED 1");
 //		im1.setPallet(3.5);
 //		im1.setQuantity(14);
 //		
 //		im2.setCode("X00002");
 //		im2.setBarcode("123456789984");
-//		im2.setAssignmentId("1100");
-//		im2.setId(2);
+//		im2.setOrderId("1100");
+//		im2.setUnitId(2);
 //		im2.setSize("ITEM NAMED 2");
 //		im2.setPallet(3.5);
 //		im2.setQuantity(14);
 //		
 //		im3.setCode("X00003");
 //		im3.setBarcode("123456789984");
-//		im3.setAssignmentId("1101");
-//		im3.setId(3);
+//		im3.setOrderId("1101");
+//		im3.setUnitId(3);
 //		im3.setSize("ITEM NAMED 3");
 //		im3.setPallet(3.5);
 //		im3.setQuantity(14);
 //		
 //		im4.setCode("X00004");
 //		im4.setBarcode("123456789984");
-//		im4.setAssignmentId("1101");
-//		im4.setId(4);
+//		im4.setOrderId("1101");
+//		im4.setUnitId(4);
 //		im4.setSize("ITEM NAMED 4");
 //		im4.setPallet(3.5);
 //		im4.setQuantity(14);
 //		
 //		im5.setCode("X00005");
 //		im5.setBarcode("123456789984");
-//		im5.setAssignmentId("1102");
-//		im5.setId(5);
+//		im5.setOrderId("1102");
+//		im5.setUnitId(5);
 //		im5.setSize("ITEM NAMED 5");
 //		im5.setPallet(3.5);
 //		im5.setQuantity(14);
 //	
 //		im6.setCode("X00006");
 //		im6.setBarcode("123456789984");
-//		im6.setAssignmentId("1102");
-//		im6.setId(6);
+//		im6.setOrderId("1102");
+//		im6.setUnitId(6);
 //		im6.setSize("ITEM NAMED 6");
 //		im6.setPallet(3.5);
 //		im6.setQuantity(14);	

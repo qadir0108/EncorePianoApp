@@ -1,57 +1,57 @@
 package com.encore.piano.model;
 import android.app.ProgressDialog;
 
-public class ProgressUpdateModel {
+public class ProgressModel {
 
-	private ProgressDialog Dialog;
-	private String TaskName;
-	private int NotificationId;
-	private int ItemsCount;
-	private int Step;
-	private String Message;
-	private String Title;
+	private ProgressDialog dialog;
+	private String taskName;
+	private int notificationId;
+	private int itemsCount;
+	private int step;
+	private String message;
+	private String title;
 	
 	public int getItemsCount() {
-		return ItemsCount;
+		return itemsCount;
 	}
 	public void setItemsCount(int itemsCount) {
-		ItemsCount = itemsCount;
+		this.itemsCount = itemsCount;
 	}
 	public int getStep() {
-		return Step;
+		return step;
 	}
 	public void setStep(int step) {
-		Step = step;
+		this.step = step;
 	}
 	public ProgressDialog getDialog() {
-		return Dialog;
+		return dialog;
 	}
 	public void setDialog(ProgressDialog dialog) {
-		Dialog = dialog;
+		this.dialog = dialog;
 	}
 	public String getMessage() {
-		return Message;
+		return message;
 	}
 	public void setMessage(String message) {
-		Message = message;
+		this.message = message;
 	}
 	public String getTitle() {
-		return Title;
+		return title;
 	}
 	public void setTitle(String title) {
-		Title = title;
+		this.title = title;
 	}
 	public String getTaskName() {
-		return TaskName;
+		return taskName;
 	}
 	public void setTaskName(String taskName) {
-		TaskName = taskName;
+		this.taskName = taskName;
 	}
 	public int getNotificationId() {
-		return NotificationId;
+		return notificationId;
 	}
 	public void setNotificationId(int notificationId) {
-		NotificationId = notificationId;
+		this.notificationId = notificationId;
 	}
 	
 }

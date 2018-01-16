@@ -16,7 +16,7 @@ public class AssignmentUnits extends AppCompatActivity {
 
 	ListView listView;
 	UnitAdapter adapter;
-    String assignmentId;
+    String assignmentId, orderId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
 		super.onCreate(savedInstanceState);
@@ -24,7 +24,8 @@ public class AssignmentUnits extends AppCompatActivity {
 		
 		listView = (ListView)findViewById(R.id.listViewUnits);
 		assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
-		adapter = new UnitAdapter(this, assignmentId);
+		orderId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ORDER_ID);
+		adapter = new UnitAdapter(this, assignmentId, orderId);
 		listView.setAdapter(adapter);
 	}	
 	
@@ -51,16 +52,18 @@ public class AssignmentUnits extends AppCompatActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NumberConstants.REQUEST_CODE_LOAD_UNIT && resultCode == RESULT_OK)
+	 	if (requestCode == NumberConstants.REQUEST_CODE_LOAD_UNIT && resultCode == RESULT_OK)
         {
-            assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
-            adapter = new UnitAdapter(this, assignmentId);
+			assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+			orderId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ORDER_ID);
+            adapter = new UnitAdapter(this, assignmentId, orderId);
             listView.setAdapter(adapter);
             Alerter.success(AssignmentUnits.this, "Unit loaded successfully.");
         } else if (requestCode == NumberConstants.REQUEST_CODE_UNLOAD_UNIT && resultCode == RESULT_OK)
         {
             assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
-            adapter = new UnitAdapter(this, assignmentId);
+            orderId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ORDER_ID);
+            adapter = new UnitAdapter(this, assignmentId, orderId);
             listView.setAdapter(adapter);
             Alerter.success(AssignmentUnits.this, "Unit delivered successfully.");
         }

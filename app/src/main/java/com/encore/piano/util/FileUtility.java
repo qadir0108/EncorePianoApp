@@ -43,24 +43,20 @@ public class FileUtility {
         prepareDirectory(DriversSignRootFolder);
     }
 
-    public static boolean prepareDirectory(String directory)
+    public static boolean prepareDirectory(String directoryName)
     {
         try
         {
-            return makeDirs(directory);
+            File directory = new File(directoryName);
+            if (!directory.exists())
+                directory.mkdirs();
+
+            return (directory.isDirectory());
+
         } catch (Exception e)
         {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private static boolean makeDirs(String directoryName)
-    {
-        File directory = new File(directoryName);
-        if (!directory.exists())
-            directory.mkdirs();
-
-        return (directory.isDirectory());
     }
 }

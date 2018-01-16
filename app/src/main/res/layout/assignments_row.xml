@@ -12,26 +12,22 @@
         android:layout_margin="10dp"
         android:layout_weight="0"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imgCompleted"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="0dp"
+            android:src="@drawable/icons8_truck_64" />
 
         <TextView
             android:id="@+id/tvPosition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
+            android:text="#1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@drawable/rowitem_textcolor" />
-
-        <CheckBox
-            android:id="@+id/chkSelectedItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:clickable="false"
-        	android:focusable="false"
-        	android:focusableInTouchMode="false"
-        	android:longClickable="false" 
-        	android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -80,56 +76,12 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@drawable/rowitem_textcolor" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-        </LinearLayout>
-
-
         <TextView
             android:id="@+id/tvConsignmentId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="gone"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:layout_weight="0"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <ImageView
-            android:id="@+id/imgCompleted"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="0dp"
-            android:src="@drawable/completed" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:visibility="gone"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 

@@ -8,6 +8,7 @@ public class UnitViewHolder extends ViewHolder{
 
 	TextView tvUnitId;
 	TextView tvAssignmentId;
+	TextView tvOrderId;
 	TextView tvCategory;
 	TextView tvType;
 	TextView tvSize;
@@ -22,12 +23,13 @@ public class UnitViewHolder extends ViewHolder{
 	Button btnLoad;
 	Button btnDeliver;
 
-	public UnitViewHolder(TextView i, TextView ass, TextView c, TextView t, TextView s, TextView m, TextView mm, TextView f,
+	public UnitViewHolder(TextView i, TextView ass, TextView o, TextView c, TextView t, TextView s, TextView m, TextView mm, TextView f,
                           TextView ser, TextView b, TextView p, TextView bx, TextView st,
 						  Button bl, Button bd)
 	{
         tvUnitId = i;
         tvAssignmentId = ass;
+        tvOrderId = o;
 		tvCategory = c;
 		tvType = t;
 		tvSize = s;

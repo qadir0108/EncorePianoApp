@@ -16,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.encore.piano.util.ImageResizer;
+
 public class SignatureView extends View {
 
 	private static final float STROKE_WIDTH = 5f;
@@ -53,26 +55,33 @@ public class SignatureView extends View {
 		saveButton = b;
 	}
 
-	public void SaveToCard(File path) throws IOException
+	public void saveToCard(File path) throws IOException
 	{
 		if (mBitmap == null)
 			mBitmap = getDrawingCache();
 
-		FileOutputStream mFileOutStream;
-		mFileOutStream = new FileOutputStream(path);
 		/*
 		this.draw(canvas);
-
 		mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
 		mFileOutStream.flush();
 		mFileOutStream.close();
 		*/
 
-		mFileOutStream = new FileOutputStream(path);
+        File tempFile = new File(path.getAbsolutePath() + "_tmp");
+
+        FileOutputStream mFileOutStream = new FileOutputStream(tempFile);
 		mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
 		mFileOutStream.flush();
 		mFileOutStream.close();
 
+        Bitmap resized = ImageResizer.getScaledBitmap(800, tempFile);
+        mFileOutStream = new FileOutputStream(path);
+        resized.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
+        mFileOutStream.flush();
+        mFileOutStream.close();
+
+        if(tempFile.exists())
+            tempFile.delete();
 	}
 
 	public void clear()

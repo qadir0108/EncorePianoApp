@@ -9,7 +9,7 @@ public enum AssignmentEnum
     TableName("ASSIGNMENT"),
 
     Id("Id"),
-    ConsignmentNumber("ConsignmentNumber"),
+    AssignmentNumber("AssignmentNumber"),
     VehicleCode("VehicleCode"),
     VehicleName("VehicleName"),
     DriverCode("DriverCode"),
@@ -24,6 +24,7 @@ public enum AssignmentEnum
     CallerPhoneNumberAlt("CallerPhoneNumberAlt"),
     CallerEmail("CallerEmail"),
 
+    PickupName("PickupName"),
     PickupDate("PickupDate"),
     PickupAddress("PickupAddress"),
     PickupPhoneNumber("PickupPhoneNumber"),
@@ -33,6 +34,7 @@ public enum AssignmentEnum
     PickupNumberTurns("PickupNumberTurns"),
     PickupInstructions("PickupInstructions"),
 
+    DeliveryName("DeliveryName"),
     DeliveryDate("DeliveryDate"),
     DeliveryAddress("DeliveryAddress"),
     DeliveryPhoneNumber("DeliveryPhoneNumber"),
@@ -44,6 +46,11 @@ public enum AssignmentEnum
 
     CustomerCode("CustomerCode"),
     CustomerName("CustomerName"),
+    PaymentOption("PaymentOption"),
+    PaymentAmount("PaymentAmount"),
+    LegDate("LegDate"),
+    LegFromLocation("LegFromLocation"),
+    LegToLocation("LegToLocation"),
     NumberOfItems("NumberOfItems"),
 
     createdAt("createdAt"),
@@ -52,8 +59,12 @@ public enum AssignmentEnum
     pickupLocation("pickupLocation"),
     departureTime("departureTime"),
     estimatedTime("estimatedTime"),
+    completionTime("completionTime"),
     saved("saved"),
-    synced("synced");
+    synced("synced"),
+
+    paid("paid"),
+    paymentTime("paymentTime");
 
     public String Value;
 

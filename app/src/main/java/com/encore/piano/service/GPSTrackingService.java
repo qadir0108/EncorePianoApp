@@ -112,14 +112,14 @@ public class GPSTrackingService extends android.app.Service {
 			try {
 				RecordCoordinates();
 			} catch (ValueValidationException e) {
-				Log.e("AndroidPOD GPSTracking Service", "Preference value validation error");
+				Log.e("GPSTracking Service", "Preference value validation error");
 			}
 			new SyncGpsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 			return super.onStartCommand(intent, flags, startId);
 		} else
 			this.stopSelf();
 
-		return -1;
+		return android.app.Service.START_STICKY_COMPATIBILITY;
 	}
 
 	private void RecordCoordinates() throws ValueValidationException {
@@ -133,9 +133,12 @@ public class GPSTrackingService extends android.app.Service {
 			// for ActivityCompat#requestPermissions for more details.
 			return;
 		}
+
+		long minTimeInSecs = PreferenceUtility.GetPreferences(this).getGpsFrequency(); //5;
+
 		if (Service.loginService.checkLoginStatus())
 
-			gpsLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, PreferenceUtility.GetPreferences(getApplicationContext()).GetGpsFrequency() * 1000 + 17, 50, new LocationListener() {
+			gpsLocation.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTimeInSecs * 1000 + 17, 50, new LocationListener() {
 
 				@Override
 				public void onStatusChanged(String provider, int status, Bundle extras) {

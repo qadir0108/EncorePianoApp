@@ -12,23 +12,38 @@ public class ServiceUrls {
 
     public static String getServiceUrl(Context context){
         PreferenceUtility preferenceUtility = PreferenceUtility.GetPreferences(context);
-        return preferenceUtility.Hostname + ":" + preferenceUtility.GetPort();
+        return preferenceUtility.hostName + ":" + preferenceUtility.getPort();
     }
 
     public static String getLoginServiceUrl(Context context){
         return getServiceUrl(context) + "/api/user/login";
     }
-    public static String getConsignmentsUrl(Context context){
-        return getServiceUrl(context) + "/api/consignments?AuthToken=[authtokenvalue]";
+    public static String getAssignmentsUrl(Context context){
+        return getServiceUrl(context) + "/api/assignments?AuthToken=[authtokenvalue]";
     }
-    public static String getConsignmentUrl(Context context){
-        return getServiceUrl(context) + "/api/consignment?AuthToken=[authtokenvalue]&Id=[id]";
+    public static String getAssignmentUrl(Context context){
+        return getServiceUrl(context) + "/api/assignments?AuthToken=[authtokenvalue]&Id=[id]";
     }
     public static String getSyncStartUrl(Context context){
-        return getServiceUrl(context) + "/api/sync/start?AuthToken=[authtokenvalue]";
+        return getServiceUrl(context) + "/api/sync/trip/start?AuthToken=[authtokenvalue]";
+    }
+    public static String getSyncStatusUrl(Context context){
+        return getServiceUrl(context) + "/api/sync/trip/status?AuthToken=[authtokenvalue]";
+    }
+    public static String getSyncLoadUrl(Context context){
+        return getServiceUrl(context) + "/api/sync/unit/load?AuthToken=[authtokenvalue]";
+    }
+    public static String getSyncDeliverUrl(Context context){
+        return getServiceUrl(context) + "/api/sync/unit/deliver?AuthToken=[authtokenvalue]";
+    }
+    public static String getSyncImageUrl(Context context){
+        return getServiceUrl(context) + "/api/sync/unit/image?AuthToken=[authtokenvalue]";
     }
     public static String getSendLogUrl(Context context){
-        return getServiceUrl(context) + "/ws/json/syncreply/SendErrorLog";
+        return getServiceUrl(context) + "/api/log";
+    }
+    public static String getPaymentUrl(Context context){
+        return getServiceUrl(context) + "/api/payment/process?AuthToken=[authtokenvalue]";
     }
 
     public static String GetGpsSynchornizationUrl(Context context){

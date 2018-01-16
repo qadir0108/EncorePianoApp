@@ -15,6 +15,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+    <TextView
+        android:id="@+id/tvOrderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -278,10 +283,7 @@
     <FrameLayout
         android:id="@+id/FrameLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:padding="5dp"
-        android:visibility="visible">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/btnLoad"
@@ -297,7 +299,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="Delivery" />
+            android:text="Deliver" />
 
     </FrameLayout>
 

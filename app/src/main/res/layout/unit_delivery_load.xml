@@ -4,6 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/tvUnitName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:text="Unit Name"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#555" />
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
@@ -15,54 +30,47 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="0dp">
 
             <CheckBox
                 android:id="@+id/chkMainLoaded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:text="Main Unit Loaded?" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5pt"
                 android:orientation="horizontal">
-
                 <TextView
                     android:id="@+id/TextVie061"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Benches: "
+                    android:text="Bench #1: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <RadioGroup
-                    android:id="@+id/rdgBenches"
+                    android:id="@+id/rdgBench1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <RadioButton
                         android:id="@+id/rdNotAvailable1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="NotAvailable" />
-
+                        android:text="N/A" />
                     <RadioButton
                         android:id="@+id/rdMissing1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Missing" />
-
                     <RadioButton
                         android:id="@+id/rdLoaded1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Loaded" />
-
                 </RadioGroup>
 
 
@@ -71,183 +79,359 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5pt"
+                android:layout_marginTop="2pt"
                 android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/TextVieas061"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Bench #2: "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <RadioGroup
+                    android:id="@+id/rdgBench2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/rdNotAvailable2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="N/A" />
+                    <RadioButton
+                        android:id="@+id/rdMissing2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing" />
+                    <RadioButton
+                        android:id="@+id/rdLoaded2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loaded" />
+                </RadioGroup>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2pt"
+                android:orientation="horizontal">
                 <TextView
                     android:id="@+id/TextVie062"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="CasterCups: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <RadioGroup
                     android:id="@+id/rdgCasterCups"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <RadioButton
-                        android:id="@+id/rdNotAvailable2"
+                        android:id="@+id/rdNotAvailable3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="NotAvailable" />
-
+                        android:text="N/A" />
                     <RadioButton
-                        android:id="@+id/rdMissing2"
+                        android:id="@+id/rdMissing3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Missing" />
-
                     <RadioButton
-                        android:id="@+id/rdLoaded2"
+                        android:id="@+id/rdLoaded3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Loaded" />
-
                 </RadioGroup>
-
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5pt"
+                android:layout_marginTop="2pt"
                 android:orientation="horizontal">
-
                 <TextView
                     android:id="@+id/TextVi06"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Cover: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <RadioGroup
                     android:id="@+id/rdgCover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <RadioButton
-                        android:id="@+id/rdNotAvailable3"
+                        android:id="@+id/rdNotAvailable4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="NotAvailable" />
-
+                        android:text="N/A" />
                     <RadioButton
-                        android:id="@+id/rdMissing3"
+                        android:id="@+id/rdMissing4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Missing" />
-
                     <RadioButton
-                        android:id="@+id/rdLoaded3"
+                        android:id="@+id/rdLoaded4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Loaded" />
-
                 </RadioGroup>
-
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5pt"
+                android:layout_marginTop="2pt"
                 android:orientation="horizontal">
-
                 <TextView
                     android:id="@+id/TexVie06"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Lamp: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-
                 <RadioGroup
                     android:id="@+id/rdgLamp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rdNotAvailable4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="NotAvailable" />
-
-                    <RadioButton
-                        android:id="@+id/rdMissing4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Missing" />
-
-                    <RadioButton
-                        android:id="@+id/rdLoaded4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Loaded" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5pt"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/TextVie06"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Owners Manual: "
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <RadioGroup
-                    android:id="@+id/rdgManual"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
                     <RadioButton
                         android:id="@+id/rdNotAvailable5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="NotAvailable" />
-
+                        android:text="N/A" />
                     <RadioButton
                         android:id="@+id/rdMissing5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Missing" />
-
                     <RadioButton
                         android:id="@+id/rdLoaded5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Loaded" />
-
                 </RadioGroup>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2pt"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/TextVie06"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Manual: "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <RadioGroup
+                    android:id="@+id/rdgManual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/rdNotAvailable6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="N/A" />
+                    <RadioButton
+                        android:id="@+id/rdMissing6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing" />
+                    <RadioButton
+                        android:id="@+id/rdLoaded6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loaded" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2pt"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/TextVieas06"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Misc 1: "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <RadioGroup
+                    android:id="@+id/rdgMisc1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/rdNotAvailable7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="N/A" />
+                    <RadioButton
+                        android:id="@+id/rdMissing7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing" />
+                    <RadioButton
+                        android:id="@+id/rdLoaded7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loaded" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2pt"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/TextViesds06"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Misc 2: "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <RadioGroup
+                    android:id="@+id/rdgMisc2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/rdNotAvailable8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="N/A" />
+                    <RadioButton
+                        android:id="@+id/rdMissing8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing" />
+                    <RadioButton
+                        android:id="@+id/rdLoaded8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loaded" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2pt"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/TextsVisesds06"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Misc 3: "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <RadioGroup
+                    android:id="@+id/rdgMisc3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/rdNotAvailable9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="N/A" />
+                    <RadioButton
+                        android:id="@+id/rdMissing9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing" />
+                    <RadioButton
+                        android:id="@+id/rdLoaded9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loaded" />
+                </RadioGroup>
             </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Name: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Spinner
+            android:id="@+id/spnrReceiver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"/>
+
+        <Button
+            android:id="@+id/btnAddReceiver"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Add Name" />
+
+        <Button
+            android:id="@+id/btnGallery"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Gallery" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViews4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:text="Please sign below"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+
     <FrameLayout
-        android:id="@+id/FrameLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="5dp"
+        android:background="#EEE"
+        android:orientation="vertical">
+
+        <view
+            android:id="@+id/View01"
+            class="com.encore.piano.views.SignatureView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:padding="5dp"
-        >
+        android:gravity="right"
+        android:visibility="visible" >
 
         <Button
             android:id="@+id/btnCancel"
@@ -259,13 +443,20 @@
             />
 
         <Button
-            android:id="@+id/btnLoad"
-            style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Save" />
+            android:layout_gravity="center"
+            android:text="Clear"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_gravity="right"
+            style="@style/Widget.AppCompat.Button.Colored"/>
     </FrameLayout>
 
 </LinearLayout>

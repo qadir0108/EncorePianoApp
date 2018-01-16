@@ -1,5 +1,13 @@
-package com.encore.piano.model;
+package com.encore.piano.sync;
 
+
+import com.encore.piano.model.AssignmentModel;
+import com.encore.piano.model.BaseModel;
+import com.encore.piano.server.Service;
+import com.encore.piano.util.DateTimeUtility;
+
+import org.json.JSONException;
+import org.json.JSONStringer;
 
 public class SyncAssignmentModel extends BaseModel {
 
@@ -13,7 +21,6 @@ public class SyncAssignmentModel extends BaseModel {
 	private String DeliveryCode;
 	private String CustomerReference;
 	private String PodStatus;
-	private String AuthToken;
 	private String CustomerUsername;
 	private String DateSigned;
 	private String[] images;	
@@ -21,7 +28,27 @@ public class SyncAssignmentModel extends BaseModel {
 	private boolean Signed;
 	private String SignedBy;
 	private boolean saved;
-	
+
+	public SyncAssignmentModel fromModel(AssignmentModel model) {
+        setAuthToken(Service.loginService.LoginModel.getAuthToken());
+        setId(model.getId());
+        setTripStatus(model.getTripStatus());
+        setDepartureTime(DateTimeUtility.formatTimeStampToSend(DateTimeUtility.toDateTime(model.getDepartureTime())));
+        setArrivalTime(DateTimeUtility.formatTimeStampToSend(DateTimeUtility.toDateTime(model.getEstimatedTime())));
+        return this;
+    }
+
+    public String getJson() throws JSONException {
+        JSONStringer stringer = new JSONStringer().object()
+                .key(SyncAssignmentEnum.AuthToken.Value).value(getAuthToken())
+                .key(SyncAssignmentEnum.Id.Value).value(getId())
+                .key(SyncAssignmentEnum.tripStatus.Value).value(getTripStatus())
+                .key(SyncAssignmentEnum.departureTime.Value).value(getDepartureTime())
+                .key(SyncAssignmentEnum.estimatedTime.Value).value(getArrivalTime())
+                .endObject();
+        return stringer.toString();
+    }
+
 	public String getConsignmentReference() {
 		return ConsignmentReference;
 	}
@@ -58,12 +85,7 @@ public class SyncAssignmentModel extends BaseModel {
 	public void setPodStatus(String podStatus) {
 		PodStatus = podStatus;
 	}
-	public String getAuthToken() {
-		return AuthToken;
-	}
-	public void setAuthToken(String authToken) {
-		AuthToken = authToken;
-	}
+
 	public String getCustomerUsername() {
 		return CustomerUsername;
 	}

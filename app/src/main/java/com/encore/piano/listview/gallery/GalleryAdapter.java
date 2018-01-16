@@ -18,8 +18,8 @@ public class GalleryAdapter extends GalleryAdapterBase {
 	TextView ConsignmentId;
 	TextView ImagePath;
 
-	public GalleryAdapter(Context context, String consignmentId) {
-		super(context, R.layout.gallery_row, consignmentId);
+	public GalleryAdapter(Context context, String consignmentId, String takenLocation) {
+		super(context, R.layout.gallery_row, consignmentId, takenLocation);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -39,7 +39,7 @@ public class GalleryAdapter extends GalleryAdapterBase {
 
 		GalleryViewHolder h = (GalleryViewHolder) holder;
 
-		h.ConsignmentId.setText(h.GalleryModel.getConsignmentId());
+		h.unitId.setText(h.GalleryModel.getUnitId());
 		h.ImagePath.setText(h.GalleryModel.getImagePath());
 		Bitmap b = scaleImage(h.GalleryModel.getImagePath().substring(7));
 		h.ImageThumb.setImageBitmap(b);
@@ -81,13 +81,13 @@ public class GalleryAdapter extends GalleryAdapterBase {
 
 	public void removeItemAt(int i)
 	{
-		Images.remove(i);
+		images.remove(i);
 
 	}
 
 	public void removeAll(ArrayList<GalleryModel> imagesToDelete)
 	{
-		Images.removeAll(imagesToDelete);
+		images.removeAll(imagesToDelete);
 
 	}
 }

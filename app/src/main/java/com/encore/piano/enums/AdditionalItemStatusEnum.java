@@ -6,7 +6,7 @@ package com.encore.piano.enums;
 
 public enum AdditionalItemStatusEnum
 {
-    NotAvailable("NotAvailable"),
+    NotAvailable("N/A"),
     Missing("Missing"),
     Loaded("Loaded"),
     Delivered("Delivered");

@@ -19,28 +19,25 @@ public abstract class GalleryAdapterBase extends BaseAdapter {
 	Context context;
 	int viewId;
 
-	ArrayList<GalleryModel> Images = new ArrayList<GalleryModel>();
+	ArrayList<GalleryModel> images = new ArrayList<GalleryModel>();
 
-	public GalleryAdapterBase(Context context, int viewId, String consignmentId) {
+	public GalleryAdapterBase(Context context, int viewId, String consignmentId, String takenLocation) {
 		this.context = context;
 		this.viewId = viewId;
-
-		Images.clear();
-
-		Images = Service.galleryService.GetImagesForConsignment(consignmentId);
+		images.clear();
+		images = Service.galleryService.getImagesForUnit(consignmentId, takenLocation);
 	}
 
 	@Override
 	public int getCount()
 	{
-		return Images.size();
-
+		return images.size();
 	}
 
 	@Override
 	public GalleryModel getItem(int position)
 	{
-		return Images.get(position);
+		return images.get(position);
 	}
 
 	@Override

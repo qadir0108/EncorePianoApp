@@ -12,7 +12,6 @@ import org.json.JSONException;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,15 +25,15 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.encore.piano.R;
-import com.encore.piano.asynctasks.SyncStart;
+import com.encore.piano.asynctasks.SyncDeliver;
 import com.encore.piano.data.StaticData;
 import com.encore.piano.data.StringConstants;
 import com.encore.piano.enums.AdditionalItemStatusEnum;
+import com.encore.piano.enums.TakenLocationEnum;
 import com.encore.piano.model.AssignmentModel;
 import com.encore.piano.model.UnitModel;
 import com.encore.piano.server.AssignmentService;
@@ -54,28 +53,24 @@ import com.encore.piano.exceptions.UrlConnectionException;
 
 public class UnitDeliveryUnLoad extends AppCompatActivity {
 
-	FrameLayout signatureLayoutContent;
 	SignatureView mSignature;
-	Button btnClear;
-    Button btnSave;
-	public int count = 1;
-	public String current = null;
-	private Bitmap mBitmap;
 	File filePath;
 	String fileName = "";
 	String username = "";
 
-    private TextView tvUnitName;
-    private Spinner spnrReceiver;
-    private Spinner spnrStatus;
-	private Button btnCancel;
+    TextView tvUnitName;
+    Spinner spnrReceiver;
+    Spinner spnrStatus;
 	ArrayList<String> receivers = new ArrayList<String>();
 	ArrayAdapter<String> receiversAdapter;
-	private Button btnAddReceiver;
-	private Button btnGallery;
+	Button btnAddReceiver;
+	Button btnGallery;
+	Button btnCancel;
+	Button btnClear;
+	Button btnSave;
 
     AssignmentModel assignmentModel = null;
-    UnitModel model = null;
+    UnitModel unitModel = null;
     String assignmentId, unitId;
 
     @Override
@@ -84,85 +79,21 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.unit_delivery_unload);
 
-        mSignature = (SignatureView) findViewById(R.id.View01);
         tvUnitName = (TextView) findViewById(R.id.tvUnitName);
         spnrReceiver = (Spinner) findViewById(R.id.spnrReceiver);
         spnrStatus = (Spinner) findViewById(R.id.spnrStatus);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
         btnAddReceiver = (Button) findViewById(R.id.btnAddReceiver);
         btnGallery = (Button) findViewById(R.id.btnGallery);
-
-        signatureLayoutContent = (FrameLayout) findViewById(R.id.signatureContentLayout);
-        mSignature.setBackgroundColor(Color.WHITE);
-        btnClear = (Button) findViewById(R.id.clearbutton);
-        btnSave = (Button) findViewById(R.id.savebutton);
+        btnCancel = (Button) findViewById(R.id.btnCancel);
+        btnClear = (Button) findViewById(R.id.btnClear);
+        btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setEnabled(false);
+        mSignature = (SignatureView) findViewById(R.id.View01);
+        mSignature.setBackgroundColor(Color.WHITE);
         mSignature.setSaveButton(btnSave);
 
-        assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
-        unitId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID);
-
-        String unitName = "";
-		try
-		{
-            if (Service.unitService == null)
-				Service.unitService = new UnitService(this);
-			model = Service.unitService.getUnitsByUnitId(unitId);
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(model.getCategory() + " ");
-            sb.append(model.getType()+ " ");
-            sb.append(model.getMake()+ " ");
-            sb.append(model.getModel()+ " ");
-            sb.append(model.getFinish()+ " ");
-            unitName = sb.toString().replace("null", "");
-            tvUnitName.setText(unitName);
-
-            UIUtility.setVisible(this, R.id.chkBenches, model.getAdditionalBenchesStatus() == AdditionalItemStatusEnum.Loaded);
-            UIUtility.setVisible(this, R.id.chkCasterCups, model.getAdditionalCasterCupsStatus() == AdditionalItemStatusEnum.Loaded);
-            UIUtility.setVisible(this, R.id.chkCover, model.getAdditionalCoverStatus() == AdditionalItemStatusEnum.Loaded);
-            UIUtility.setVisible(this, R.id.chkLamp, model.getAdditionalLampStatus() == AdditionalItemStatusEnum.Loaded);
-            UIUtility.setVisible(this, R.id.chkOwnersManual, model.getAdditionalOwnersManualStatus() == AdditionalItemStatusEnum.Loaded);
-
-            if (Service.assignmentService == null)
-                Service.assignmentService = new AssignmentService(this);
-            assignmentModel = Service.assignmentService.getAll(assignmentId);
-
-        } catch (UrlConnectionException e)
-		{
-			e.printStackTrace();
-		} catch (JSONException e)
-		{
-			e.printStackTrace();
-		} catch (JSONNullableException e)
-		{
-			e.printStackTrace();
-		} catch (NotConnectedException e)
-		{
-			e.printStackTrace();
-		} catch (NetworkStatePermissionException e)
-		{
-			e.printStackTrace();
-		} catch (DatabaseInsertException e)
-		{
-			e.printStackTrace();
-		}
-
-		receivers.add("Select person name");
-		receivers.add(assignmentModel.getCallerName());
-		receiversAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, receivers);
-		receiversAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spnrReceiver.setAdapter(receiversAdapter);
-        if (receivers.size() > 1)
-            spnrReceiver.setSelection(1);
-
-        List statuses = StaticData.getPianoStatuses().subList(3, StaticData.getPianoStatuses().size());
-        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
-		statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnrStatus.setAdapter(statusAdapter);
-
-        fileName = UUID.randomUUID().toString() + ".jpg";
-        filePath = new File(FileUtility.getPODDirectory(unitId) + fileName);
+        Load();
+        Initialize();
 
 		btnClear.setOnClickListener(new OnClickListener()
 		{
@@ -191,6 +122,7 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
 		{
 			public void onClick(View v)
 			{
+                setResult(RESULT_CANCELED);
                 UnitDeliveryUnLoad.this.finish();
 			}
 		});
@@ -205,11 +137,88 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				Intent intentGallery = new Intent(UnitDeliveryUnLoad.this, AssignmentGallery.class);
-                intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, model.getId());
+                intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, unitModel.getId());
+                intentGallery.putExtra(StringConstants.INTENT_KEY_TAKEN_LOCATION, TakenLocationEnum.Delivery.Value);
                 startActivity(intentGallery);
 			}
 		});
 	}
+
+    private void Load()
+    {
+        try
+        {
+            assignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+            unitId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID);
+
+            if (Service.unitService == null)
+                Service.unitService = new UnitService(this);
+            unitModel = Service.unitService.getUnitsByUnitId(unitId);
+
+            if (Service.assignmentService == null)
+                Service.assignmentService = new AssignmentService(this);
+            assignmentModel = Service.assignmentService.getAll(assignmentId);
+
+        } catch (UrlConnectionException e)
+        {
+            e.printStackTrace();
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        } catch (JSONNullableException e)
+        {
+            e.printStackTrace();
+        } catch (NotConnectedException e)
+        {
+            e.printStackTrace();
+        } catch (NetworkStatePermissionException e)
+        {
+            e.printStackTrace();
+        } catch (DatabaseInsertException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void Initialize()
+    {
+        String unitName = new StringBuilder()
+                .append(unitModel.getCategory() + " ")
+                .append(unitModel.getType()+ " ")
+                .append(unitModel.getMake()+ " ")
+                .append(unitModel.getModel()+ " ")
+                .append(unitModel.getFinish()+ " ")
+                .toString().replace("null", "");
+        tvUnitName.setText(unitName);
+
+        UIUtility.setVisible(this, R.id.chkBench1, unitModel.getAdditionalBench1Status() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkBench2, unitModel.getAdditionalBench2Status() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkCasterCups, unitModel.getAdditionalCasterCupsStatus() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkCover, unitModel.getAdditionalCoverStatus() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkLamp, unitModel.getAdditionalLampStatus() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkOwnersManual, unitModel.getAdditionalOwnersManualStatus() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkMisc1, unitModel.getAdditionalMisc1Status() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkMisc2, unitModel.getAdditionalMisc2Status() == AdditionalItemStatusEnum.Loaded);
+        UIUtility.setVisible(this, R.id.chkMisc3, unitModel.getAdditionalMisc3Status() == AdditionalItemStatusEnum.Loaded);
+
+        receivers.add("Select person name");
+        receivers.add(assignmentModel.getCallerName());
+        receivers.add(assignmentModel.getDeliveryName());
+        receivers.add(assignmentModel.getDeliveryAlternateContact());
+        receiversAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, receivers);
+        receiversAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnrReceiver.setAdapter(receiversAdapter);
+        if (receivers.size() > 1)
+            spnrReceiver.setSelection(1);
+
+        List statuses = StaticData.getPianoStatuses().subList(3, StaticData.getPianoStatuses().size());
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnrStatus.setAdapter(statusAdapter);
+
+        fileName = UUID.randomUUID().toString() + ".jpg";
+        filePath = new File(FileUtility.getPODDirectory(unitId) + fileName);
+    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -271,7 +280,7 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
 
 	public boolean save()
 	{
-		boolean returnValue = true;
+		boolean isSuccess = true;
 
         if (spnrReceiver.getSelectedItem() != null)
             username = spnrReceiver.getSelectedItem().toString();
@@ -282,40 +291,36 @@ public class UnitDeliveryUnLoad extends AppCompatActivity {
 
 		try
 		{
-            mSignature.SaveToCard(filePath);
+            mSignature.saveToCard(filePath);
 
-            model.setPianoStatus(status);
-            model.setDeliveredAt(DateTimeUtility.getCurrentTimeStamp());
-            model.setBenchesUnloaded(UIUtility.isChecked(this, R.id.chkBenches));
-            model.setCasterCupsUnloaded(UIUtility.isChecked(this, R.id.chkCasterCups));
-            model.setCoverUnloaded(UIUtility.isChecked(this, R.id.chkCover));
-            model.setLampUnloaded(UIUtility.isChecked(this, R.id.chkLamp));
-            model.setOwnersManualUnloaded(UIUtility.isChecked(this, R.id.chkOwnersManual));
+            unitModel.setPianoStatus(status);
+			unitModel.setDeliveredAt(DateTimeUtility.getCurrentTimeStamp());
+			unitModel.setReceiverName(username);
+			unitModel.setReceiverSignaturePath(filePath.getAbsolutePath());
+            unitModel.setBench1Unloaded(UIUtility.isChecked(this, R.id.chkBench1));
+            unitModel.setBench2Unloaded(UIUtility.isChecked(this, R.id.chkBench2));
+            unitModel.setCasterCupsUnloaded(UIUtility.isChecked(this, R.id.chkCasterCups));
+            unitModel.setCoverUnloaded(UIUtility.isChecked(this, R.id.chkCover));
+            unitModel.setLampUnloaded(UIUtility.isChecked(this, R.id.chkLamp));
+            unitModel.setOwnersManualUnloaded(UIUtility.isChecked(this, R.id.chkOwnersManual));
+            unitModel.setMisc1Unloaded(UIUtility.isChecked(this, R.id.chkMisc1));
+            unitModel.setMisc2Unloaded(UIUtility.isChecked(this, R.id.chkMisc2));
+            unitModel.setMisc3Unloaded(UIUtility.isChecked(this, R.id.chkMisc3));
+            Service.unitService.setDelivered(unitModel);
 
-            model.setReceiverName(username);
-            model.setReceiverSignaturePath(filePath.getAbsolutePath());
-            model.setDateSigned(DateTimeUtility.getCurrentTimeStamp());
-            Service.unitService.setDelivered(model);
-
-            new SyncStart(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, assignmentId);
+            new SyncDeliver(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, assignmentId, unitId);
 
 		} catch (FileNotFoundException e)
 		{
-			returnValue = false;
+			isSuccess = false;
 		} catch (IOException e)
 		{
-			returnValue = false;
+			isSuccess = false;
 		} catch (DatabaseUpdateException e)
 		{
-			returnValue = false;
+			isSuccess = false;
 		}
-		return returnValue;
-	}
-
-	private void onClearOptionClick()
-	{
-		mSignature.clear();
-		btnSave.setEnabled(false);
+		return isSuccess;
 	}
 
 	@Override

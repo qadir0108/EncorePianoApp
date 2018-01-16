@@ -9,10 +9,11 @@ public enum GalleryEnum
     TableName("GALLERY"),
 
     Id("Id"),
-    ConsignmentId("ConsignmentId"),
+    UnitId("UnitId"),
     ImagePath("ImagePath"),
-    ImageReference("ImageReference"),
-    TakenAt("TakenAt")
+    TakenAt("TakenAt"),
+    TakeLocation("TakeLocation"),
+    synced("synced")
     ;
 
     public String Value;

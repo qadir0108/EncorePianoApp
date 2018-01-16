@@ -13,7 +13,7 @@ public enum GpxTracksEnum
     Latitude("Latitude"),
     Longitude("Longitude"),
     GpxOrder("GpxOrder"),
-    ConsignmentId("ConsignmentId"),
+    ConsignmentId("AssignmentId"),
     Timestamp("Timestamp")
     ;
 

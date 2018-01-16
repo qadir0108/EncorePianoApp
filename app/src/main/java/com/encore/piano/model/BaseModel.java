@@ -3,16 +3,22 @@ package com.encore.piano.model;
 import org.json.JSONArray;
 
 public class BaseModel {
-	
-	public ServerResponse Instance;
 
+	public ServerResponse Instance;
 	public static ServerResponse getServerResponse()
 	{
 		return new ServerResponse();
 	}
-	
-	public static class ServerResponse extends BaseModel {
 
+    protected String AuthToken;
+    public String getAuthToken() {
+        return AuthToken;
+    }
+    public void setAuthToken(String authToken) {
+        AuthToken = authToken;
+    }
+
+	public static class ServerResponse extends BaseModel {
 		private boolean IsSuccess;
         private boolean IsTokenValid;
         private String ErrorMessage;
@@ -41,8 +47,6 @@ public class BaseModel {
 		public void setTokenValid(boolean tokenValid) {
 			IsTokenValid = tokenValid;
 		}
-		
-		
-	}
 
+	}
 }

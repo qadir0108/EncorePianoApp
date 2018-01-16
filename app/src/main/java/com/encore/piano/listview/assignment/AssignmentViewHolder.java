@@ -13,10 +13,9 @@ public class AssignmentViewHolder extends ViewHolder{
 	TextView tvPosition;
 	TextView Id;	
 	ImageView imgCompleted;
-	CheckBox tvConsignmentId;
 	public View rootView;
 	
-	public AssignmentViewHolder(TextView dc, TextView pa, TextView da, TextView p, ImageView c, TextView i, CheckBox s)
+	public AssignmentViewHolder(TextView dc, TextView pa, TextView da, TextView p, ImageView c, TextView i)
 	{
 		tvConsigmentNumber = dc;
 		tvPickupAddress = pa;
@@ -24,6 +23,5 @@ public class AssignmentViewHolder extends ViewHolder{
 		tvPosition = p;
 		imgCompleted = c;
 		Id = i;
-		tvConsignmentId = s;
 	}
 }

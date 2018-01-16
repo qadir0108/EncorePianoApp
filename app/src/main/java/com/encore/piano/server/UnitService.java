@@ -44,8 +44,8 @@ public class UnitService extends BaseService {
 		
 	}
 
-	public ArrayList<UnitModel> getUnitsByAssignmentId(String consignmentId) {
-		return UnitDb.getUnitsByAssignmentId(context, consignmentId);
+	public ArrayList<UnitModel> getUnitsByOrderId(String consignmentId) {
+		return UnitDb.getUnitsByOrderId(context, consignmentId);
 	}
 
 	public UnitModel getUnitsByUnitId(String unitId) {
@@ -117,8 +117,8 @@ public class UnitService extends BaseService {
 	public UnitModel decodeContent(JSONObject object) {
 
         UnitModel model = new UnitModel();
-//		model.setId(setStringValueFromJSON(PianoEnum.Id.Value, object));
-//		model.setAssignmentId(setStringValueFromJSON(PianoEnum.ConsignmentId.Value, object));
+//		model.setUnitId(setStringValueFromJSON(PianoEnum.Id.Value, object));
+//		model.setImage(setStringValueFromJSON(PianoEnum.AssignmentId.Value, object));
 //		model.setCategory(setStringValueFromJSON(PianoEnum.Category.Value, object));
 //		model.setType(setStringValueFromJSON(PianoEnum.Type.Value, object));
 //		model.setSize(setStringValueFromJSON(PianoEnum.Size.Value, object));

@@ -42,9 +42,8 @@
                 <Button
                     android:id="@+id/btnScan"
                     style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:text="Scan" />
             </LinearLayout>
 
@@ -54,7 +53,7 @@
                 android:layout_marginBottom="5dp">
 
                 <TextView
-                    android:id="@+id/tvCategory"
+                    android:id="@+id/tvCategory1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Unit Detail:"
@@ -69,7 +68,7 @@
 
                 <TextView
                     android:id="@+id/TextVisew6"
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Category: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -92,7 +91,7 @@
 
                 <TextView
                     android:id="@+id/TextView6"
-                    android:layout_width="60dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Type: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -115,7 +114,7 @@
 
                 <TextView
                     android:id="@+id/TextView0"
-                    android:layout_width="60dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Size: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -138,7 +137,7 @@
 
                 <TextView
                     android:id="@+id/TextView06"
-                    android:layout_width="60dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Make: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -161,7 +160,7 @@
 
                 <TextView
                     android:id="@+id/TextVie06"
-                    android:layout_width="60dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Model: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -184,7 +183,7 @@
 
                 <TextView
                     android:id="@+id/TextVi06"
-                    android:layout_width="60dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Finish: "
                     android:textAppearance="?android:attr/textAppearanceMedium" />

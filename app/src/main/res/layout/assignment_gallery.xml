@@ -9,17 +9,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
-        android:paddingTop="5dp"
-        android:visibility="visible">
+        android:paddingTop="5dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Assignment Images"
+            android:text="Assignment Gallery"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
+
     </FrameLayout>
 
     <LinearLayout

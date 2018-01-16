@@ -2,49 +2,49 @@ package com.encore.piano.model;
 
 public class LoginModel extends BaseModel {
 
-	private String UserName;
-	private String Password;
-    private String AuthToken;
-    private String FCMToken;
-	private long Time;
-	private int UserId;
+	private String userName;
+	private String password;
+    private String authToken;
+    private String fcmToken;
+	private long time;
+	private int userId;
 	
 	public String getAuthToken() {
-		return AuthToken;
+		return authToken;
 	}
 	public void setAuthToken(String authToken) {
-		AuthToken = authToken;
+		this.authToken = authToken;
 	}
 	
 	public String getUserName() {
-		return UserName;
+		return userName;
 	}
 	public void setUserName(String userName) {
-		UserName = userName;
+		this.userName = userName;
 	}
 	public String getPassword() {
-		return Password;
+		return password;
 	}
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
 	public String getFCMToken() {
-		return FCMToken;
+		return fcmToken;
 	}
 	public void setFCMToken(String FCMToken) {
-		this.FCMToken = FCMToken;
+		this.fcmToken = FCMToken;
 	}
 	public long getTime() {
-		return Time;
+		return time;
 	}
 	public void setTime(long time) {
-		Time = time;
+		this.time = time;
 	}
 	public int getUserId() {
-		return UserId;
+		return userId;
 	}
 	public void setUserId(int userId) {
-		UserId = userId;
+		this.userId = userId;
 	}
 
 }

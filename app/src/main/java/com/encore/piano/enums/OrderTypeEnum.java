@@ -7,7 +7,7 @@ package com.encore.piano.enums;
 public enum OrderTypeEnum
 {
     Id("Id"),
-    ConsignmentId("ConsignmentId"),
+    ConsignmentId("AssignmentId"),
     Type("Type"),
     Name("Size"),
     Color("Color"),

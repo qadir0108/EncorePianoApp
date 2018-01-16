@@ -9,32 +9,28 @@ import com.encore.piano.exceptions.ValueValidationException;
 
 public class PreferenceUtility {
 
-	public static String Hostname;
-	private static String Port;
-	public static String CompanyCode;
-	public static String CompanyName;
-	private static String GpsFrequency;
+	public static String hostName;
+	private static String port;
+	public static String companyCode;
+	public static String companyName;
+	private static String gpsFrequency;
 
 	public static PreferenceUtility GetPreferences(Context context){
-
 		PreferenceUtility intance = new PreferenceUtility();
-
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-		Hostname = preferences.getString("hostname", "http://10.0.2.2");
-		Port = preferences.getString("port", "8060");
-		CompanyCode = preferences.getString("company_code", "");
-		CompanyName = preferences.getString("company_name", "");
-		GpsFrequency = preferences.getString("gps_frequency", "2");
-
+		hostName = preferences.getString("hostname", "http://10.0.2.2");
+		port = preferences.getString("port", "8060");
+		companyCode = preferences.getString("company_code", "");
+		companyName = preferences.getString("company_name", "");
+		gpsFrequency = preferences.getString("gps_frequency", "5");
 		return intance;
 	}
 
-	public int GetGpsFrequency() throws ValueValidationException {
+	public int getGpsFrequency() throws ValueValidationException {
 
 		int value;
 		try{
-			value = Integer.parseInt(GpsFrequency);
+			value = Integer.parseInt(gpsFrequency);
 		}
 		catch(Exception ex)
 		{
@@ -44,11 +40,11 @@ public class PreferenceUtility {
 		return value;
 	}
 
-	public static int GetPort(){
+	public static int getPort(){
 
 		int value = 80;
 		try{
-			value = Integer.parseInt(Port);
+			value = Integer.parseInt(port);
 		}
 		catch(Exception ex)
 		{

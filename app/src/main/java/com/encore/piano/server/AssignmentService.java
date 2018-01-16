@@ -60,11 +60,11 @@ public class AssignmentService extends BaseService {
 	@Override
 	public URL getServiceUrl()
 	{
-		String url = ServiceUrls.getConsignmentsUrl(context)
+		String url = ServiceUrls.getAssignmentsUrl(context)
                 .replace("[authtokenvalue]", Service.loginService.LoginModel.getAuthToken());
 
         if(Id != null && !Id.isEmpty())
-            url = ServiceUrls.getConsignmentUrl(context)
+            url = ServiceUrls.getAssignmentUrl(context)
                     .replace("[authtokenvalue]", Service.loginService.LoginModel.getAuthToken())
                     .replace("[id]", Id);
 
@@ -90,14 +90,19 @@ public class AssignmentService extends BaseService {
 
 		for (int i = 0; i < array.length(); i++)
 		{
-			JSONObject consignmentJsonObject = array.getJSONObject(i);
-			AssignmentModel model = getAssignment(consignmentJsonObject);
-            model.setCreatedAt(DateTimeUtility.getCurrentTimeStamp());
-            model.setTripStatus(TripStatusEnum.NotStarted.name());
-			model.setUnread(true);
-			assignments.add(model);
+			JSONObject resultObject = array.getJSONObject(i);
 
-            JSONArray pianoArray = consignmentJsonObject.getJSONArray("Pianos");
+            JSONArray assignmentsArray = resultObject.getJSONArray("Assignments");
+            for (int j = 0; j < assignmentsArray.length(); j++) {
+                JSONObject assignmentObject = assignmentsArray.getJSONObject(j);
+                AssignmentModel model = getAssignment(assignmentObject);
+                model.setCreatedAt(DateTimeUtility.getCurrentTimeStamp());
+                model.setTripStatus(TripStatusEnum.NotStarted.name());
+                model.setUnread(true);
+                assignments.add(model);
+            }
+
+            JSONArray pianoArray = resultObject.getJSONArray("Pianos");
             for (int j = 0; j < pianoArray.length(); j++) {
                 JSONObject pianoObject = pianoArray.getJSONObject(j);
                 UnitModel piano = getPiano(pianoObject);
@@ -122,45 +127,8 @@ public class AssignmentService extends BaseService {
     @Override
     public AssignmentModel decodeContent(JSONObject object)
     {
+        // NOT USED
         AssignmentModel model = new AssignmentModel();
-
-        model.setId(setStringValueFromJSON(AssignmentEnum.Id.Value, object));
-        model.setConsignmentNumber(setStringValueFromJSON(AssignmentEnum.ConsignmentNumber.Value, object));
-        model.setVehicleCode(setStringValueFromJSON(AssignmentEnum.VehicleCode.Value, object));
-        model.setVehicleName(setStringValueFromJSON(AssignmentEnum.VehicleName.Value, object));
-        model.setDriverCode(setStringValueFromJSON(AssignmentEnum.DriverCode.Value, object));
-        model.setDriverName(setStringValueFromJSON(AssignmentEnum.DriverName.Value, object));
-
-        model.setOrderId(setStringValueFromJSON(AssignmentEnum.OrderId.Value, object));
-        model.setOrderNumber(setStringValueFromJSON(AssignmentEnum.OrderNumber.Value, object));
-        model.setOrderType(setStringValueFromJSON(AssignmentEnum.OrderType.Value, object));
-        model.setOrderedAt(setStringValueFromJSON(AssignmentEnum.OrderedAt.Value, object));
-        model.setCallerName(setStringValueFromJSON(AssignmentEnum.CallerName.Value, object));
-        model.setCallerPhoneNumber(setStringValueFromJSON(AssignmentEnum.CallerPhoneNumber.Value, object));
-        model.setCallerPhoneNumberAlt(setStringValueFromJSON(AssignmentEnum.CallerPhoneNumberAlt.Value, object));
-        model.setCallerPhoneNumberAlt(setStringValueFromJSON(AssignmentEnum.CallerEmail.Value, object));
-
-        model.setPickupDate(setStringValueFromJSON(AssignmentEnum.PickupDate.Value, object));
-        model.setPickupAddress(setStringValueFromJSON(AssignmentEnum.PickupAddress.Value, object));
-        model.setPickupPhoneNumber(setStringValueFromJSON(AssignmentEnum.PickupPhoneNumber.Value, object));
-        model.setPickupAlternateContact(setStringValueFromJSON(AssignmentEnum.PickupAlternateContact.Value, object));
-        model.setPickupAlternatePhone(setStringValueFromJSON(AssignmentEnum.PickupAlternatePhone.Value, object));
-        model.setPickupNumberStairs(setStringValueFromJSON(AssignmentEnum.PickupNumberStairs.Value, object));
-        model.setPickupNumberTurns(setStringValueFromJSON(AssignmentEnum.PickupNumberTurns.Value, object));
-        model.setPickupInstructions(setStringValueFromJSON(AssignmentEnum.PickupInstructions.Value, object));
-
-        model.setDeliveryDate(setStringValueFromJSON(AssignmentEnum.DeliveryDate.Value, object));
-        model.setDeliveryAddress(setStringValueFromJSON(AssignmentEnum.DeliveryAddress.Value, object));
-        model.setDeliveryPhoneNumber(setStringValueFromJSON(AssignmentEnum.DeliveryPhoneNumber.Value, object));
-        model.setDeliveryAlternateContact(setStringValueFromJSON(AssignmentEnum.DeliveryAlternateContact.Value, object));
-        model.setDeliveryAlternatePhone(setStringValueFromJSON(AssignmentEnum.DeliveryAlternatePhone.Value, object));
-        model.setDeliveryNumberStairs(setStringValueFromJSON(AssignmentEnum.DeliveryNumberStairs.Value, object));
-        model.setDeliveryNumberTurns(setStringValueFromJSON(AssignmentEnum.DeliveryNumberTurns.Value, object));
-        model.setDeliveryInstructions(setStringValueFromJSON(AssignmentEnum.DeliveryInstructions.Value, object));
-
-        model.setCustomerCode(setStringValueFromJSON(AssignmentEnum.CustomerCode.Value, object));
-        model.setCustomerName(setStringValueFromJSON(AssignmentEnum.CustomerName.Value, object));
-        model.setNumberOfItems(setIntValueFromJSON(AssignmentEnum.NumberOfItems.Value, object));
         return model;
     }
 
@@ -169,7 +137,7 @@ public class AssignmentService extends BaseService {
         AssignmentModel model = new AssignmentModel();
 
         model.setId(setStringValueFromJSON(AssignmentEnum.Id.Value, object));
-        model.setConsignmentNumber(setStringValueFromJSON(AssignmentEnum.ConsignmentNumber.Value, object));
+        model.setAssignmentNumber(setStringValueFromJSON(AssignmentEnum.AssignmentNumber.Value, object));
         model.setVehicleCode(setStringValueFromJSON(AssignmentEnum.VehicleCode.Value, object));
         model.setVehicleName(setStringValueFromJSON(AssignmentEnum.VehicleName.Value, object));
         model.setDriverCode(setStringValueFromJSON(AssignmentEnum.DriverCode.Value, object));
@@ -184,6 +152,7 @@ public class AssignmentService extends BaseService {
         model.setCallerPhoneNumberAlt(setStringValueFromJSON(AssignmentEnum.CallerPhoneNumberAlt.Value, object));
         model.setCallerEmail(setStringValueFromJSON(AssignmentEnum.CallerEmail.Value, object));
 
+        model.setPickupName(setStringValueFromJSON(AssignmentEnum.PickupName.Value, object));
         model.setPickupDate(setStringValueFromJSON(AssignmentEnum.PickupDate.Value, object));
         model.setPickupAddress(setStringValueFromJSON(AssignmentEnum.PickupAddress.Value, object));
         model.setPickupPhoneNumber(setStringValueFromJSON(AssignmentEnum.PickupPhoneNumber.Value, object));
@@ -193,6 +162,7 @@ public class AssignmentService extends BaseService {
         model.setPickupNumberTurns(setStringValueFromJSON(AssignmentEnum.PickupNumberTurns.Value, object));
         model.setPickupInstructions(setStringValueFromJSON(AssignmentEnum.PickupInstructions.Value, object));
 
+        model.setDeliveryName(setStringValueFromJSON(AssignmentEnum.DeliveryName.Value, object));
         model.setDeliveryDate(setStringValueFromJSON(AssignmentEnum.DeliveryDate.Value, object));
         model.setDeliveryAddress(setStringValueFromJSON(AssignmentEnum.DeliveryAddress.Value, object));
         model.setDeliveryPhoneNumber(setStringValueFromJSON(AssignmentEnum.DeliveryPhoneNumber.Value, object));
@@ -204,6 +174,11 @@ public class AssignmentService extends BaseService {
 
         model.setCustomerCode(setStringValueFromJSON(AssignmentEnum.CustomerCode.Value, object));
         model.setCustomerName(setStringValueFromJSON(AssignmentEnum.CustomerName.Value, object));
+        model.setPaymentOption(setStringValueFromJSON(AssignmentEnum.PaymentOption.Value, object));
+        model.setPaymentAmount(setStringValueFromJSON(AssignmentEnum.PaymentAmount.Value, object));
+        model.setLegDate(setStringValueFromJSON(AssignmentEnum.LegDate.Value, object));
+        model.setLegFromLocation(setStringValueFromJSON(AssignmentEnum.LegFromLocation.Value, object));
+        model.setLegToLocation(setStringValueFromJSON(AssignmentEnum.LegToLocation.Value, object));
         model.setNumberOfItems(setIntValueFromJSON(AssignmentEnum.NumberOfItems.Value, object));
         return model;
     }
@@ -213,7 +188,7 @@ public class AssignmentService extends BaseService {
         UnitModel model = new UnitModel();
 
         model.setId(setStringValueFromJSON(PianoEnum.Id.Value, object));
-        model.setAssignmentId(setStringValueFromJSON(PianoEnum.ConsignmentId.Value, object));
+        model.setOrderId(setStringValueFromJSON(PianoEnum.OrderId.Value, object));
         model.setCategory(setStringValueFromJSON(PianoEnum.Category.Value, object));
         model.setType(setStringValueFromJSON(PianoEnum.Type.Value, object));
         model.setSize(setStringValueFromJSON(PianoEnum.Size.Value, object));
@@ -262,9 +237,9 @@ public class AssignmentService extends BaseService {
         return true;
     }
 
-    public boolean setTripStatus(String asssignmentId, String tripStatus)
+    public boolean setTripStatus(String asssignmentId, String tripStatus, String statusTime)
     {
-        if (AssignmentDb.setTripStatus(context, asssignmentId, tripStatus) != 1)
+        if (AssignmentDb.setTripStatus(context, asssignmentId, tripStatus, statusTime) != 1)
             return false;
         return true;
     }

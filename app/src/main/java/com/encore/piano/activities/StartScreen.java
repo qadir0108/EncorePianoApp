@@ -1,9 +1,6 @@
 package com.encore.piano.activities;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
@@ -18,21 +15,21 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.encore.piano.cardview.CardClickListener;
+import com.encore.piano.cardview.start.StartDataModel;
+import com.encore.piano.cardview.start.StartViewAdapter;
 import com.encore.piano.data.StringConstants;
 import com.encore.piano.server.Service;
 import com.encore.piano.interfaces.CallBackHandler;
@@ -52,8 +49,8 @@ import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
-import com.encore.piano.interfaces.ProgressUpdateListener;
-import com.encore.piano.model.ProgressUpdateModel;
+import com.encore.piano.interfaces.ProgressUpdate;
+import com.encore.piano.model.ProgressModel;
 import com.encore.piano.util.Alerter;
 import com.encore.piano.util.CommonUtility;
 import com.encore.piano.util.FileUtility;
@@ -61,16 +58,16 @@ import com.encore.piano.util.PermissionsUtility;
 
 import static com.encore.piano.util.PermissionsUtility.REQUEST_ID_MULTIPLE_PERMISSIONS;
 
-public class StartScreen extends AppCompatActivity implements OnClickListener, ProgressUpdateListener {//, ServiceConnection{
+public class StartScreen extends AppCompatActivity implements OnClickListener, ProgressUpdate {//, ServiceConnection{
+
+	private RecyclerView mRecyclerView;
+	private StartViewAdapter mAdapter;
+	private RecyclerView.LayoutManager mLayoutManager;
 
 	LinearLayout layoutProgress;
 	TextView txtTitle = null;
 	TextView txtText = null;
 	ProgressBar progressBar = null;
-
-	Button btnReload;
-	Button btnSync;
-	Button btnLogOff;
 
 	Intent serviceIntentGPS;
 
@@ -79,9 +76,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 	boolean signatureSend,
 			consignmentsFetched;
-	private ListView listView;
-
-	public List<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -95,52 +89,70 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		txtTitle = (TextView) findViewById(R.id.txtTitle);
 		txtText = (TextView) findViewById(R.id.txtText);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
-		btnReload = (Button) findViewById(R.id.btnReload);
-		btnSync = (Button) findViewById(R.id.btnSync);
-		btnLogOff = (Button) findViewById(R.id.btnLogoff);
-		listView = (ListView) findViewById(R.id.listView1);
-
-		btnReload.setOnClickListener(this);
-		btnSync.setOnClickListener(this);
-		btnLogOff.setOnClickListener(this);
 
 		serviceIntentGPS = new Intent(this, com.encore.piano.service.GPSTrackingService.class);
 
-		HashMap<String, String> hm = new HashMap<String, String>();
-		hm.put("name", "Assignments");
-		items.add(hm);
+		mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+		mRecyclerView.setHasFixedSize(true);
+		mLayoutManager = new LinearLayoutManager(this);
+		mRecyclerView.setLayoutManager(mLayoutManager);
+		mAdapter = new StartViewAdapter(StartDataModel.getDataSet());
+		mRecyclerView.setAdapter(mAdapter);
 
-		HashMap<String, String> hm2 = new HashMap<String, String>();
-		hm2.put("name", "Warehouse");
-		items.add(hm2);
-
-		//	ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-
-		SimpleAdapter adapter = new SimpleAdapter(this, items, R.layout.startscreen_row, new String[] { "name" }, new int[] { R.id.item_text });
-
-		listView.setAdapter(adapter);
-
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> myAdapter, View myView, int position, long mylng)
-			{
+		((StartViewAdapter) mAdapter).setOnItemClickListener(new CardClickListener() {
+			@Override
+			public void onItemClick(int position, View v) {
 				if (position == 0)
 				{
 					Intent i = new Intent(StartScreen.this, Assignment.class);
 					startActivity(i);
 				}
-                else if (position == 1)
+				else if (position == 1)
 				{
 					Intent i3 = new Intent(StartScreen.this, Warehouse.class);
 					startActivity(i3);
 				}
-
 			}
 		});
 
-		if (Service.loginService == null)
+
 			try
 			{
-				Service.loginService = new LoginService(this);
+				if (Service.loginService == null)
+					Service.loginService = new LoginService(this);
+				if (Service.loginService.checkLoginStatus())
+				{
+					serviceIntentGPS.putExtra(StringConstants.AUTH_TOKEN, Service.loginService.LoginModel.getAuthToken());
+					myPath = getIntent().getStringExtra("filePath");
+					fileName = getIntent().getStringExtra("fileName");
+
+					// Using Q
+//					TaskQueue.getQueue().add(EnumTask.LoadConsignments);
+//					processQueue();
+
+					//			if(fileName != null && filePath != null)
+					//				new SendSignature().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+					//new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+					//	Intent intent = new Intent();
+					//	intent.setAction("POD_MESSAGE_C");
+					//	intent.putExtra(CommonUtility.EXTRA_NOTIFICATION_ID, 123435);
+					//	sendBroadcast(intent);
+
+					//			if(!IsMyMessagingServiceRunning())
+					//				startService(serviceIntentMessaging);
+					//
+					//if(!IsMyGpsServiceRunning())
+					startService(serviceIntentGPS);
+
+				}
+				else
+				{
+					Intent i = new Intent(getApplicationContext(), Login.class);
+					startActivity(i);
+					this.finish();
+				}
 			} catch (UrlConnectionException e)
 			{
 				// TODO Auto-generated catch block
@@ -163,46 +175,11 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 				e.printStackTrace();
 			}
 
-		if (Service.loginService.checkLoginStatus())
-		{
-			serviceIntentGPS.putExtra(StringConstants.AUTH_TOKEN, Service.loginService.LoginModel.getAuthToken());
-
-			myPath = getIntent().getStringExtra("filePath");
-			fileName = getIntent().getStringExtra("fileName");
-
-			processQueue();
-
-			//			if(fileName != null && filePath != null)
-			//				new SendSignature().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-
-			//new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-
-			//	Intent intent = new Intent();
-			//	intent.setAction("POD_MESSAGE_C");
-			//	intent.putExtra(CommonUtility.EXTRA_NOTIFICATION_ID, 123435);
-			//	sendBroadcast(intent);
-
-			//			if(!IsMyMessagingServiceRunning())
-			//				startService(serviceIntentMessaging);
-			//			
-			//if(!IsMyGpsServiceRunning())
-			startService(serviceIntentGPS);
-
-		}
-		else
-		{
-			Intent i = new Intent(getApplicationContext(), Login.class);
-			startActivity(i);
-			this.finish();
-		}
-
 	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-
-        //getMenuInflater().inflate(R.menu.loginService, menu);
         getMenuInflater().inflate(R.menu.main_toolbar, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -214,11 +191,11 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! do the
-                    listView.setEnabled(true);
+                    mAdapter.isClickable = true;
                     FileUtility.prepareDirectories();
                 } else {
                     Alerter.error(StartScreen.this, "Permissions are required to run the application!");
-                    listView.setEnabled(false);
+                    mAdapter.isClickable = false;
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -341,9 +318,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 
 		switch (v.getId())
 		{
-		case R.id.btnReload:
-			onConsignmentsReloadOptionClicked();
-			break;
 		case R.id.btnSync:
 			onSyncOptionClicked();
 			break;
@@ -355,11 +329,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			break;
 		}
 
-	}
-
-	private void onConsignmentsReloadOptionClicked()
-	{
-		new FetchAndStoreConsignments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 	}
 
 	public void onLogoffOptionClicked()
@@ -426,7 +395,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 	boolean synced = false;
 
 	@Override
-	public void OnProgressUpdateListener(final ProgressUpdateModel model)
+	public void onProgressUpdate(final ProgressModel model)
 	{
 
 		runOnUiThread(new Runnable() {
@@ -597,15 +566,12 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		protected void onPreExecute()
 		{
 			layoutProgress.setVisibility(View.VISIBLE);
-
 			txtTitle.setText("Loading");
-			txtText.setText("Consignments and map route.");
+			txtText.setText("Assignments.");
 			progressBar.setIndeterminate(false);
 			progressBar.setMax(5);
 			progressBar.setProgress(1);
-
 			progressBar.getProgressDrawable().clearColorFilter();
-
 			super.onPreExecute();
 		}
 
@@ -614,7 +580,6 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		{
 			try
 			{
-
 				updateProgressBar(5, 1, "Loading", "Fetching assignments...");
 				Service.assignmentService = new AssignmentService(StartScreen.this);
 				Service.assignmentService.LoadConsignments();
@@ -681,8 +646,8 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			}
 			else
 			{
-				updateProgressBar(5, 5, "Finished", "Imported " + Service.assignmentService.numberOfImportedAssignments + " new assignments" +
-						" and " + Service.assignmentService.numberOfImportedItems + " new units.");
+				updateProgressBar(5, 5, "Finished", "Imported " + Service.assignmentService.numberOfImportedAssignments + " assignments" +
+						" and " + Service.assignmentService.numberOfImportedItems + " units.");
 
                 progressBar.getProgressDrawable().setColorFilter(Color.GREEN, Mode.SRC_IN);
                 CommonUtility.fadeOutView(StartScreen.this, layoutProgress);
@@ -755,8 +720,7 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 			try
 			{
 				dsp = new SyncService(StartScreen.this);
-				dsp.RegisterProgressUpdateListener(StartScreen.this);
-				dsp.setTaskName("Synchronizing Data");
+				dsp.registerProgress(StartScreen.this);
 				dsp.syncAll();
 			} catch (ClientProtocolException e)
 			{
@@ -790,9 +754,8 @@ public class StartScreen extends AppCompatActivity implements OnClickListener, P
 		@Override
 		protected void onPostExecute(String result)
 		{
-
 			synced = true;
-			dsp.UnregisterProgressUpdateListener();
+			dsp.unregisterProgress();
 
 			if (result != null && !result.equals(""))
 			{

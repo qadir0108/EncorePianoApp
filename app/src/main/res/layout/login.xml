@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center"
-            app:srcCompat="@drawable/ic_launcher2" />
+            app:srcCompat="@drawable/icons8_truck_100" />
         <TextView
             android:id="@+id/tvCompanyName"
             android:layout_width="wrap_content"

@@ -27,7 +27,7 @@ public abstract class UnitAdapterBase extends BaseAdapter {
 	
 	ArrayList<UnitModel> models = new ArrayList<UnitModel>();
 	
-	public UnitAdapterBase(Context context, int viewId, String consignmentId){
+	public UnitAdapterBase(Context context, int viewId, final String assignmentId, String orderId){
 		this.context = context;
 		this.viewId= viewId;		
 
@@ -36,7 +36,12 @@ public abstract class UnitAdapterBase extends BaseAdapter {
             models.clear();
             if (Service.unitService == null)
                 Service.unitService = new UnitService(context);
-            models = Service.unitService.getUnitsByAssignmentId(consignmentId);
+            models = Service.unitService.getUnitsByOrderId(orderId);
+
+			// for View only
+			for (UnitModel m:models) {
+				m.setAssignmentId(assignmentId);
+			}
         } catch (UrlConnectionException e)
         {
             e.printStackTrace();

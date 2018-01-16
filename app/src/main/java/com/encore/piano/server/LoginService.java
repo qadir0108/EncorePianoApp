@@ -64,15 +64,10 @@ public class LoginService extends BaseService {
 			throw new EmptyStringException();
 		if(loginModel.getPassword().equals(EMPTY_STRING))
 			throw new EmptyStringException();
-//		if(loginModel.getFCMToken().equals(EMPTY_STRING))
-//			throw new EmptyStringException();
-		
+
 		LoginModel = loginModel;
-
 		HttpPost postRequest = new HttpPost(ServiceUrls.getLoginServiceUrl(context));
-		
 		postRequest.setHeader("Content-Type", "application/json");
-
 		JSONStringer loginJson = new JSONStringer()
 			.object()
 				.key(LoginModelEnum.Username.Value).value(loginModel.getUserName())
@@ -82,37 +77,29 @@ public class LoginService extends BaseService {
 			
 		StringEntity loginEntity = new StringEntity(loginJson.toString());
 		postRequest.setEntity(loginEntity);
-		
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpResponse httpResponse = httpClient.execute(postRequest);
-		
 		if(httpResponse.getStatusLine().getStatusCode() != 200)
 			throw new LoginException();
-		
+
 		HttpEntity responseEntity = httpResponse.getEntity();
-		
 		if(responseEntity != null)
 		{
 			BufferedReader br = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
-			
-			String temp = "";			
+			String temp = "";
 			StringBuilder responseStringBuilder = new StringBuilder();
-			
 			while((temp = br.readLine()) != null)
 			{
 				responseStringBuilder.append(temp);
 			}
-			
 			String response = responseStringBuilder.toString();
-			
 			if(response.equals(EMPTY_STRING))
 				throw new EmptyStringException();
 			else
 			{
 				JSONObject responseObject = getJSONData(response);
 				boolean success = setBooleanValueFromJSON(JsonResponseEnum.IsSucess.Value, responseObject);
-				
-				if(success)	{		
+				if(success)	{
 					LoginModel.setAuthToken(setStringValueFromJSON(LoginModelEnum.AuthToken.Value, responseObject));
 					LoginModel.setTime(DateTimeUtility.getMilis24Hours());
 					AuthDb.write(context, LoginModel);
@@ -123,10 +110,6 @@ public class LoginService extends BaseService {
 		}
 		else
 			throw new NullPointerException();
-	
-//		LoginModel.setAuthToken("123");
-//		LoginModel.setTime(Service.getMilis24Hours());
-//		Database.write(context, LoginModel);
 		return EMPTY_STRING;
 	}
 

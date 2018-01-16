@@ -85,7 +85,7 @@ public class Warehouse extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, model.getId());
+                //intentGallery.putExtra(StringConstants.INTENT_KEY_UNIT_ID, unitModel.getUnitId());
                 startActivity(intentGallery);
             }
         });
@@ -167,7 +167,8 @@ public class Warehouse extends AppCompatActivity {
 
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
-            String serialNumber = "12345"; // scanResult.getContents();
+            String serialNumber = scanResult.getContents();
+            if(serialNumber == null) serialNumber = "54321";
             Alerter.success(this, serialNumber);
             loadUnit(serialNumber);
         }
@@ -181,7 +182,7 @@ public class Warehouse extends AppCompatActivity {
             btnGallery.setEnabled(true);
 
             tvCategory.setText(model.getCategory());
-            tvType.setText(model.getCategory());
+            tvType.setText(model.getType());
             tvSize.setText(model.getSize());
             tvMake.setText(model.getMake());
             tvModel.setText(model.getModel());

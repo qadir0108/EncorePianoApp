@@ -1,6 +1,5 @@
 package com.encore.piano.activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 import com.encore.piano.R;
 import com.encore.piano.data.NumberConstants;
 import com.encore.piano.db.ImageDb;
+import com.encore.piano.enums.TakenLocationEnum;
 import com.encore.piano.exceptions.DatabaseUpdateException;
 import com.encore.piano.exceptions.JSONNullableException;
 import com.encore.piano.exceptions.NetworkStatePermissionException;
@@ -37,6 +37,7 @@ import com.encore.piano.data.StringConstants;
 import com.encore.piano.model.GalleryModel;
 import com.encore.piano.server.GalleryService;
 import com.encore.piano.server.Service;
+import com.encore.piano.util.DateTimeUtility;
 import com.encore.piano.util.FileUtility;
 
 import org.apache.commons.io.FileUtils;
@@ -61,6 +62,8 @@ public class WarehouseUnitGallery extends AppCompatActivity implements OnItemCli
 	String fileName = "";
 	boolean isMultiselect = false;
 
+	String takenLocation;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -80,6 +83,8 @@ public class WarehouseUnitGallery extends AppCompatActivity implements OnItemCli
 
 		if (getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID) != null)
 			unitId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID);
+
+		takenLocation = TakenLocationEnum.Warehouse.Value;
 
 		new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId);
 
@@ -167,7 +172,7 @@ public class WarehouseUnitGallery extends AppCompatActivity implements OnItemCli
 			}
 			else
 			{
-				Adapter = new GalleryAdapter(WarehouseUnitGallery.this, consignmentId);
+				Adapter = new GalleryAdapter(WarehouseUnitGallery.this, consignmentId, takenLocation);
 				gvGallery.setAdapter(Adapter);
 			}
 			super.onPostExecute(result);
@@ -254,19 +259,18 @@ public class WarehouseUnitGallery extends AppCompatActivity implements OnItemCli
 
 					Log.d("gallery", "imagepath " + path);
 
-					Service.galleryService.WriteImageInfo(unitId, path, path); //second path variable is used as primary key reference
+					GalleryModel model = new GalleryModel();
+					model.setId(UUID.randomUUID().toString());
+					model.setUnitId(unitId);
+					model.setImagePath(path);
+					model.setTakenAt(DateTimeUtility.getCurrentTimeStamp());
+					Service.galleryService.writeImage(model); //second path variable is used as primary key reference
 
 				} catch (DatabaseUpdateException e)
 				{
 					//Toast.makeText(AssignmentGallery.this, "Error occured. ImageInfo not written to database.", Toast.LENGTH_LONG).show();
 				}
-				//					catch (FileNotFoundException e) {
-				//						// TODO Auto-generated catch block
-				//						e.printStackTrace();
-				//					} catch (IOException e) {
-				//						// TODO Auto-generated catch block
-				//						e.printStackTrace();
-				//					}
+
 				new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId);
 			}
 			else

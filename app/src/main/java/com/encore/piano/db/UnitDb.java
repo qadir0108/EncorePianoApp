@@ -77,7 +77,7 @@ public class UnitDb extends Database {
 	{
 		ContentValues cv = new ContentValues();
 		cv.put(PianoEnum.Id.Value, item.getId());
-		cv.put(PianoEnum.ConsignmentId.Value, item.getAssignmentId());
+		cv.put(PianoEnum.OrderId.Value, item.getOrderId());
 		cv.put(PianoEnum.Category.Value, item.getCategory());
 		cv.put(PianoEnum.Type.Value, item.getType());
 		cv.put(PianoEnum.Size.Value, item.getSize());
@@ -94,9 +94,9 @@ public class UnitDb extends Database {
 		return wdb.insert(PianoEnum.TableName.Value, null, cv);
 	}
 
-    public static synchronized ArrayList<UnitModel> getUnitsByAssignmentId(Context context, String assignmentId)
+    public static synchronized ArrayList<UnitModel> getUnitsByOrderId(Context context, String orderId)
     {
-        return getUnits(context, assignmentId, "", "");
+        return getUnits(context, orderId, "", "");
     }
 
     public static synchronized ArrayList<UnitModel> getUnitsByUnitId(Context context, String unitId)
@@ -109,13 +109,13 @@ public class UnitDb extends Database {
         return getUnits(context, "", "", serialNumber);
     }
 
-    public static synchronized ArrayList<UnitModel> getUnits(Context context, String assignmentId, String unitId, String serialNumber)
+    public static synchronized ArrayList<UnitModel> getUnits(Context context, String orderId, String unitId, String serialNumber)
 	{
 		SQLiteDatabase rdb = getSqliteHelper(context);
 		ArrayList<UnitModel> listmodel = new ArrayList<UnitModel>();
 		String cols[] = new String[] {
                 PianoEnum.Id.Value,
-                PianoEnum.ConsignmentId.Value,
+                PianoEnum.OrderId.Value,
 				PianoEnum.Category.Value,
                 PianoEnum.Type.Value,
                 PianoEnum.Size.Value,
@@ -125,34 +125,42 @@ public class UnitDb extends Database {
                 PianoEnum.SerialNumber.Value,
 				PianoEnum.IsBench.Value,
                 PianoEnum.IsPlayer.Value,
-                PianoEnum.IsBoxed.Value,
+                PianoEnum.IsBoxed.Value, //11
 
                 PianoEnum.createdAt.Value,
                 PianoEnum.pianoStatus.Value,
                 PianoEnum.pickedAt.Value,
-                PianoEnum.additionalLampStatus.Value,
-				PianoEnum.additionalOwnersManualStatus.Value,
-				PianoEnum.additionalCoverStatus.Value,
+                PianoEnum.pickerName.Value,
+                PianoEnum.pickerSignaturePath.Value,
+				PianoEnum.additionalBench1Status.Value,
+				PianoEnum.additionalBench2Status.Value,
 				PianoEnum.additionalCasterCupsStatus.Value,
-				PianoEnum.additionalBenchesStatus.Value,
+				PianoEnum.additionalLampStatus.Value,
+				PianoEnum.additionalCoverStatus.Value,
+				PianoEnum.additionalOwnersManualStatus.Value,
+				PianoEnum.additionalMisc1Status.Value,
+				PianoEnum.additionalMisc2Status.Value,
+				PianoEnum.additionalMisc3Status.Value,
+				PianoEnum.syncLoaded.Value, // 26
 
                 PianoEnum.deliveredAt.Value,
-                PianoEnum.benchesUnloaded.Value,
-                PianoEnum.casterCupsUnloaded.Value,
-                PianoEnum.coverUnloaded.Value,
-                PianoEnum.lampUnloaded.Value,
-                PianoEnum.ownersManualUnloaded.Value,
-
                 PianoEnum.receiverName.Value,
                 PianoEnum.receiverSignaturePath.Value,
-                PianoEnum.dateSigned.Value,
-                PianoEnum.signed.Value,
-                PianoEnum.synced.Value
+                PianoEnum.bench1Unloaded.Value,
+                PianoEnum.bench2Unloaded.Value,
+                PianoEnum.casterCupsUnloaded.Value,
+				PianoEnum.lampUnloaded.Value,
+				PianoEnum.coverUnloaded.Value,
+                PianoEnum.ownersManualUnloaded.Value,
+                PianoEnum.misc1Unloaded.Value,
+                PianoEnum.misc2Unloaded.Value,
+                PianoEnum.misc3Unloaded.Value,
+				PianoEnum.syncDelivered.Value // 39
 		};
 
 		Cursor results = null;
-		if(assignmentId != "")
-			results = rdb.query(PianoEnum.TableName.Value, cols, PianoEnum.ConsignmentId.Value + "= ?", new String[] { assignmentId }, null, null, null);
+		if(orderId != "")
+			results = rdb.query(PianoEnum.TableName.Value, cols, PianoEnum.OrderId.Value + "= ?", new String[] { orderId }, null, null, null);
 		else if(unitId != "")
 			results = rdb.query(PianoEnum.TableName.Value, cols, PianoEnum.Id.Value + "= ?", new String[] { unitId }, null, null, null);
         else if(serialNumber != "")
@@ -164,7 +172,7 @@ public class UnitDb extends Database {
 		{
             UnitModel model = new UnitModel();
 			model.setId(results.getString(0));
-			model.setAssignmentId(results.getString(1));
+			model.setOrderId(results.getString(1));
 			model.setCategory(results.getString(2));
 			model.setType(results.getString(3));
 			model.setSize(results.getString(4));
@@ -179,11 +187,32 @@ public class UnitDb extends Database {
 			model.setCreatedAt(results.getString(12));
             model.setPianoStatus(results.getString(13));
             model.setPickedAt(results.getString(14));
-			model.setAdditionalLampStatus((AdditionalItemStatusEnum.values()[results.getInt(15)]) );
-			model.setAdditionalOwnersManualStatus((AdditionalItemStatusEnum.values()[results.getInt(16)]) );
-			model.setAdditionalCoverStatus((AdditionalItemStatusEnum.values()[results.getInt(17)]) );
-			model.setAdditionalCasterCupsStatus((AdditionalItemStatusEnum.values()[results.getInt(18)]) );
-			model.setAdditionalBenchesStatus((AdditionalItemStatusEnum.values()[results.getInt(19)]) );
+            model.setPickerName(results.getString(15));
+            model.setPickerSignaturePath(results.getString(16));
+            model.setAdditionalBench1Status((AdditionalItemStatusEnum.values()[results.getInt(17)]) );
+            model.setAdditionalBench2Status((AdditionalItemStatusEnum.values()[results.getInt(18)]) );
+            model.setAdditionalCasterCupsStatus((AdditionalItemStatusEnum.values()[results.getInt(19)]) );
+            model.setAdditionalLampStatus((AdditionalItemStatusEnum.values()[results.getInt(20)]) );
+            model.setAdditionalCoverStatus((AdditionalItemStatusEnum.values()[results.getInt(21)]) );
+			model.setAdditionalOwnersManualStatus((AdditionalItemStatusEnum.values()[results.getInt(22)]) );
+			model.setAdditionalMisc1Status((AdditionalItemStatusEnum.values()[results.getInt(23)]) );
+			model.setAdditionalMisc2Status((AdditionalItemStatusEnum.values()[results.getInt(24)]) );
+			model.setAdditionalMisc3Status((AdditionalItemStatusEnum.values()[results.getInt(25)]) );
+            model.setSyncLoaded(results.getInt(26) == 1);
+
+            model.setDeliveredAt(results.getString(27));
+			model.setReceiverName(results.getString(28));
+			model.setReceiverSignaturePath(results.getString(29));
+            model.setBench1Unloaded(results.getInt(30) == 1);
+            model.setBench2Unloaded(results.getInt(31) == 1);
+            model.setCasterCupsUnloaded(results.getInt(32) == 1);
+            model.setLampUnloaded(results.getInt(33) == 1);
+            model.setCoverUnloaded(results.getInt(34) == 1);
+            model.setOwnersManualUnloaded(results.getInt(35) == 1);
+            model.setMisc1Unloaded(results.getInt(36) == 1);
+            model.setMisc2Unloaded(results.getInt(37) == 1);
+            model.setMisc3Unloaded(results.getInt(38) == 1);
+            model.setSyncDelivered(results.getInt(39) == 1);
 
 			listmodel.add(model);
 		}
@@ -198,14 +227,30 @@ public class UnitDb extends Database {
 		ContentValues cv = new ContentValues();
 		cv.put(PianoEnum.pianoStatus.Value, model.getPianoStatus());
 		cv.put(PianoEnum.pickedAt.Value, model.getPickedAt());
-		cv.put(PianoEnum.additionalBenchesStatus.Value, model.getAdditionalBenchesStatus().ordinal());
+        cv.put(PianoEnum.pickerName.Value, model.getPickerName());
+        cv.put(PianoEnum.pickerSignaturePath.Value, model.getPickerSignaturePath());
+		cv.put(PianoEnum.additionalBench1Status.Value, model.getAdditionalBench1Status().ordinal());
+		cv.put(PianoEnum.additionalBench2Status.Value, model.getAdditionalBench2Status().ordinal());
 		cv.put(PianoEnum.additionalCasterCupsStatus.Value, model.getAdditionalCasterCupsStatus().ordinal());
+        cv.put(PianoEnum.additionalLampStatus.Value, model.getAdditionalOwnersManualStatus().ordinal());
 		cv.put(PianoEnum.additionalCoverStatus.Value, model.getAdditionalCoverStatus().ordinal());
-		cv.put(PianoEnum.additionalLampStatus.Value, model.getAdditionalOwnersManualStatus().ordinal());
 		cv.put(PianoEnum.additionalOwnersManualStatus.Value, model.getAdditionalOwnersManualStatus().ordinal());
+		cv.put(PianoEnum.additionalMisc1Status.Value, model.getAdditionalMisc1Status().ordinal());
+		cv.put(PianoEnum.additionalMisc2Status.Value, model.getAdditionalMisc2Status().ordinal());
+		cv.put(PianoEnum.additionalMisc3Status.Value, model.getAdditionalMisc3Status().ordinal());
 		if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { model.getId() }) != 1)
 			throw new DatabaseUpdateException();
 		wdb.close();
+    }
+
+	public static synchronized void setSyncedLoaded(Context context, String unitId) throws DatabaseUpdateException
+    {
+        SQLiteDatabase wdb = getSqliteHelper(context);
+        ContentValues cv = new ContentValues();
+        cv.put(PianoEnum.syncLoaded.Value, 1);
+        if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { unitId }) != 1)
+            throw new DatabaseUpdateException();
+        wdb.close();
     }
 
 	public static synchronized void setUnitDelivered(Context context, UnitModel model) throws DatabaseUpdateException {
@@ -213,21 +258,32 @@ public class UnitDb extends Database {
 		ContentValues cv = new ContentValues();
 		cv.put(PianoEnum.pianoStatus.Value, model.getPianoStatus());
 		cv.put(PianoEnum.deliveredAt.Value, model.getDeliveredAt());
-		cv.put(PianoEnum.benchesUnloaded.Value, model.isBenchesUnloaded());
-		cv.put(PianoEnum.casterCupsUnloaded.Value, model.isCasterCupsUnloaded());
-		cv.put(PianoEnum.coverUnloaded.Value, model.isCoverUnloaded());
-		cv.put(PianoEnum.lampUnloaded.Value, model.isLampUnloaded());
-		cv.put(PianoEnum.ownersManualUnloaded.Value, model.isOwnersManualUnloaded());
-
         cv.put(PianoEnum.receiverName.Value, model.getReceiverName());
         cv.put(PianoEnum.receiverSignaturePath.Value, model.getReceiverSignaturePath());
-        cv.put(PianoEnum.dateSigned.Value, model.getDateSigned());
-        cv.put(PianoEnum.signed.Value, 1);
+		cv.put(PianoEnum.bench1Unloaded.Value, model.isBench1Unloaded());
+		cv.put(PianoEnum.bench2Unloaded.Value, model.isBench2Unloaded());
+		cv.put(PianoEnum.casterCupsUnloaded.Value, model.isCasterCupsUnloaded());
+        cv.put(PianoEnum.lampUnloaded.Value, model.isLampUnloaded());
+		cv.put(PianoEnum.coverUnloaded.Value, model.isCoverUnloaded());
+		cv.put(PianoEnum.ownersManualUnloaded.Value, model.isOwnersManualUnloaded());
+		cv.put(PianoEnum.misc1Unloaded.Value, model.isMisc1Unloaded());
+		cv.put(PianoEnum.misc2Unloaded.Value, model.isMisc2Unloaded());
+		cv.put(PianoEnum.misc3Unloaded.Value, model.isMisc3Unloaded());
 
 		if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { model.getId() }) != 1)
 			throw new DatabaseUpdateException();
 		wdb.close();
 	}
+
+    public static synchronized void setSyncedDelivered(Context context, String unitId) throws DatabaseUpdateException
+    {
+        SQLiteDatabase wdb = getSqliteHelper(context);
+        ContentValues cv = new ContentValues();
+        cv.put(PianoEnum.syncDelivered.Value, 1);
+        if (wdb.update(PianoEnum.TableName.Value, cv, PianoEnum.Id.Value + " = ?", new String[] { unitId }) != 1)
+            throw new DatabaseUpdateException();
+        wdb.close();
+    }
 
     public static synchronized void saveUnit(Context context, UnitModel model) throws DatabaseUpdateException {
         SQLiteDatabase wdb = getSqliteHelper(context);
@@ -248,9 +304,9 @@ public class UnitDb extends Database {
         wdb.close();
     }
 
-	public static synchronized void delete(Context context, String assignmentId)
+	public static synchronized void delete(Context context, String orderId)
 	{
-        ArrayList<UnitModel> units = getUnitsByAssignmentId(context, assignmentId);
+        ArrayList<UnitModel> units = getUnitsByOrderId(context, orderId);
         for (UnitModel unit : units)
         {
             if (unit.getReceiverSignaturePath() != null && !unit.getReceiverSignaturePath().equals(""))
@@ -261,13 +317,13 @@ public class UnitDb extends Database {
             }
         }
 		SQLiteDatabase wdb = getSqliteHelper(context);
-		wdb.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + assignmentId + "'", null);
+		wdb.delete(PianoEnum.TableName.Value, PianoEnum.OrderId.Value + " = '" + orderId + "'", null);
 		wdb.close();
 	}
 
-	public static synchronized void delete(SQLiteDatabase wdb, String consignmentId)
+	public static synchronized void delete(SQLiteDatabase wdb, String orderId)
 	{
-		wdb.delete(PianoEnum.TableName.Value, PianoEnum.ConsignmentId.Value + " = '" + consignmentId + "'", null);
+		wdb.delete(PianoEnum.TableName.Value, PianoEnum.OrderId.Value + " = '" + orderId + "'", null);
 	}
 
 }

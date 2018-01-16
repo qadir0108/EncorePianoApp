@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.encore.piano.enums.AssignmentEnum;
+import com.encore.piano.enums.CardEnum;
 import com.encore.piano.enums.GalleryEnum;
 import com.encore.piano.enums.GpsEnum;
 import com.encore.piano.enums.GpxTracksEnum;
@@ -43,8 +44,9 @@ public class Database extends SQLiteOpenHelper {
 	{
 
 		String sql = "create table " + AssignmentEnum.TableName.Value + "(" +
+
                 AssignmentEnum.Id.Value + " text primary key," +
-                AssignmentEnum.ConsignmentNumber.Value + " text ," +
+				AssignmentEnum.AssignmentNumber.Value + " text ," +
                 AssignmentEnum.VehicleCode.Value + " text ," +
                 AssignmentEnum.VehicleName.Value + " text ," +
                 AssignmentEnum.DriverCode.Value + " text ," +
@@ -58,6 +60,7 @@ public class Database extends SQLiteOpenHelper {
 				AssignmentEnum.CallerPhoneNumberAlt.Value + " text ," +
 				AssignmentEnum.CallerEmail.Value + " text ," +
 
+				AssignmentEnum.PickupName.Value + " text ," +
 				AssignmentEnum.PickupDate.Value + " text ," +
                 AssignmentEnum.PickupAddress.Value + " text ," +
                 AssignmentEnum.PickupPhoneNumber.Value + " text ," +
@@ -67,6 +70,7 @@ public class Database extends SQLiteOpenHelper {
 				AssignmentEnum.PickupNumberTurns.Value + " text ," +
 				AssignmentEnum.PickupInstructions.Value + " text ," +
 
+				AssignmentEnum.DeliveryName.Value + " text ," +
 				AssignmentEnum.DeliveryDate.Value + " text ," +
 				AssignmentEnum.DeliveryAddress.Value + " text ," +
 				AssignmentEnum.DeliveryPhoneNumber.Value + " text ," +
@@ -78,19 +82,28 @@ public class Database extends SQLiteOpenHelper {
 
                 AssignmentEnum.CustomerCode.Value + " text ," +
                 AssignmentEnum.CustomerName.Value + " text ," +
-                AssignmentEnum.NumberOfItems.Value + " integer ," +
+                AssignmentEnum.PaymentOption.Value + " text ," +
+                AssignmentEnum.PaymentAmount.Value + " text ," +
+				AssignmentEnum.LegDate.Value + " text ," +
+				AssignmentEnum.LegFromLocation.Value + " text ," +
+				AssignmentEnum.LegToLocation.Value + " text ," +
+				AssignmentEnum.NumberOfItems.Value + " integer ," +
+
                 AssignmentEnum.createdAt.Value + " text ," +
                 AssignmentEnum.tripStaus.Value + " text ," +
                 AssignmentEnum.unread.Value + " integer ," +
                 AssignmentEnum.departureTime.Value + " text ," +
                 AssignmentEnum.estimatedTime.Value + " text ," +
+                AssignmentEnum.completionTime.Value + " text ," +
                 AssignmentEnum.pickupLocation.Value + " text ," +
                 AssignmentEnum.saved.Value + " integer ," +
-                AssignmentEnum.synced.Value + " integer );";
+                AssignmentEnum.synced.Value + " integer ," +
+                AssignmentEnum.paid.Value + " integer ," +
+                AssignmentEnum.paymentTime.Value + " text );";
 
 		String sqlitem = "create table " + PianoEnum.TableName.Value + "(" +
 				PianoEnum.Id.Value + " text primary key," +
-				PianoEnum.ConsignmentId.Value + " text," +
+				PianoEnum.OrderId.Value + " text ," +
 				PianoEnum.Category.Value + " text," +
 				PianoEnum.Type.Value + " text," +
 				PianoEnum.Size.Value + " text," +
@@ -105,31 +118,42 @@ public class Database extends SQLiteOpenHelper {
 				PianoEnum.createdAt.Value + " text," +
 				PianoEnum.pianoStatus.Value + " text," +
 				PianoEnum.pickedAt.Value + " text," +
-				PianoEnum.additionalLampStatus.Value + " integer," +
-				PianoEnum.additionalOwnersManualStatus.Value + " integer," +
-				PianoEnum.additionalCoverStatus.Value + " integer," +
+				PianoEnum.pickerName.Value + " text," +
+				PianoEnum.pickerSignaturePath.Value + " text," +
+				PianoEnum.additionalBench1Status.Value + " integer, "  +
+				PianoEnum.additionalBench2Status.Value + " integer, "  +
 				PianoEnum.additionalCasterCupsStatus.Value + " integer," +
-				PianoEnum.additionalBenchesStatus.Value + " integer, "  +
+				PianoEnum.additionalLampStatus.Value + " integer," +
+				PianoEnum.additionalCoverStatus.Value + " integer," +
+				PianoEnum.additionalOwnersManualStatus.Value + " integer," +
+				PianoEnum.additionalMisc1Status.Value + " integer," +
+				PianoEnum.additionalMisc2Status.Value + " integer," +
+				PianoEnum.additionalMisc3Status.Value + " integer," +
+				PianoEnum.syncLoaded.Value + " integer ," +
 
 				PianoEnum.deliveredAt.Value + " text," +
-				PianoEnum.benchesUnloaded.Value + " integer," +
+				PianoEnum.receiverName.Value + " text ," +
+				PianoEnum.receiverSignaturePath.Value + " text ," +
+				PianoEnum.bench1Unloaded.Value + " integer," +
+				PianoEnum.bench2Unloaded.Value + " integer," +
 				PianoEnum.casterCupsUnloaded.Value + " integer," +
 				PianoEnum.coverUnloaded.Value + " integer," +
 				PianoEnum.lampUnloaded.Value + " integer," +
 				PianoEnum.ownersManualUnloaded.Value + " integer," +
-
-				PianoEnum.receiverName.Value + " text ," +
-				PianoEnum.receiverSignaturePath.Value + " text ," +
-				PianoEnum.dateSigned.Value + " text ," +
-				PianoEnum.signed.Value + " integer ," +
-				AssignmentEnum.synced.Value + " integer );"
+				PianoEnum.misc1Unloaded.Value + " integer," +
+				PianoEnum.misc2Unloaded.Value + " integer," +
+				PianoEnum.misc3Unloaded.Value + " integer," +
+				PianoEnum.syncDelivered.Value + " integer "
 				+ ");";
 
 		String sqlImg = "create table " + GalleryEnum.TableName.Value + "(" +
                 GalleryEnum.Id.Value + " text, " +
-                GalleryEnum.ConsignmentId.Value + " text, " +
-                GalleryEnum.ImageReference.Value + " text primary key," +
-                GalleryEnum.ImagePath.Value + " text);";
+                GalleryEnum.UnitId.Value + " text, " +
+                GalleryEnum.ImagePath.Value + " text primary key," +
+                GalleryEnum.TakenAt.Value + " text, " +
+                GalleryEnum.TakeLocation.Value + " text, " +
+                GalleryEnum.synced.Value + " integer " +
+                " );";
 
 		String sqlLogin = "create table " + LoginEnum.TableName.Value + "(" + BaseColumns._ID + " integer primary key autoincrement," +
                 LoginEnum.AuthToken.Value + " text, " +
@@ -152,12 +176,20 @@ public class Database extends SQLiteOpenHelper {
                 GpxTracksEnum.GpxOrder.Value + " text," +
                 GpxTracksEnum.ConsignmentId.Value + " text);";
 
+		String sqlCard = "create table " + CardEnum.TableName.Value + "(" +
+				CardEnum.ConsignmentId.Value + " text primary key, " +
+                CardEnum.CardDetail.Value + " text, " +
+                CardEnum.Timestamp.Value + " text ," +
+                CardEnum.synced.Value + " integer " +
+				" );";
+
 		db.execSQL(sql);
 		db.execSQL(sqlitem);
 		db.execSQL(sqlImg);
 		db.execSQL(sqlLogin);
 		db.execSQL(sqlGps);
 		db.execSQL(sqlGpx);
+		db.execSQL(sqlCard);
 	}
 
 	@Override

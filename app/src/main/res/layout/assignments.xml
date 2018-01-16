@@ -32,7 +32,7 @@
 		  
 		</LinearLayout>
         
-        <LinearLayout android:id="@+id/layoutMap"      
+        <LinearLayout android:id="@+id/layoutMap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

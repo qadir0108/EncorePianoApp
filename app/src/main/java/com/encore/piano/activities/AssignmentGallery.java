@@ -45,10 +45,12 @@ import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.listview.gallery.GalleryAdapter;
 import com.encore.piano.model.GalleryModel;
+import com.encore.piano.util.DateTimeUtility;
 import com.encore.piano.util.FileUtility;
 
 public class AssignmentGallery extends Activity implements OnItemClickListener, OnClickListener {
 
+    TextView tvTitle;
 	GridView gvGallery;
 	Button btnAdd;
 	Button btnCancel;
@@ -60,12 +62,15 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 	String fileName = "";
 	boolean isMultiselect = false;
 
+    String takenLocation;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.assignment_gallery);
 
+		tvTitle = (TextView) findViewById(R.id.tvTitle);
 		gvGallery = (GridView) findViewById(R.id.gvGallery);
         btnAdd = (Button) findViewById(R.id.btnAdd);
 		btnCancel = (Button) findViewById(R.id.btnCancel);
@@ -80,7 +85,11 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
         if (getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID) != null)
             unitId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_UNIT_ID);
 
-		new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId);
+        if (getIntent().getExtras().getString(StringConstants.INTENT_KEY_TAKEN_LOCATION) != null)
+            takenLocation = getIntent().getExtras().getString(StringConstants.INTENT_KEY_TAKEN_LOCATION);
+
+        tvTitle.setText("Assignment Gallery - " + takenLocation + " Images");
+		new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId, takenLocation);
 
 	}
 
@@ -132,6 +141,7 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 		{
 
 			consignmentId = params[0];
+			takenLocation = params[1];
 
 			try
 			{
@@ -166,7 +176,7 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 			}
 			else
 			{
-				Adapter = new GalleryAdapter(AssignmentGallery.this, consignmentId);
+				Adapter = new GalleryAdapter(AssignmentGallery.this, consignmentId, takenLocation);
 				gvGallery.setAdapter(Adapter);
 			}
 			super.onPostExecute(result);
@@ -186,12 +196,12 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 	private void onAddOptionClick()
 	{
         fileName = UUID.randomUUID().toString() + ".jpg";
-        String filePath = FileUtility.getImagesDirectory(unitId);
-        FileUtility.prepareDirectory(filePath);
-        File image = new File(filePath + fileName);
-        imageUri = Uri.fromFile(image);
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		String filePath = FileUtility.getImagesDirectory(unitId);
+		FileUtility.prepareDirectory(filePath);
+		File image = new File(filePath + fileName);
+		imageUri = Uri.fromFile(image);
+// Uri uri = FileProvider.getUriForFile(MainActivity.this, BuildConfig.APPLICATION_ID + ".provider",fileImagePath);
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 		startActivityForResult(intent, NumberConstants.REQUEST_CODE_IMAGE_CAPTURE);
 
@@ -233,11 +243,9 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 		case NumberConstants.REQUEST_CODE_IMAGE_CAPTURE:
 			Log.d("gallery", "onactivity");
 			String path = "";
-			if (imageUri != null)
-			{
+			if (imageUri != null) {
 				path = imageUri.toString();
-				try
-				{
+				try {
 					int height = 534;
 					int width = 400;
 
@@ -245,35 +253,31 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 					Bitmap scaledphoto = null;
 					scaledphoto = Bitmap.createScaledBitmap(photo, width, height, true);
 
-					try
-					{
+					try {
 						FileOutputStream out = new FileOutputStream(imageUri.getPath());
 						scaledphoto.compress(Bitmap.CompressFormat.JPEG, 90, out);
-					} catch (Exception e)
-					{
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
 					Log.d("gallery", "imagepath " + path);
 
-					Service.galleryService.WriteImageInfo(unitId, path, path); //second path variable is used as primary key reference
+					GalleryModel model = new GalleryModel();
+					model.setId(UUID.randomUUID().toString());
+					model.setUnitId(unitId);
+					model.setImagePath(path);
+					model.setTakenAt(DateTimeUtility.getCurrentTimeStamp());
+                    model.setTakenLocation(takenLocation);
+					Service.galleryService.writeImage(model); //second path variable is used as primary key reference
 
-				} catch (DatabaseUpdateException e)
-				{
+				} catch (DatabaseUpdateException e) {
 					//Toast.makeText(AssignmentGallery.this, "Error occured. ImageInfo not written to database.", Toast.LENGTH_LONG).show();
 				}
-				//					catch (FileNotFoundException e) {
-				//						// TODO Auto-generated catch block
-				//						e.printStackTrace();
-				//					} catch (IOException e) {
-				//						// TODO Auto-generated catch block
-				//						e.printStackTrace();
-				//					}
-				new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId);
 			}
-			else
+                else {
 				Toast.makeText(AssignmentGallery.this, "Error occured. no image..", Toast.LENGTH_LONG).show();
-
+			}
+				new FetchImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, unitId, takenLocation);
 			break;
 		default:
 			break;
@@ -338,8 +342,8 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 			MenuInflater inflater = mode.getMenuInflater();
 			inflater.inflate(R.menu.delete, menu);
 
-			mode.setTitle("Select AssignmentUnits");
-			mode.setSubtitle("One unitService selected");
+			mode.setTitle("Select Image");
+			mode.setSubtitle("One image selected");
 			return true;
 		}
 
@@ -394,10 +398,10 @@ public class AssignmentGallery extends Activity implements OnItemClickListener, 
 			int selectCount = gvGallery.getCheckedItemCount();
 			switch (selectCount) {
 			case 1:
-				mode.setSubtitle("One unitService selected");
+				mode.setSubtitle("One image selected");
 				break;
 			default:
-				mode.setSubtitle("" + selectCount + " units selected");
+				mode.setSubtitle("" + selectCount + " images selected");
 				break;
 			}
 		}

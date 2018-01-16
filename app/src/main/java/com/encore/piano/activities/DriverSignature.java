@@ -33,15 +33,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.encore.piano.R;
-import com.encore.piano.data.StringConstants;
 import com.encore.piano.server.Service;
 import com.encore.piano.logic.TaskQueue;
 import com.encore.piano.exceptions.EmptyAuthTokenException;
-import com.encore.piano.interfaces.ProgressUpdateListener;
-import com.encore.piano.model.ProgressUpdateModel;
+import com.encore.piano.interfaces.ProgressUpdate;
+import com.encore.piano.model.ProgressModel;
 import com.encore.piano.util.FileUtility;
 
-public class DriverSignature extends Activity implements ProgressUpdateListener {
+public class DriverSignature extends Activity implements ProgressUpdate {
 
 	LinearLayout signatureLayoutContent;
 	signature mSignature;
@@ -348,7 +347,7 @@ public class DriverSignature extends Activity implements ProgressUpdateListener 
 	}
 	
 	@Override
-	public void OnProgressUpdateListener(ProgressUpdateModel model) {
+	public void onProgressUpdate(ProgressModel model) {
 //		if(progressDialog == null || !progressDialog.isShowing())
 //		{		
 //			progressDialog.setCancelable(false);
@@ -360,7 +359,7 @@ public class DriverSignature extends Activity implements ProgressUpdateListener 
 		
 	}
 	
-	private void UpdateProgressDialog(final ProgressUpdateModel model)
+	private void UpdateProgressDialog(final ProgressModel model)
 	{
 		runOnUiThread(new Runnable() {
 			
