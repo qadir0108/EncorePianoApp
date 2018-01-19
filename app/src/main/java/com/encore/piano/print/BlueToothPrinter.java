@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.encore.piano.R;
 import com.encore.piano.util.Alerter;
@@ -20,8 +23,12 @@ import com.google.zxing.common.BitMatrix;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by Kamran on 24-Dec-17.
@@ -33,6 +40,7 @@ public class BlueToothPrinter {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket mmSocket;
     BluetoothDevice mmDevice;
+    List<BluetoothDevice> btDevices = null;
 
     // needed for communication to bluetooth device / network
     OutputStream mmOutputStream;
@@ -43,44 +51,118 @@ public class BlueToothPrinter {
     int readBufferPosition;
     volatile boolean stopWorker;
 
-    void findBT(Activity context) {
+    private void flushData() {
+        try {
+            if (mmSocket != null) {
+                mmSocket.close();
+                mmSocket = null;
+            }
+
+            if (mBluetoothAdapter != null) {
+                mBluetoothAdapter.cancelDiscovery();
+            }
+
+            if (btDevices != null) {
+                btDevices.clear();
+                btDevices = null;
+            }
+            finalize();
+
+        } catch (Exception ex) {
+        } catch (Throwable e) {
+        }
+
+    }
+
+    boolean findBT(Activity context) {
 
         try {
+
+            flushData();
+
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
             if(mBluetoothAdapter == null) {
                 Alerter.error(context, "No bluetooth adapter available");
-                return;
+                return false;
             }
 
             if(!mBluetoothAdapter.isEnabled()) {
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 context.startActivityForResult(enableBluetooth, 0);
+                return false;
             }
+
+            // Discovering
+
+//            new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE)
+//                    .setTitleText("Discovering bluetooth printers.")
+//                    .setContentText("Please wait...")
+//                    .show();
+//
+//            IntentFilter btIntentFilter = new IntentFilter(
+//                    BluetoothDevice.ACTION_FOUND);
+//            context.registerReceiver(mBTReceiver, btIntentFilter);
+//
+//            if (mBluetoothAdapter.isDiscovering()) {
+//                mBluetoothAdapter.cancelDiscovery();
+//            }
+//            mBluetoothAdapter.startDiscovery();
 
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
             if(pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
 
-                    // RPP300 is the name of the bluetooth printer device
+                    // QSprinter is the name of the bluetooth printer device
                     // we got this name from the list of paired devices
-                    if (device.getName().equals("RPP300")) {
+                    if (device.getName().contains("printer")) {
                         mmDevice = device;
                         break;
                     }
                 }
             }
 
-            //Alerter.success(context, "Bluetooth device found.");
+            if(mmDevice == null) {
+                Alerter.error(context, "No bluetooth device found with name printer");
+                return false;
+            }
 
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
+//    private final BroadcastReceiver mBTReceiver = new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//                BluetoothDevice device = intent
+//                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//
+//                try {
+//                    if (btDevices == null) {
+//                        btDevices = new ArrayList<BluetoothDevice>();
+//                    }
+//                    btDevices.add(device);
+//
+//                    if (device.getName().contains("printer")) {
+//                        mmDevice = device;
+//                    }
+//
+//                } catch (Exception ex) {
+//                    // ex.fillInStackTrace();
+//                }
+//            }
+//        }
+//    };
+
     // tries to open a connection to the bluetooth printer device
-    void openBT(Activity context) {
+    public OutputStream openBT(Activity context) {
         try {
 
             // Standard SerialPortService ID
@@ -92,11 +174,14 @@ public class BlueToothPrinter {
 
             beginListenForData();
 
-            Alerter.success(context, "Bluetooth Opened");
+            Log.d("BT", "Bluetooth Opened");
+            //Alerter.success(context, "Bluetooth Opened");
 
         } catch (Exception e) {
+            Alerter.error(context, "Can not open bluetooth.");
             e.printStackTrace();
         }
+        return mmOutputStream;
     }
 
     /*
@@ -198,7 +283,8 @@ public class BlueToothPrinter {
             mmOutputStream.close();
             mmInputStream.close();
             mmSocket.close();
-            Alerter.success(context, "Bluetooth Closed");
+            //Alerter.success(context, "Bluetooth Closed");
+            Log.d("BT", "Bluetooth Closed");
         } catch (Exception e) {
             e.printStackTrace();
         }

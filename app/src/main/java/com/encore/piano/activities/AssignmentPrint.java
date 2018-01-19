@@ -1,6 +1,5 @@
 package com.encore.piano.activities;
 
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,15 +19,14 @@ import com.encore.piano.exceptions.NetworkStatePermissionException;
 import com.encore.piano.exceptions.NotConnectedException;
 import com.encore.piano.exceptions.UrlConnectionException;
 import com.encore.piano.model.AssignmentModel;
-import com.encore.piano.print.BlueToothDeviceList;
+import com.encore.piano.print.LablePrinter;
+import com.encore.piano.server.AssignmentService;
 import com.encore.piano.server.Service;
 import com.encore.piano.server.UnitService;
 import com.encore.piano.util.ZingCoder;
 
 import org.json.JSONException;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class AssignmentPrint extends AppCompatActivity {
@@ -44,11 +42,7 @@ public class AssignmentPrint extends AppCompatActivity {
 
 	private String consignmentId;
 	private AssignmentModel model;
-
-    byte FONT_TYPE;
-    private static BluetoothSocket btsocket;
-    private static OutputStream btoutputstream;
-    String message;
+    private ArrayList units;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -58,9 +52,15 @@ public class AssignmentPrint extends AppCompatActivity {
 
         try {
             consignmentId = getIntent().getExtras().getString(StringConstants.INTENT_KEY_ASSIGNMENT_ID);
+
+            if(Service.assignmentService == null)
+                Service.assignmentService = new AssignmentService(AssignmentPrint.this);
             model = Service.assignmentService.getAll(consignmentId);
-            Service.unitService = new UnitService(AssignmentPrint.this);
-            ArrayList units = Service.unitService.getUnitsByOrderId(consignmentId);
+
+            if(Service.unitService == null)
+                Service.unitService = new UnitService(AssignmentPrint.this);
+            units = Service.unitService.getUnitsByOrderId(model.getOrderId());
+
         } catch (UrlConnectionException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -85,19 +85,8 @@ public class AssignmentPrint extends AppCompatActivity {
         btnPrint = (Button) findViewById(R.id.btnPrint);
 
         tvAssignmentNumber.setText(model.getAssignmentNumber());
-        imgQRCode.setImageBitmap(ZingCoder.generateQRCode(this, model.getAssignmentNumber()));
+        //imgQRCode.setImageBitmap(ZingCoder.generateQRCode(this, model.getAssignmentNumber()));
 		tvCustomer.setText("Customer: " + model.getCustomerCode() + " " + model.getCustomerName());
-
-//		tvMakeModel.setText("Make/Model: " + modelUnit.getMake() + " " + modelUnit.getModel());
-//		tvSerialNumber.setText("Serial: " + modelUnit.getSerialNumber());
-//		tvBench.setText("Benches: " + (modelUnit.isBench() ? "W/B" : "N/B"));
-
-        message = "Assignment #: " + model.getAssignmentNumber() + "\n\n";
-        message += "\nCustomer: " + model.getCustomerCode() + " " + model.getCustomerName();
-//        message += "\nMake/Model: " + modelUnit.getMake() + " " + modelUnit.getModel();
-//        message += "\nSerial: " + modelUnit.getSerialNumber();
-//        message += "\nBenches: " + (modelUnit.isBench() ? "W/B" : "N/B");
-        message += "\n\n";
 
         btnCancel.setOnClickListener(new OnClickListener() {
 			
@@ -113,84 +102,10 @@ public class AssignmentPrint extends AppCompatActivity {
             @Override
             public void onClick(View arg0)
             {
-                //new BlueToothPrinter().sendData(AssignmentPrint.this, message);
-                //Alerter.success(AssignmentPrint.this, message);
-                connect();
+                new LablePrinter(AssignmentPrint.this).print(model, units);
             }
         });
 	}
-
-    protected void connect() {
-        if(btsocket == null){
-            Intent BTIntent = new Intent(getApplicationContext(), BlueToothDeviceList.class);
-            this.startActivityForResult(BTIntent, BlueToothDeviceList.REQUEST_CONNECT_BT);
-        }
-        else{
-
-            OutputStream opstream = null;
-            try {
-                opstream = btsocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            btoutputstream = opstream;
-            print_bt();
-
-        }
-
-    }
-
-
-    private void print_bt() {
-        try {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            btoutputstream = btsocket.getOutputStream();
-
-            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
-            btoutputstream.write(printformat);
-            btoutputstream.write(message.getBytes());
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            if(btsocket!= null){
-                btoutputstream.close();
-                btsocket.close();
-                btsocket = null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            btsocket = BlueToothDeviceList.getSocket();
-            if(btsocket != null){
-                print_bt();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
 	public boolean onCreateOptionsMenu(Menu menu)

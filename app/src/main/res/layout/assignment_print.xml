@@ -4,106 +4,115 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp" >
-
-        <TextView
-            android:id="@+id/spinnerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Assignment #:"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <TextView
-            android:id="@+id/tvAssignmentNumber"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="[NUMBER]"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:layout_height="fill_parent"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imgQRCode"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/textView21"
-            />
-    </LinearLayout>
+            android:layout_marginBottom="5dp">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
+            <TextView
+                android:id="@+id/spinnerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Assignment #:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/tvCustomer"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvAssignmentNumber"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="[NUMBER]"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+            android:padding="5dp" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgQRCode"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textView21"
+                />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvMakeModel"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+            android:padding="5dp" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
+            <TextView
+                android:id="@+id/tvCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvSerialNumber"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+            android:padding="5dp"
+            >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip" >
+            <TextView
+                android:id="@+id/tvMakeModel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvBench"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:padding="5dip" >
+
+            <TextView
+                android:id="@+id/tvSerialNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:id="@+id/tvBench"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/FrameLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:padding="5dp"
-        android:visibility="visible" >
+        android:layout_gravity="bottom"
+        android:padding="5dp">
 
         <Button
             android:id="@+id/btnCancel"
@@ -123,5 +132,6 @@
             />
 
     </FrameLayout>
+
 
 </LinearLayout>
